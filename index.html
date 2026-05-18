@@ -29,7 +29,6 @@
       font-size: 1.6rem;
       color: #1a1a1a;
       margin-bottom: 4px;
-      letter-spacing: -0.5px;
     }
     .subtitle {
       text-align: center;
@@ -40,10 +39,9 @@
     .card {
       background: rgba(255,255,255,0.85);
       backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       border-radius: 20px;
       padding: 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.02);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
       margin-bottom: 16px;
     }
     .form-grid {
@@ -68,21 +66,17 @@
       font-size: 0.8rem;
       margin-bottom: 4px;
       color: #444;
-      letter-spacing: 0.2px;
     }
-    input, textarea, select {
+    input, select {
       padding: 12px 14px;
       border: 1px solid #e2e8f0;
       border-radius: 14px;
       font-size: 0.95rem;
       background: #f9fbfd;
-      transition: all 0.2s ease;
       color: #1a1a1a;
       outline: none;
-      -webkit-appearance: none;
-      appearance: none;
     }
-    input:focus, textarea:focus, select:focus {
+    input:focus {
       border-color: #1677ff;
       background: #fff;
       box-shadow: 0 0 0 4px rgba(22,119,255,0.1);
@@ -94,20 +88,17 @@
       padding: 13px 20px;
       border-radius: 14px;
       font-weight: 600;
-      cursor: pointer;
       font-size: 0.95rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.2s ease;
-      letter-spacing: 0.2px;
+      transition: all 0.2s;
       box-shadow: 0 4px 12px rgba(22,119,255,0.2);
       -webkit-tap-highlight-color: transparent;
     }
     button:active {
       transform: scale(0.97);
-      box-shadow: 0 2px 8px rgba(22,119,255,0.2);
     }
     button.secondary {
       background: #f0f4ff;
@@ -115,16 +106,11 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       border: 1px solid rgba(22,119,255,0.15);
     }
-    button.secondary:active {
-      background: #e6f0ff;
-    }
     button.danger {
       background: #ff4d4f;
-      box-shadow: 0 4px 12px rgba(255,77,79,0.2);
     }
     button.warning {
       background: #fa8c16;
-      box-shadow: 0 4px 12px rgba(250,140,22,0.2);
     }
     .players-section {
       margin: 20px 0 10px;
@@ -134,36 +120,25 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 8px;
-      background: #ffffff;
+      background: #fff;
       padding: 10px 12px;
       border-radius: 14px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
       border: 1px solid #f0f0f0;
-      transition: all 0.15s;
-    }
-    .player-row:active {
-      background: #fafafa;
     }
     .player-row .num {
       font-weight: 700;
       width: 22px;
       color: #1677ff;
-      font-size: 0.9rem;
-      text-align: center;
       flex-shrink: 0;
     }
     .player-row input {
       flex: 1;
-      background: transparent;
       border: 1px solid transparent;
       padding: 8px 10px;
       border-radius: 12px;
-      font-size: 0.9rem;
-      min-width: 0;
     }
     .player-row input:focus {
       border-color: #1677ff;
-      background: #fff;
     }
     .player-row .paid-btn {
       background: white;
@@ -171,10 +146,6 @@
       border-radius: 10px;
       padding: 6px 12px;
       font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: 0.15s;
-      color: #999;
       min-width: 42px;
       flex-shrink: 0;
     }
@@ -188,14 +159,8 @@
       border: none;
       color: #bbb;
       font-size: 1.2rem;
-      cursor: pointer;
       padding: 4px 8px;
-      border-radius: 10px;
       flex-shrink: 0;
-    }
-    .player-row .remove-btn:active {
-      background: #fff1f0;
-      color: #ff4d4f;
     }
     .player-row.duplicate input {
       border-color: #ff4d4f;
@@ -207,21 +172,15 @@
       gap: 10px;
       margin: 16px 0;
     }
-    .actions button {
-      flex: 1 1 auto;
-    }
     .preview-box {
-      background: #ffffff;
+      background: #fff;
       border-radius: 16px;
       padding: 16px;
       border: 1px solid #eef2f6;
       margin-top: 12px;
-      font-family: 'JetBrains Mono', 'Courier New', monospace;
-      white-space: pre-wrap;
-      line-height: 1.6;
-      color: #1e293b;
+      font-family: monospace;
       font-size: 0.85rem;
-      box-shadow: inset 0 1px 4px rgba(0,0,0,0.02);
+      white-space: pre-wrap;
       overflow-x: auto;
     }
     .booking-list-item {
@@ -233,71 +192,34 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.02);
       flex-wrap: wrap;
       gap: 8px;
     }
-    .booking-list-item .info {
-      font-size: 0.85rem;
-      word-break: break-word;
-    }
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
     .auto-add-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      flex: 1;
     }
     .auto-add-row input {
       width: 70px;
       text-align: center;
-      padding: 12px 8px;
     }
     .total-hours {
       font-size: 0.85rem;
       color: #1677ff;
       font-weight: 600;
       margin: 4px 0;
-      text-align: right;
     }
     .duplicate-warning {
       color: #ff4d4f;
       font-size: 0.8rem;
-      margin-top: 6px;
       display: none;
-      align-items: center;
-      gap: 4px;
     }
     .duplicate-warning.active {
       display: flex;
-    }
-    hr {
-      border: none;
-      border-top: 1px solid #eef2f6;
-      margin: 14px 0;
-    }
-    .section-title {
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-      color: #333;
-    }
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 10px 0;
-    }
-    .button-row button {
-      flex: 1 1 auto;
-    }
-    @media (max-width: 380px) {
-      body { padding: 10px; }
-      .card { padding: 16px; }
-      button { padding: 12px 16px; font-size: 0.9rem; }
-      .auto-add-row input { width: 60px; }
+      align-items: center;
+      gap: 4px;
     }
   </style>
 </head>
@@ -314,7 +236,7 @@
       </div>
       <div class="form-group">
         <label>Day (auto)</label>
-        <input type="text" id="dayInput" placeholder="Auto-filled" readonly>
+        <input type="text" id="dayInput" readonly>
       </div>
       <div class="form-group">
         <label>⏰ Start Time</label>
@@ -324,45 +246,45 @@
         <label>End Time</label>
         <input type="time" id="endTime" value="23:30">
       </div>
-      <div class="form-group full total-hours" id="totalHoursDisplay" style="grid-column: span 2;">
+      <div class="form-group full total-hours">
         <span id="totalHours">2.0 hours</span>
       </div>
       <div class="form-group full">
         <label>🏟️ Venue</label>
-        <input type="text" id="venue" value="Forum Sba, Setia Alam" placeholder="Venue name & location">
+        <input type="text" id="venue" value="Forum Sba, Setia Alam">
       </div>
       <div class="form-group full">
         <label>Court Details</label>
-        <input type="text" id="court" value="Rubber Court 6 & 7" placeholder="e.g. Rubber Court 6 & 7">
+        <input type="text" id="court" value="Rubber Court 6 & 7">
       </div>
       <div class="form-group">
         <label>💵 Price (RM)</label>
-        <input type="number" id="price" value="17" step="0.5" min="0">
+        <input type="number" id="price" value="17" step="0.5">
       </div>
       <div class="form-group">
         <label>🏸 Shuttle</label>
-        <input type="text" id="shuttle" value="RSL" placeholder="e.g. RSL, Yonex">
+        <input type="text" id="shuttle" value="RSL">
       </div>
       <div class="form-group full">
         <label>👤 Host</label>
-        <input type="text" id="host" value="" placeholder="Host name">
+        <input type="text" id="host" placeholder="Host name">
       </div>
     </div>
 
     <div class="players-section">
-      <div class="section-title">👥 Players (tap ✅ = paid)</div>
+      <div style="font-weight:600; margin-bottom:8px;">👥 Players (tap ✅ = paid)</div>
       <div id="playersContainer"></div>
-      <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name detected!</div>
+      <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name!</div>
 
-      <div class="button-row">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;">
         <button class="secondary" id="addPlayerBtn">+ Add Slot</button>
         <div class="auto-add-row">
           <input type="number" id="autoAddCount" placeholder="6" min="1" value="6">
-          <button id="autoAddBtn" class="secondary" style="flex:1;">Auto Add</button>
+          <button id="autoAddBtn" class="secondary">Auto Add</button>
         </div>
       </div>
-      <div class="button-row">
-        <button id="clearPlayersBtn" class="warning">🗑️ Clear Players</button>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button id="clearPlayersBtn" class="warning">🗑️ Clear</button>
         <button id="resetSessionBtn" class="danger">🔄 Reset</button>
       </div>
     </div>
@@ -373,22 +295,21 @@
     </div>
 
     <div>
-      <div class="section-title">📄 Preview</div>
+      <div style="font-weight:600; margin-bottom:6px;">📄 Preview</div>
       <div class="preview-box" id="preview"></div>
     </div>
   </div>
 
   <div class="card">
-    <h3 style="margin-top:0; font-size:1rem;">📂 Saved Bookings</h3>
+    <h3 style="font-size:1rem;">📂 Saved Bookings</h3>
     <div id="savedBookingsList"></div>
     <p id="noBookingsMsg" style="color:#777; font-size:0.85rem;">No saved bookings yet.</p>
-    <button id="clearAllBtn" class="danger" style="margin-top:12px; width:100%;">🗑️ Clear All Saved</button>
+    <button id="clearAllBtn" class="danger" style="width:100%; margin-top:12px;">🗑️ Clear All Saved</button>
   </div>
 </div>
 
 <script>
   (function() {
-    // ---------- DOM ----------
     const dateInput = document.getElementById('dateInput');
     const dayInput = document.getElementById('dayInput');
     const startTime = document.getElementById('startTime');
@@ -415,360 +336,249 @@
 
     let players = [];
 
-    // ---------- Helpers ----------
-    function format12Hour(time24) {
-      if (!time24) return "";
-      const [h, m] = time24.split(':').map(Number);
+    function format12Hour(t) {
+      if (!t) return "";
+      const [h, m] = t.split(':').map(Number);
       if (isNaN(h) || isNaN(m)) return "";
       const ampm = h >= 12 ? 'PM' : 'AM';
-      let hour12 = h % 12;
-      if (hour12 === 0) hour12 = 12;
-      return `${hour12}:${m.toString().padStart(2, '0')} ${ampm}`;
+      let h12 = h % 12;
+      if (h12 === 0) h12 = 12;
+      return `${h12}:${m.toString().padStart(2,'0')} ${ampm}`;
     }
 
-    function formatDateDMY(dateStr) {
-      if (!dateStr) return "";
-      const [year, month, day] = dateStr.split('-');
-      return `${parseInt(day)}/${parseInt(month)}/${year}`;
+    function formatDateDMY(d) {
+      if (!d) return "";
+      const [y, m, day] = d.split('-');
+      return `${parseInt(day)}/${parseInt(m)}/${y}`;
     }
 
-    function getDayFromDate(dateStr) {
-      if (!dateStr) return "";
-      const d = new Date(dateStr + "T00:00:00");
-      const days = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
-      return days[d.getDay()];
+    function getDayFromDate(d) {
+      if (!d) return "";
+      const date = new Date(d + "T00:00:00");
+      const days = ["AHAD","ISNIN","SELASA","RABU","KHAMIS","JUMAAT","SABTU"];
+      return days[date.getDay()];
     }
 
-    function escapeHtml(text) {
-      return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-
-    // ---------- Total hours (fixed) ----------
+    // ----- FIXED total hours: handles overnight sessions -----
     function updateTotalHours() {
-      const start = startTime.value;
-      const end = endTime.value;
-      if (!start || !end) {
+      const s = startTime.value;
+      const e = endTime.value;
+      if (!s || !e) {
         totalHoursSpan.textContent = '—';
         return;
       }
-      const [sh, sm] = start.split(':').map(Number);
-      const [eh, em] = end.split(':').map(Number);
-      const startMin = sh * 60 + sm;
-      const endMin = eh * 60 + em;
-      if (endMin <= startMin) {
-        totalHoursSpan.textContent = 'Invalid time range';
+      const [sh, sm] = s.split(':').map(Number);
+      const [eh, em] = e.split(':').map(Number);
+      if (isNaN(sh) || isNaN(sm) || isNaN(eh) || isNaN(em)) {
+        totalHoursSpan.textContent = '—';
         return;
       }
+      let startMin = sh * 60 + sm;
+      let endMin = eh * 60 + em;
+
+      // If end time is earlier or equal, assume it's the next day (overnight)
+      if (endMin <= startMin) {
+        endMin += 24 * 60; // add 24 hours
+      }
+
       const diffMin = endMin - startMin;
       const hours = diffMin / 60;
       totalHoursSpan.textContent = (hours % 1 === 0) ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
     }
+    // --------------------------------------------
 
-    // ---------- Init date ----------
+    // Init date & times
     const today = new Date().toISOString().slice(0,10);
     dateInput.value = today;
     dayInput.value = getDayFromDate(today);
-    dateInput.addEventListener('change', () => {
-      dayInput.value = getDayFromDate(dateInput.value);
-    });
+    dateInput.addEventListener('change', () => dayInput.value = getDayFromDate(dateInput.value));
 
-    // Attach time listeners immediately
     startTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
     endTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
-    // Force first calculation
-    updateTotalHours();
+    updateTotalHours(); // initial calculation
 
-    // Load remembered auto-add count
     const savedAutoCount = localStorage.getItem('autoAddCount');
     if (savedAutoCount) autoAddCount.value = savedAutoCount;
 
-    // ---------- Players ----------
+    // ----- Players -----
     function findDuplicates() {
-      const names = players.map(p => p.name.trim().toLowerCase()).filter(n => n !== '');
-      const duplicates = new Set();
+      const names = players.map(p => p.name.trim().toLowerCase()).filter(n => n);
+      const dups = new Set();
       const seen = new Set();
-      names.forEach(name => {
-        if (seen.has(name)) duplicates.add(name);
-        else seen.add(name);
-      });
-      return duplicates;
+      names.forEach(n => { if (seen.has(n)) dups.add(n); else seen.add(n); });
+      return dups;
     }
 
     function renderPlayers() {
       playersContainer.innerHTML = '';
-      const duplicates = findDuplicates();
+      const dups = findDuplicates();
       let hasDup = false;
-
-      players.forEach((player, idx) => {
+      players.forEach((p, idx) => {
         const row = document.createElement('div');
         row.className = 'player-row';
-        const nameLower = player.name.trim().toLowerCase();
-        const isDuplicate = nameLower !== '' && duplicates.has(nameLower);
-        if (isDuplicate) {
-          row.classList.add('duplicate');
-          hasDup = true;
-        }
+        const nameLow = p.name.trim().toLowerCase();
+        const isDup = nameLow && dups.has(nameLow);
+        if (isDup) { row.classList.add('duplicate'); hasDup = true; }
         row.innerHTML = `
-          <span class="num">${idx + 1}.</span>
-          <input type="text" class="player-name" value="${escapeHtml(player.name)}" placeholder="Name" data-index="${idx}">
-          <button class="paid-btn ${player.paid ? 'paid' : ''}" data-index="${idx}">✅</button>
-          <button class="remove-btn" data-index="${idx}">✕</button>
+          <span class="num">${idx+1}.</span>
+          <input type="text" class="pname" value="${escapeHtml(p.name)}" placeholder="Name" data-idx="${idx}">
+          <button class="paid-btn ${p.paid?'paid':''}" data-idx="${idx}">✅</button>
+          <button class="remove-btn" data-idx="${idx}">✕</button>
         `;
         playersContainer.appendChild(row);
       });
-
       duplicateWarning.classList.toggle('active', hasDup);
 
-      document.querySelectorAll('.player-name').forEach(input => {
-        input.addEventListener('input', (e) => {
-          const idx = e.target.dataset.index;
-          players[idx].name = e.target.value;
+      document.querySelectorAll('.pname').forEach(inp => {
+        inp.addEventListener('input', e => {
+          const i = e.target.dataset.idx;
+          players[i].name = e.target.value;
           renderPlayers();
           updatePreview();
         });
       });
-
       document.querySelectorAll('.paid-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const idx = e.target.dataset.index;
-          players[idx].paid = !players[idx].paid;
+        btn.addEventListener('click', e => {
+          const i = e.target.dataset.idx;
+          players[i].paid = !players[i].paid;
           renderPlayers();
           updatePreview();
         });
       });
-
       document.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const idx = parseInt(e.target.dataset.index);
-          players.splice(idx, 1);
+        btn.addEventListener('click', e => {
+          players.splice(parseInt(e.target.dataset.idx), 1);
           renderPlayers();
           updatePreview();
         });
       });
     }
 
-    addPlayerBtn.addEventListener('click', () => {
-      players.push({ name: "", paid: false });
-      renderPlayers();
-      updatePreview();
-    });
-
-    autoAddBtn.addEventListener('click', () => {
-      let count = parseInt(autoAddCount.value);
-      if (isNaN(count) || count < 1) {
-        alert("Please enter a valid number (e.g., 6).");
-        return;
-      }
-      if (count > 100) {
-        alert("Maximum 100 slots.");
-        count = 100;
-      }
-      localStorage.setItem('autoAddCount', count);
-      for (let i = 0; i < count; i++) {
-        players.push({ name: "", paid: false });
-      }
+    addPlayerBtn.onclick = () => { players.push({name:"",paid:false}); renderPlayers(); updatePreview(); };
+    autoAddBtn.onclick = () => {
+      let n = parseInt(autoAddCount.value);
+      if (isNaN(n) || n<1) { alert("Enter a valid number"); return; }
+      if (n>100) n=100;
+      localStorage.setItem('autoAddCount', n);
+      for (let i=0; i<n; i++) players.push({name:"",paid:false});
       renderPlayers();
       updatePreview();
       autoAddCount.value = '';
-    });
-
-    clearPlayersBtn.addEventListener('click', () => {
-      if (players.length === 0) return;
-      if (confirm('Remove all players?')) {
-        players = [];
-        renderPlayers();
-        updatePreview();
-      }
-    });
-
-    resetSessionBtn.addEventListener('click', () => {
+    };
+    clearPlayersBtn.onclick = () => {
+      if (players.length && confirm('Remove all players?')) { players=[]; renderPlayers(); updatePreview(); }
+    };
+    resetSessionBtn.onclick = () => {
       if (confirm('Reset session? Venue will be kept.')) {
-        const today = new Date().toISOString().slice(0,10);
-        dateInput.value = today;
-        dayInput.value = getDayFromDate(today);
-        startTime.value = "21:30";
-        endTime.value = "23:30";
-        updateTotalHours();
-        court.value = "";
-        price.value = "";
-        shuttle.value = "";
-        host.value = "";
-        players = [];
-        renderPlayers();
-        updatePreview();
+        const t = new Date().toISOString().slice(0,10);
+        dateInput.value = t; dayInput.value = getDayFromDate(t);
+        startTime.value = "21:30"; endTime.value = "23:30"; updateTotalHours();
+        court.value = ""; price.value = ""; shuttle.value = ""; host.value = "";
+        players = []; renderPlayers(); updatePreview();
       }
-    });
+    };
 
-    // ---------- Preview ----------
+    // ----- Preview -----
     function buildPreviewText() {
-      const dateVal = formatDateDMY(dateInput.value) || ".........";
-      const dayVal = dayInput.value || ".......";
-      const start = format12Hour(startTime.value) || ".....";
-      const end = format12Hour(endTime.value) || ".....";
-      const venueVal = venue.value || "................";
-      const courtVal = court.value || "................";
-      const priceVal = price.value || "0";
-      const shuttleVal = shuttle.value || "......";
-      const hostVal = host.value.trim() || "......";
-
+      const d = formatDateDMY(dateInput.value) || ".........";
+      const day = dayInput.value || ".......";
+      const s = format12Hour(startTime.value) || ".....";
+      const e = format12Hour(endTime.value) || ".....";
+      const v = venue.value || "................";
+      const c = court.value || "................";
+      const pr = price.value || "0";
+      const sh = shuttle.value || "......";
+      const h = host.value.trim() || "......";
       const totalText = totalHoursSpan.textContent;
-      const validTotal = (totalText !== '—' && totalText !== 'Invalid time range');
-      const totalLine = validTotal ? `⏱️ Total: ${totalText}\n` : '';
+      const valid = (totalText !== '—');
+      const totalLine = valid ? `⏱️ Total: ${totalText}\n` : '';
 
-      let text = `📆 : ${dateVal} , ${dayVal}\n`;
-      text += `⏰ : ${start} - ${end}\n`;
-      text += totalLine;
-      text += `🏟️ : ${venueVal}\n`;
-      text += `        (${courtVal})\n`;
-      text += `💵 : RM${priceVal} Per player\n\n`;
-      text += `🏸: Shuttle: ${shuttleVal}\n\n`;
-      text += `Done payment sila tick ✅ ‼️\n\n`;
-      text += `Host ${hostVal}\n\n`;
-
-      players.forEach((p, i) => {
-        const num = i + 1;
+      let txt = `📆 : ${d} , ${day}\n`;
+      txt += `⏰ : ${s} - ${e}\n`;
+      txt += totalLine;
+      txt += `🏟️ : ${v}\n        (${c})\n`;
+      txt += `💵 : RM${pr} Per player\n\n`;
+      txt += `🏸: Shuttle: ${sh}\n\n`;
+      txt += `Done payment sila tick ✅ ‼️\n\n`;
+      txt += `Host ${h}\n\n`;
+      players.forEach((p,i) => {
         const name = p.name.trim() || "(Open)";
-        const paidMark = p.paid ? "✅️" : "";
-        text += `${num}. ${name}${paidMark}\n`;
+        txt += `${i+1}. ${name}${p.paid?'✅️':''}\n`;
       });
-
-      return text;
+      return txt;
     }
 
-    function updatePreview() {
-      previewDiv.innerHTML = `<pre>${buildPreviewText()}</pre>`;
-    }
+    function updatePreview() { previewDiv.innerHTML = `<pre>${buildPreviewText()}</pre>`; }
 
-    copyBtn.addEventListener('click', async () => {
-      const text = buildPreviewText();
-      try {
-        await navigator.clipboard.writeText(text);
-        alert("✅ Text copied!");
-      } catch {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        alert("✅ Text copied!");
-      }
-    });
+    copyBtn.onclick = async () => {
+      const txt = buildPreviewText();
+      try { await navigator.clipboard.writeText(txt); alert("✅ Copied!"); }
+      catch { const ta = document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert("✅ Copied!"); }
+    };
 
-    // ---------- Save / Load ----------
+    // ----- Save / Load -----
     const STORAGE_KEY = 'badminton_bookings';
+    const getBookings = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; } catch { return []; } };
+    const saveBookings = (b) => localStorage.setItem(STORAGE_KEY, JSON.stringify(b));
 
-    function getSavedBookings() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-      catch { return []; }
+    function addBooking(data) {
+      const bookings = getBookings(); bookings.push(data); saveBookings(bookings); renderSaved();
     }
-
-    function saveBookingsToStorage(bookings) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
+    function deleteBooking(i) {
+      const bookings = getBookings(); bookings.splice(i,1); saveBookings(bookings); renderSaved();
     }
-
-    function addBookingToStorage(bookingData) {
-      const bookings = getSavedBookings();
-      bookings.push(bookingData);
-      saveBookingsToStorage(bookings);
-      renderSavedBookings();
-    }
-
-    function deleteBooking(index) {
-      const bookings = getSavedBookings();
-      bookings.splice(index, 1);
-      saveBookingsToStorage(bookings);
-      renderSavedBookings();
-    }
-
-    function renderSavedBookings() {
-      const bookings = getSavedBookings();
-      savedBookingsList.innerHTML = "";
-      if (bookings.length === 0) {
-        noBookingsMsg.classList.remove('hidden');
-        return;
-      }
+    function renderSaved() {
+      const bookings = getBookings();
+      savedBookingsList.innerHTML = '';
+      if (!bookings.length) { noBookingsMsg.classList.remove('hidden'); return; }
       noBookingsMsg.classList.add('hidden');
       bookings.forEach((b, idx) => {
         const div = document.createElement('div');
         div.className = 'booking-list-item';
-        const shortPreview = b.text.split('\n').slice(0, 4).join(' | ');
         div.innerHTML = `
-          <div class="info">
-            <strong>📅 ${b.date || '...'} ${b.day || ''}</strong><br>
-            <small>${escapeHtml(shortPreview)} ...</small>
-          </div>
+          <div><strong>📅 ${b.date||''} ${b.day||''}</strong><br><small>${escapeHtml(b.text.split('\n').slice(0,3).join(' | '))} ...</small></div>
           <div style="display:flex; gap:6px;">
-            <button class="secondary load-booking" data-index="${idx}" style="padding:8px 12px;">Load</button>
-            <button class="danger delete-booking" data-index="${idx}" style="padding:8px 12px;">Del</button>
+            <button class="secondary load-booking" data-idx="${idx}">Load</button>
+            <button class="danger delete-booking" data-idx="${idx}">Del</button>
           </div>
         `;
         savedBookingsList.appendChild(div);
       });
-
-      document.querySelectorAll('.load-booking').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const idx = e.target.dataset.index;
-          const bookings = getSavedBookings();
-          const booking = bookings[idx];
-          if (booking) loadBooking(booking);
-        });
+      document.querySelectorAll('.load-booking').forEach(btn => btn.onclick = () => {
+        const b = getBookings()[btn.dataset.idx];
+        if (b) loadBooking(b);
       });
-      document.querySelectorAll('.delete-booking').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const idx = e.target.dataset.index;
-          if (confirm('Delete this booking?')) deleteBooking(idx);
-        });
+      document.querySelectorAll('.delete-booking').forEach(btn => btn.onclick = () => {
+        if (confirm('Delete?')) deleteBooking(btn.dataset.idx);
       });
     }
 
-    function loadBooking(booking) {
-      dateInput.value = booking.date || '';
-      dayInput.value = booking.day || '';
-      startTime.value = booking.start || '';
-      endTime.value = booking.end || '';
-      updateTotalHours();
-      venue.value = booking.venue || '';
-      court.value = booking.court || '';
-      price.value = booking.price || '';
-      shuttle.value = booking.shuttle || '';
-      host.value = booking.host || '';
-      players = booking.players ? JSON.parse(JSON.stringify(booking.players)) : [];
-      renderPlayers();
-      updatePreview();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    function loadBooking(b) {
+      dateInput.value = b.date || ''; dayInput.value = b.day || '';
+      startTime.value = b.start || ''; endTime.value = b.end || ''; updateTotalHours();
+      venue.value = b.venue || ''; court.value = b.court || ''; price.value = b.price || '';
+      shuttle.value = b.shuttle || ''; host.value = b.host || '';
+      players = b.players ? JSON.parse(JSON.stringify(b.players)) : [];
+      renderPlayers(); updatePreview(); window.scrollTo({top:0,behavior:'smooth'});
     }
 
-    saveBookingBtn.addEventListener('click', () => {
-      const bookingData = {
-        date: dateInput.value,
-        day: dayInput.value,
-        start: startTime.value,
-        end: endTime.value,
-        venue: venue.value,
-        court: court.value,
-        price: price.value,
-        shuttle: shuttle.value,
-        host: host.value,
-        players: JSON.parse(JSON.stringify(players)),
-        text: buildPreviewText(),
-        savedAt: new Date().toISOString()
-      };
-      addBookingToStorage(bookingData);
-      alert("💾 Booking saved to browser!");
-    });
+    saveBookingBtn.onclick = () => {
+      addBooking({
+        date: dateInput.value, day: dayInput.value, start: startTime.value, end: endTime.value,
+        venue: venue.value, court: court.value, price: price.value, shuttle: shuttle.value,
+        host: host.value, players: JSON.parse(JSON.stringify(players)),
+        text: buildPreviewText(), savedAt: new Date().toISOString()
+      });
+      alert("💾 Saved!");
+    };
+    clearAllBtn.onclick = () => { if (confirm('Delete all?')) { localStorage.removeItem(STORAGE_KEY); renderSaved(); } };
 
-    clearAllBtn.addEventListener('click', () => {
-      if (confirm('Delete ALL saved bookings?')) {
-        localStorage.removeItem(STORAGE_KEY);
-        renderSavedBookings();
-      }
-    });
+    function escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-    // ---------- Final init ----------
+    // Init
     renderPlayers();
     updatePreview();
-    renderSavedBookings();
+    renderSaved();
   })();
 </script>
 </body>
