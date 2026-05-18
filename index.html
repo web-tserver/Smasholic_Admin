@@ -7,6 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIlNtYXNob2xpYyIsCiAgInNob3J0X25hbWUiOiAiU21hc2hvbGljIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmYWZhZjkiLAogICJ0aGVtZV9jb2xvciI6ICIjN2MzYWVkIiwKICAiaWNvbnMiOiBbewogICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWwsJTNDc3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyByeD0nMjAnIGZpbGw9JyM3YzNhZWQnLz48dGV4dCB4PSc1MCUnIHk9JzU1JScgZm9udC1zaXplPSc1MCcgZmlsbD0nI2ZmZicgZm9udC1mYW1pbHk9J0FyaWFsJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkeT0nLjFlbSc+8J+PuDwvdGV4dD48L3N2Zz4iLAogICAgInNpemVzIjogIjE5MngxOTIiLAogICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICB9XSwKICAic2NvcGUiOiAiLiIsCiAgImRlc2NyaXB0aW9uIjogIkJhZG1pbnRvbiBjb3VydCBib29raW5nIHRvb2wiCn0=">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Smasholic">
+  <meta name="theme-color" content="#7c3aed">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',system-ui,sans-serif; }
     :root {
@@ -23,6 +28,7 @@
       --border: #f0f0f2;
       --danger: #ef4444;
       --success: #10b981;
+      --sheet-bg: #ffffff;
     }
     body {
       background: var(--bg);
@@ -173,7 +179,7 @@
       border: 1px solid var(--border);
       transition: transform 0.2s ease;
       will-change: transform;
-      touch-action: pan-y; /* allow vertical scroll */
+      touch-action: pan-y;
     }
     .swipe-row .delete-action {
       position: absolute;
@@ -200,6 +206,10 @@
       border-radius: 14px;
       max-width: 100%;
       overflow: hidden;
+    }
+    .player-row.dragging {
+      opacity: 0.6;
+      background: var(--purple-light);
     }
     .player-row .num {
       font-weight: 600;
@@ -240,7 +250,7 @@
       border-color: var(--yellow);
       color: var(--yellow-dark);
     }
-    .player-row .remove-btn { border: none; display: none; } /* hidden behind swipe */
+    .player-row .remove-btn { border: none; display: none; }
     .player-row.duplicate input { border-color: #fecaca; background: #fff5f5; }
     .actions-row {
       display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0;
@@ -302,7 +312,7 @@
       z-index: 30;
       max-height: 200px;
       overflow-y: auto;
-      width: calc(100% - 56px); /* minus number and buttons width roughly */
+      width: calc(100% - 56px);
       left: 28px;
       top: 100%;
       margin-top: 4px;
@@ -320,15 +330,88 @@
       background: var(--purple-light);
     }
     hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+    /* Splash Screen */
+    #splash {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      transition: opacity 0.5s ease;
+    }
+    #splash.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #splash .splash-content {
+      text-align: center;
+      color: white;
+    }
+    #splash .splash-logo {
+      font-size: 4rem;
+      animation: pulse 1s infinite alternate;
+    }
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+
+    /* Action Sheet */
+    .action-sheet-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 150;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s;
+    }
+    .action-sheet-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .action-sheet {
+      background: var(--sheet-bg);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 480px;
+      padding: 20px;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .action-sheet h3 {
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .action-sheet button {
+      width: 100%;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
+<!-- Splash Screen -->
+<div id="splash">
+  <div class="splash-content">
+    <div class="splash-logo">🏸</div>
+    <h1 style="font-size:1.8rem; font-weight:700;">Smasholic</h1>
+  </div>
+</div>
+
 <div class="app-shell">
   <div class="app-header">
     <h1><span class="logo-icon">🏸</span> Smasholic</h1>
   </div>
   <div class="app-content">
-    <!-- Booking form card -->
     <div class="card">
       <div class="form-grid">
         <div class="form-group">
@@ -373,29 +456,28 @@
         </div>
       </div>
 
-      <!-- Players -->
       <div class="players-section">
-        <div class="section-title">👥 Players</div>
+        <div class="section-title">👥 Players (long‑press to reorder)</div>
         <div id="playersContainer"></div>
         <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name!</div>
 
         <div class="actions-row">
-          <button class="secondary" id="addPlayerBtn" style="flex:1;">+ Add Slot</button>
-          <div class="auto-add-row" style="flex:1;">
+          <button class="secondary" id="addPlayerBtn">+ Add Slot</button>
+          <div class="auto-add-row">
             <input type="number" id="autoAddCount" placeholder="6" min="1" value="6">
-            <button id="autoAddBtn" class="secondary" style="flex:1;">Auto</button>
+            <button id="autoAddBtn" class="secondary">Auto</button>
           </div>
         </div>
         <div class="actions-row">
-          <button id="clearPlayersBtn" class="warning" style="flex:1;">Clear</button>
-          <button id="resetSessionBtn" class="danger" style="flex:1;">Reset</button>
+          <button id="clearPlayersBtn" class="warning">Clear</button>
+          <button id="resetSessionBtn" class="danger">Reset</button>
         </div>
       </div>
 
       <div class="actions-row">
-        <button id="copyBtn" class="secondary" style="flex:1;">📋 Copy</button>
-        <button id="saveBookingBtn" style="flex:1;">💾 Save</button>
-        <button id="importBtn" class="secondary" style="flex:1;">📥 Import</button>
+        <button id="copyBtn" class="secondary">📋 Copy</button>
+        <button id="saveBookingBtn">💾 Save</button>
+        <button id="importBtn" class="secondary">📥 Import</button>
       </div>
 
       <div>
@@ -404,7 +486,6 @@
       </div>
     </div>
 
-    <!-- Saved bookings -->
     <div class="card">
       <h3 style="font-size:0.95rem; font-weight:600; margin-bottom:10px;">📂 Saved Sessions</h3>
       <div id="savedBookingsList"></div>
@@ -414,7 +495,7 @@
   </div>
 </div>
 
-<!-- Import modal -->
+<!-- Import Modal -->
 <div id="importModal" class="import-modal hidden">
   <div class="modal-content">
     <h3 style="font-weight:600; margin-bottom:12px;">📥 Paste Announcement</h3>
@@ -427,8 +508,23 @@
   </div>
 </div>
 
+<!-- Action Sheet Overlay -->
+<div class="action-sheet-overlay" id="actionSheetOverlay">
+  <div class="action-sheet" id="actionSheet">
+    <h3 id="actionSheetTitle">Confirm</h3>
+    <p id="actionSheetMessage" style="color:var(--sub); margin-bottom:16px;"></p>
+    <button id="actionSheetConfirm" class="danger">Confirm</button>
+    <button id="actionSheetCancel" class="secondary">Cancel</button>
+  </div>
+</div>
+
 <script>
   (function() {
+    // Splash screen
+    setTimeout(() => {
+      document.getElementById('splash').classList.add('hidden');
+    }, 1500);
+
     // DOM elements
     const dateInput = document.getElementById('dateInput');
     const dayInput = document.getElementById('dayInput');
@@ -460,23 +556,55 @@
     const importParseBtn = document.getElementById('importParseBtn');
     const importError = document.getElementById('importError');
 
-    let players = [];
+    // Action sheet elements
+    const actionSheetOverlay = document.getElementById('actionSheetOverlay');
+    const actionSheetTitle = document.getElementById('actionSheetTitle');
+    const actionSheetMessage = document.getElementById('actionSheetMessage');
+    const actionSheetConfirm = document.getElementById('actionSheetConfirm');
+    const actionSheetCancel = document.getElementById('actionSheetCancel');
 
-    // ---------- Name autocomplete ----------
+    let players = [];
+    let actionSheetCallback = null;
+
+    // Haptic feedback (vibrate)
+    function vibrate(ms = 10) {
+      if (navigator.vibrate) {
+        navigator.vibrate(ms);
+      }
+    }
+
+    // Custom action sheet
+    function showActionSheet(title, message, confirmText, onConfirm) {
+      actionSheetTitle.textContent = title;
+      actionSheetMessage.textContent = message;
+      actionSheetConfirm.textContent = confirmText || 'Confirm';
+      actionSheetCallback = onConfirm;
+      actionSheetOverlay.classList.add('active');
+    }
+    actionSheetConfirm.addEventListener('click', () => {
+      vibrate();
+      actionSheetOverlay.classList.remove('active');
+      if (actionSheetCallback) actionSheetCallback();
+    });
+    actionSheetCancel.addEventListener('click', () => {
+      vibrate();
+      actionSheetOverlay.classList.remove('active');
+      actionSheetCallback = null;
+    });
+
+    // Name autocomplete storage
     const NAMES_STORAGE_KEY = 'smasholic_used_names';
     function getUsedNames() { try { return JSON.parse(localStorage.getItem(NAMES_STORAGE_KEY)) || []; } catch { return []; } }
     function addUsedName(name) {
       if (!name.trim()) return;
       const names = getUsedNames().filter(n => n.toLowerCase() !== name.trim().toLowerCase());
       names.unshift(name.trim());
-      if (names.length > 30) names.pop(); // keep list manageable
+      if (names.length > 30) names.pop();
       localStorage.setItem(NAMES_STORAGE_KEY, JSON.stringify(names));
     }
 
     function showAutocomplete(input, idx) {
-      // Close any existing dropdowns
       document.querySelectorAll('.autocomplete-list').forEach(el => el.remove());
-
       const value = input.value.trim();
       if (!value) return;
       const names = getUsedNames().filter(n => n.toLowerCase().includes(value.toLowerCase()));
@@ -489,48 +617,46 @@
         item.className = 'autocomplete-item';
         item.textContent = name;
         item.addEventListener('mousedown', (e) => {
-          e.preventDefault(); // prevent blur
+          e.preventDefault();
           input.value = name;
           players[idx].name = name;
           updateDuplicateStyling();
           updatePreview();
           list.remove();
           addUsedName(name);
+          vibrate();
         });
         list.appendChild(item);
       });
-
-      // Position relative to the player row
       const row = input.closest('.player-row');
-      const swipeRow = input.closest('.swipe-row');
-      if (row) {
-        row.style.position = 'relative';
-        row.appendChild(list);
-      }
+      row.style.position = 'relative';
+      row.appendChild(list);
     }
 
-    // ---------- Swipe-to-delete ----------
-    function addSwipeListeners() {
+    // Swipe-to-delete + long‑press for reorder
+    let longPressTimer = null;
+    let isDragging = false;
+    let dragStartIdx = null;
+    let dragTargetIdx = null;
+
+    function addSwipeAndDragListeners() {
       document.querySelectorAll('.swipe-row').forEach(swipeRow => {
         const playerRow = swipeRow.querySelector('.player-row');
         const idx = parseInt(swipeRow.dataset.idx);
-        let startX = 0, currentX = 0, isDragging = false;
+        let startX = 0, currentX = 0, isSwiping = false;
 
-        function resetSwipe() {
-          playerRow.style.transform = '';
-          swipeRow.dataset.swiped = 'false';
-        }
-
+        // Swipe left for delete
         playerRow.addEventListener('touchstart', (e) => {
           startX = e.touches[0].clientX;
-          isDragging = true;
+          isSwiping = true;
+          vibrate(5);
         }, { passive: true });
 
         playerRow.addEventListener('touchmove', (e) => {
-          if (!isDragging) return;
+          if (!isSwiping) return;
           currentX = e.touches[0].clientX;
           const diff = startX - currentX;
-          if (diff > 0) {
+          if (diff > 10) {
             e.preventDefault();
             playerRow.style.transition = 'none';
             playerRow.style.transform = `translateX(-${Math.min(diff, 80)}px)`;
@@ -538,37 +664,72 @@
         }, { passive: false });
 
         playerRow.addEventListener('touchend', (e) => {
-          if (!isDragging) return;
-          isDragging = false;
+          if (!isSwiping) return;
+          isSwiping = false;
           const diff = startX - currentX;
           playerRow.style.transition = '';
           if (diff > 40) {
-            // swipe far enough: delete
+            // Delete
             playerRow.style.transform = 'translateX(-100%)';
             playerRow.style.opacity = '0';
+            vibrate(20);
             setTimeout(() => {
               players.splice(idx, 1);
               renderPlayers();
               updatePreview();
             }, 200);
           } else {
-            resetSwipe();
+            playerRow.style.transform = '';
           }
         });
 
-        // Also delete on tap of the red delete button (if visible)
-        const deleteBtn = swipeRow.querySelector('.delete-action');
-        if (deleteBtn) {
-          deleteBtn.addEventListener('click', () => {
-            players.splice(idx, 1);
-            renderPlayers();
-            updatePreview();
-          });
-        }
+        // Long press for drag reorder
+        playerRow.addEventListener('touchstart', (e) => {
+          clearTimeout(longPressTimer);
+          longPressTimer = setTimeout(() => {
+            isDragging = true;
+            dragStartIdx = idx;
+            playerRow.classList.add('dragging');
+            vibrate(15);
+          }, 500);
+        }, { passive: true });
+
+        playerRow.addEventListener('touchend', () => {
+          clearTimeout(longPressTimer);
+          if (isDragging) {
+            isDragging = false;
+            playerRow.classList.remove('dragging');
+            if (dragStartIdx !== null && dragTargetIdx !== null && dragStartIdx !== dragTargetIdx) {
+              const moved = players.splice(dragStartIdx, 1)[0];
+              players.splice(dragTargetIdx, 0, moved);
+              renderPlayers();
+              updatePreview();
+              vibrate(20);
+            }
+            dragStartIdx = null;
+            dragTargetIdx = null;
+          }
+        });
+
+        // Track drag over other rows
+        playerRow.addEventListener('touchmove', (e) => {
+          if (!isDragging) return;
+          e.preventDefault();
+          const touch = e.touches[0];
+          const target = document.elementFromPoint(touch.clientX, touch.clientY);
+          const row = target?.closest('.swipe-row');
+          if (row && row !== swipeRow) {
+            dragTargetIdx = parseInt(row.dataset.idx);
+            // Simple visual feedback: add a border
+            playersContainer.querySelectorAll('.player-row').forEach(r => r.style.borderTop = '');
+            const targetRow = row.querySelector('.player-row');
+            if (targetRow) targetRow.style.borderTop = '3px solid var(--purple)';
+          }
+        }, { passive: false });
       });
     }
 
-    // ---------- Helpers ----------
+    // Helpers
     function format12Hour(t) {
       if (!t) return "";
       const [h, m] = t.split(':').map(Number);
@@ -607,7 +768,6 @@
       totalHoursSpan.textContent = (hours % 1 === 0) ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
     }
 
-    // Init date
     const today = new Date().toISOString().slice(0,10);
     dateInput.value = today;
     dayInput.value = getDayFromDate(today);
@@ -666,15 +826,13 @@
       });
 
       attachPlayerEvents();
-      addSwipeListeners();
+      addSwipeAndDragListeners();
       duplicateWarning.classList.toggle('active', dups.size > 0);
     }
 
     function attachPlayerEvents() {
-      // Name inputs – autocomplete + live update
       document.querySelectorAll('.pname').forEach(inp => {
         const idx = parseInt(inp.dataset.idx);
-        // remove existing listeners by cloning
         const newInp = inp.cloneNode(true);
         inp.parentNode.replaceChild(newInp, inp);
         newInp.addEventListener('input', function(e) {
@@ -685,7 +843,6 @@
           showAutocomplete(this, i);
         });
         newInp.addEventListener('blur', () => {
-          // slight delay to allow click on autocomplete
           setTimeout(() => {
             const list = newInp.parentNode.querySelector('.autocomplete-list');
             if (list) list.remove();
@@ -696,21 +853,20 @@
         });
       });
 
-      // Paid toggle
       document.querySelectorAll('.paid-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
+          vibrate();
           const i = parseInt(this.dataset.idx);
           players[i].paid = !players[i].paid;
-          // add name to used names if not empty
           if (players[i].name.trim()) addUsedName(players[i].name.trim());
           renderPlayers();
           updatePreview();
         });
       });
 
-      // Remove button (still present as fallback, though swipe is primary)
       document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
+          vibrate();
           const i = parseInt(this.dataset.idx);
           players.splice(i, 1);
           renderPlayers();
@@ -719,8 +875,9 @@
       });
     }
 
-    addPlayerBtn.onclick = () => { players.push({name:"",paid:false}); renderPlayers(); updatePreview(); };
+    addPlayerBtn.onclick = () => { vibrate(); players.push({name:"",paid:false}); renderPlayers(); updatePreview(); };
     autoAddBtn.onclick = () => {
+      vibrate();
       let n = parseInt(autoAddCount.value);
       if (isNaN(n) || n<1) { alert("Enter a valid number"); return; }
       if (n>100) n=100;
@@ -729,16 +886,28 @@
       renderPlayers(); updatePreview(); autoAddCount.value = '';
     };
     clearPlayersBtn.onclick = () => {
-      if (players.length && confirm('Remove all players?')) { players=[]; renderPlayers(); updatePreview(); }
+      vibrate();
+      if (players.length) {
+        showActionSheet('Clear Players', 'Remove all players from the list?', 'Clear', () => {
+          players = [];
+          renderPlayers();
+          updatePreview();
+          vibrate(20);
+        });
+      }
     };
     resetSessionBtn.onclick = () => {
-      if (confirm('Reset session? Venue will be kept.')) {
+      vibrate();
+      showActionSheet('Reset Session', 'Venue will be kept. Other fields and players will be cleared.', 'Reset', () => {
         const t = new Date().toISOString().slice(0,10);
         dateInput.value = t; dayInput.value = getDayFromDate(t);
         startTime.value = "21:30"; endTime.value = "23:30"; updateTotalHours();
         court.value = ""; price.value = ""; shuttle.value = ""; host.value = "";
-        players = []; renderPlayers(); updatePreview();
-      }
+        players = [];
+        renderPlayers();
+        updatePreview();
+        vibrate(20);
+      });
     };
 
     // Preview
@@ -773,6 +942,7 @@
     function updatePreview() { previewDiv.innerHTML = `<pre>${buildPreviewText()}</pre>`; }
 
     copyBtn.onclick = async () => {
+      vibrate();
       const txt = buildPreviewText();
       try { await navigator.clipboard.writeText(txt); alert("✅ Copied!"); }
       catch { const ta = document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert("✅ Copied!"); }
@@ -780,6 +950,7 @@
 
     // Import
     importBtn.onclick = () => {
+      vibrate();
       importModal.classList.remove('hidden');
       importTextarea.value = '';
       importError.style.display = 'none';
@@ -805,6 +976,7 @@
     }
 
     importParseBtn.onclick = () => {
+      vibrate();
       const raw = importTextarea.value.trim();
       importError.style.display = 'none';
       if (!raw) { importError.textContent = 'Please paste an announcement.'; importError.style.display = 'block'; return; }
@@ -892,11 +1064,16 @@
         savedBookingsList.appendChild(div);
       });
       document.querySelectorAll('.load-session').forEach(b => b.onclick = () => {
+        vibrate();
         const s = getSessions()[b.dataset.idx];
         if (s) loadSession(s);
       });
       document.querySelectorAll('.delete-session').forEach(b => b.onclick = () => {
-        if (confirm('Delete session?')) deleteSession(b.dataset.idx);
+        vibrate();
+        showActionSheet('Delete Session', 'Are you sure?', 'Delete', () => {
+          deleteSession(b.dataset.idx);
+          vibrate(20);
+        });
       });
     }
     function loadSession(s) {
@@ -906,8 +1083,10 @@
       shuttle.value = s.shuttle || ''; host.value = s.host || '';
       players = s.players ? JSON.parse(JSON.stringify(s.players)) : [];
       renderPlayers(); updatePreview(); window.scrollTo({top:0,behavior:'smooth'});
+      vibrate();
     }
     saveBookingBtn.onclick = () => {
+      vibrate();
       addSession({
         date: dateInput.value, day: dayInput.value, start: startTime.value, end: endTime.value,
         venue: venue.value, court: court.value, price: price.value, shuttle: shuttle.value,
@@ -916,7 +1095,14 @@
       });
       alert("💾 Session saved!");
     };
-    clearAllBtn.onclick = () => { if (confirm('Delete all saved sessions?')) { localStorage.removeItem(STORAGE_KEY); renderSaved(); } };
+    clearAllBtn.onclick = () => {
+      vibrate();
+      showActionSheet('Clear All Sessions', 'Delete all saved sessions?', 'Clear All', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        renderSaved();
+        vibrate(20);
+      });
+    };
 
     function escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
