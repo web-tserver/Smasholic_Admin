@@ -2,49 +2,303 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>🏸 Badminton Slot Booking</title>
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-    body { background: #f0f4f8; margin: 0; padding: 20px; display: flex; justify-content: center; }
-    .container { max-width: 700px; width: 100%; }
-    h1 { text-align: center; color: #1e3c72; margin-bottom: 0.3em; }
-    .subtitle { text-align: center; color: #555; margin-bottom: 1.5em; }
-    .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); margin-bottom: 24px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .form-group { display: flex; flex-direction: column; margin-bottom: 4px; }
-    .form-group.full { grid-column: span 2; }
-    label { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; color: #333; }
-    input, textarea, select { padding: 10px 12px; border: 1px solid #dce1e8; border-radius: 8px; font-size: 0.95rem; background: #fafbfc; }
-    input:focus, textarea:focus, select:focus { outline: none; border-color: #1e88e5; box-shadow: 0 0 0 3px rgba(30,136,229,0.15); }
-    button { background: #1e88e5; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
-    button:hover { background: #1565c0; }
-    button.secondary { background: #e9eef2; color: #1e3c72; }
-    button.secondary:hover { background: #dce4ec; }
-    button.danger { background: #ef5350; }
-    button.danger:hover { background: #d32f2f; }
-    button.warning { background: #f59e0b; }
-    button.warning:hover { background: #d97706; }
-    .players-section { margin: 20px 0 10px; }
-    .player-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: #f8fafc; padding: 8px 12px; border-radius: 10px; }
-    .player-row .num { font-weight: 700; width: 28px; color: #1e3c72; }
-    .player-row input { flex: 1; }
-    .player-row .paid-btn { background: none; border: 2px solid #dce1e8; border-radius: 8px; padding: 6px 12px; font-weight: bold; font-size: 1rem; cursor: pointer; background: white; transition: 0.2s; color: #666; min-width: 44px; }
-    .player-row .paid-btn.paid { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
-    .player-row .remove-btn { background: none; border: none; color: #999; font-size: 1.2rem; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
-    .player-row .remove-btn:hover { background: #fee2e2; color: #d32f2f; }
-    .player-row.duplicate input { border-color: #ef4444; background: #fef2f2; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
-    .preview-box { background: #f1f5f9; border-radius: 12px; padding: 20px; border: 1px dashed #94a3b8; margin-top: 10px; }
-    .preview-box pre { white-space: pre-wrap; font-family: monospace; font-size: 0.95rem; line-height: 1.6; color: #1e293b; margin: 0; }
-    .booking-list-item { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 5px solid #1e88e5; display: flex; justify-content: space-between; align-items: center; }
-    .booking-list-item .info { font-size: 0.9rem; }
-    .hidden { display: none; }
-    .auto-add-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-    .auto-add-row input { width: 80px; text-align: center; }
-    .total-hours { font-size: 0.85rem; color: #1e3c72; margin-top: 4px; }
-    .duplicate-warning { color: #ef4444; font-size: 0.85rem; margin-top: 4px; display: none; }
-    .duplicate-warning.active { display: block; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #f0f4f8 0%, #e9eff5 100%);
+      min-height: 100vh;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .container {
+      max-width: 500px;
+      width: 100%;
+    }
+    h1 {
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+    }
+    .card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.02);
+      margin-bottom: 16px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 500px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .form-group.full {
+        grid-column: span 2;
+      }
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      color: #444;
+      letter-spacing: 0.2px;
+    }
+    input, textarea, select {
+      padding: 12px 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      background: #f9fbfd;
+      transition: all 0.2s ease;
+      color: #1a1a1a;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #1677ff;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(22,119,255,0.1);
+    }
+    button {
+      background: #1677ff;
+      color: white;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      letter-spacing: 0.2px;
+      box-shadow: 0 4px 12px rgba(22,119,255,0.2);
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 8px rgba(22,119,255,0.2);
+    }
+    button.secondary {
+      background: #f0f4ff;
+      color: #1677ff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid rgba(22,119,255,0.15);
+    }
+    button.secondary:active {
+      background: #e6f0ff;
+    }
+    button.danger {
+      background: #ff4d4f;
+      box-shadow: 0 4px 12px rgba(255,77,79,0.2);
+    }
+    button.warning {
+      background: #fa8c16;
+      box-shadow: 0 4px 12px rgba(250,140,22,0.2);
+    }
+    .players-section {
+      margin: 20px 0 10px;
+    }
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      background: #ffffff;
+      padding: 10px 12px;
+      border-radius: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      border: 1px solid #f0f0f0;
+      transition: all 0.15s;
+    }
+    .player-row:active {
+      background: #fafafa;
+    }
+    .player-row .num {
+      font-weight: 700;
+      width: 22px;
+      color: #1677ff;
+      font-size: 0.9rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .player-row input {
+      flex: 1;
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      min-width: 0;
+    }
+    .player-row input:focus {
+      border-color: #1677ff;
+      background: #fff;
+    }
+    .player-row .paid-btn {
+      background: white;
+      border: 2px solid #e8e8e8;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.15s;
+      color: #999;
+      min-width: 42px;
+      flex-shrink: 0;
+    }
+    .player-row .paid-btn.paid {
+      background: #e6fffb;
+      border-color: #13c2c2;
+      color: #13c2c2;
+    }
+    .player-row .remove-btn {
+      background: none;
+      border: none;
+      color: #bbb;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .player-row .remove-btn:active {
+      background: #fff1f0;
+      color: #ff4d4f;
+    }
+    .player-row.duplicate input {
+      border-color: #ff4d4f;
+      background: #fff2f0;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .actions button {
+      flex: 1 1 auto;
+    }
+    .preview-box {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid #eef2f6;
+      margin-top: 12px;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      color: #1e293b;
+      font-size: 0.85rem;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.02);
+      overflow-x: auto;
+    }
+    .booking-list-item {
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border-left: 4px solid #1677ff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.02);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .booking-list-item .info {
+      font-size: 0.85rem;
+      word-break: break-word;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .auto-add-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    .auto-add-row input {
+      width: 70px;
+      text-align: center;
+      padding: 12px 8px;
+    }
+    .total-hours {
+      font-size: 0.85rem;
+      color: #1677ff;
+      font-weight: 600;
+      margin: 4px 0;
+      text-align: right;
+    }
+    .duplicate-warning {
+      color: #ff4d4f;
+      font-size: 0.8rem;
+      margin-top: 6px;
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+    .duplicate-warning.active {
+      display: flex;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #eef2f6;
+      margin: 14px 0;
+    }
+    .section-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .button-row button {
+      flex: 1 1 auto;
+    }
+    @media (max-width: 380px) {
+      body { padding: 10px; }
+      .card { padding: 16px; }
+      button { padding: 12px 16px; font-size: 0.9rem; }
+      .auto-add-row input { width: 60px; }
+    }
   </style>
 </head>
 <body>
@@ -70,70 +324,65 @@
         <label>End Time</label>
         <input type="time" id="endTime" value="23:30">
       </div>
-      <div class="form-group full total-hours" id="totalHoursDisplay">
-        Total: <span id="totalHours">2.0 hours</span>
+      <div class="form-group full total-hours" id="totalHoursDisplay" style="grid-column: span 2;">
+        <span id="totalHours">2.0 hours</span>
       </div>
       <div class="form-group full">
         <label>🏟️ Venue</label>
         <input type="text" id="venue" value="Forum Sba, Setia Alam" placeholder="Venue name & location">
       </div>
       <div class="form-group full">
-        <label>Court Details (Rubber Court 6 & 7, etc.)</label>
-        <input type="text" id="court" value="Rubber Court 6 & 7" placeholder="Court numbers / type">
+        <label>Court Details</label>
+        <input type="text" id="court" value="Rubber Court 6 & 7" placeholder="e.g. Rubber Court 6 & 7">
       </div>
       <div class="form-group">
-        <label>💵 Price per player (RM)</label>
+        <label>💵 Price (RM)</label>
         <input type="number" id="price" value="17" step="0.5" min="0">
       </div>
       <div class="form-group">
-        <label>🏸 Shuttle brand</label>
-        <input type="text" id="shuttle" value="RSL" placeholder="e.g. RSL, Yonex AS30">
+        <label>🏸 Shuttle</label>
+        <input type="text" id="shuttle" value="RSL" placeholder="e.g. RSL, Yonex">
       </div>
       <div class="form-group full">
-        <label>👤 Host name</label>
+        <label>👤 Host</label>
         <input type="text" id="host" value="" placeholder="Host name">
       </div>
     </div>
 
     <div class="players-section">
-      <label style="font-weight:600;">👥 Players (click ✅ to mark paid)</label>
+      <div class="section-title">👥 Players (tap ✅ = paid)</div>
       <div id="playersContainer"></div>
+      <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name detected!</div>
 
-      <!-- Duplicate warning -->
-      <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name detected! Please check.</div>
-
-      <!-- Manual add + Auto add section -->
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px;">
-        <button class="secondary" id="addPlayerBtn">+ Add Player Slot</button>
+      <div class="button-row">
+        <button class="secondary" id="addPlayerBtn">+ Add Slot</button>
         <div class="auto-add-row">
-          <input type="number" id="autoAddCount" placeholder="e.g. 6" min="1" value="6">
-          <button id="autoAddBtn" class="secondary">Auto Add Slots</button>
+          <input type="number" id="autoAddCount" placeholder="6" min="1" value="6">
+          <button id="autoAddBtn" class="secondary" style="flex:1;">Auto Add</button>
         </div>
       </div>
-
-      <!-- Clear All / Reset Session -->
-      <div style="margin-top: 12px; display: flex; gap: 10px;">
-        <button id="clearPlayersBtn" class="warning">🗑️ Clear All Players</button>
-        <button id="resetSessionBtn" class="danger">🔄 Reset Session</button>
+      <div class="button-row">
+        <button id="clearPlayersBtn" class="warning">🗑️ Clear Players</button>
+        <button id="resetSessionBtn" class="danger">🔄 Reset</button>
       </div>
     </div>
 
     <div class="actions">
-      <button id="copyBtn" class="secondary">📋 Copy Announcement</button>
-      <button id="saveBookingBtn">💾 Save Booking</button>
+      <button id="copyBtn" class="secondary">📋 Copy</button>
+      <button id="saveBookingBtn">💾 Save</button>
     </div>
 
     <div>
-      <label style="font-weight:600;">📄 Announcement Preview:</label>
+      <div class="section-title">📄 Preview</div>
       <div class="preview-box" id="preview"></div>
     </div>
   </div>
 
   <div class="card">
-    <h3 style="margin-top:0;">📂 Saved Bookings</h3>
+    <h3 style="margin-top:0; font-size:1rem;">📂 Saved Bookings</h3>
     <div id="savedBookingsList"></div>
-    <p id="noBookingsMsg" style="color:#777;">No saved bookings yet.</p>
-    <button id="clearAllBtn" class="danger" style="margin-top:8px;">🗑️ Clear All Saved</button>
+    <p id="noBookingsMsg" style="color:#777; font-size:0.85rem;">No saved bookings yet.</p>
+    <button id="clearAllBtn" class="danger" style="margin-top:12px; width:100%;">🗑️ Clear All Saved</button>
   </div>
 </div>
 
@@ -164,7 +413,6 @@
     const noBookingsMsg = document.getElementById('noBookingsMsg');
     const clearAllBtn = document.getElementById('clearAllBtn');
 
-    // Players start empty
     let players = [];
 
     // ---------- Helpers ----------
@@ -195,7 +443,7 @@
       return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // Compute total hours from start and end
+    // ---------- Total hours (fixed) ----------
     function updateTotalHours() {
       const start = startTime.value;
       const end = endTime.value;
@@ -208,15 +456,15 @@
       const startMin = sh * 60 + sm;
       const endMin = eh * 60 + em;
       if (endMin <= startMin) {
-        totalHoursSpan.textContent = 'Invalid (end ≤ start)';
+        totalHoursSpan.textContent = 'Invalid time range';
         return;
       }
       const diffMin = endMin - startMin;
       const hours = diffMin / 60;
-      totalHoursSpan.textContent = hours % 1 === 0 ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
+      totalHoursSpan.textContent = (hours % 1 === 0) ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
     }
 
-    // Auto‑select today's date
+    // ---------- Init date ----------
     const today = new Date().toISOString().slice(0,10);
     dateInput.value = today;
     dayInput.value = getDayFromDate(today);
@@ -224,10 +472,13 @@
       dayInput.value = getDayFromDate(dateInput.value);
     });
 
+    // Attach time listeners immediately
     startTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
     endTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
+    // Force first calculation
+    updateTotalHours();
 
-    // Load remembered auto-add count from localStorage
+    // Load remembered auto-add count
     const savedAutoCount = localStorage.getItem('autoAddCount');
     if (savedAutoCount) autoAddCount.value = savedAutoCount;
 
@@ -259,26 +510,20 @@
         }
         row.innerHTML = `
           <span class="num">${idx + 1}.</span>
-          <input type="text" class="player-name" value="${escapeHtml(player.name)}" placeholder="Player name" data-index="${idx}">
-          <button class="paid-btn ${player.paid ? 'paid' : ''}" data-index="${idx}" title="Toggle paid">✅</button>
-          <button class="remove-btn" data-index="${idx}" title="Remove player">✕</button>
+          <input type="text" class="player-name" value="${escapeHtml(player.name)}" placeholder="Name" data-index="${idx}">
+          <button class="paid-btn ${player.paid ? 'paid' : ''}" data-index="${idx}">✅</button>
+          <button class="remove-btn" data-index="${idx}">✕</button>
         `;
         playersContainer.appendChild(row);
       });
 
-      // Toggle duplicate warning
-      if (hasDup) {
-        duplicateWarning.classList.add('active');
-      } else {
-        duplicateWarning.classList.remove('active');
-      }
+      duplicateWarning.classList.toggle('active', hasDup);
 
-      // Attach events
       document.querySelectorAll('.player-name').forEach(input => {
         input.addEventListener('input', (e) => {
           const idx = e.target.dataset.index;
           players[idx].name = e.target.value;
-          renderPlayers(); // re-render to update duplicate highlights
+          renderPlayers();
           updatePreview();
         });
       });
@@ -302,14 +547,12 @@
       });
     }
 
-    // Manual add one
     addPlayerBtn.addEventListener('click', () => {
       players.push({ name: "", paid: false });
       renderPlayers();
       updatePreview();
     });
 
-    // Auto add multiple
     autoAddBtn.addEventListener('click', () => {
       let count = parseInt(autoAddCount.value);
       if (isNaN(count) || count < 1) {
@@ -317,46 +560,39 @@
         return;
       }
       if (count > 100) {
-        alert("Maximum 100 slots at a time.");
+        alert("Maximum 100 slots.");
         count = 100;
       }
-      // Save the count to localStorage
       localStorage.setItem('autoAddCount', count);
       for (let i = 0; i < count; i++) {
         players.push({ name: "", paid: false });
       }
       renderPlayers();
       updatePreview();
-      autoAddCount.value = ''; // clear for next manual entry, but saved value remains for next session
+      autoAddCount.value = '';
     });
 
-    // Clear all players
     clearPlayersBtn.addEventListener('click', () => {
       if (players.length === 0) return;
-      if (confirm('Remove all players? This cannot be undone.')) {
+      if (confirm('Remove all players?')) {
         players = [];
         renderPlayers();
         updatePreview();
       }
     });
 
-    // Reset session (keep venue, reset rest)
     resetSessionBtn.addEventListener('click', () => {
-      if (confirm('Reset the entire session to defaults? Venue will be kept.')) {
-        // Reset date to today
+      if (confirm('Reset session? Venue will be kept.')) {
         const today = new Date().toISOString().slice(0,10);
         dateInput.value = today;
         dayInput.value = getDayFromDate(today);
-        // Reset times to default
         startTime.value = "21:30";
         endTime.value = "23:30";
         updateTotalHours();
-        // Clear other fields
         court.value = "";
         price.value = "";
         shuttle.value = "";
         host.value = "";
-        // Clear players
         players = [];
         renderPlayers();
         updatePreview();
@@ -375,13 +611,13 @@
       const shuttleVal = shuttle.value || "......";
       const hostVal = host.value.trim() || "......";
 
-      // Add total hours line
-      const totalHoursText = totalHoursSpan.textContent !== '—' && totalHoursSpan.textContent !== 'Invalid (end ≤ start)' 
-        ? `⏱️ Total: ${totalHoursSpan.textContent}\n` : '';
+      const totalText = totalHoursSpan.textContent;
+      const validTotal = (totalText !== '—' && totalText !== 'Invalid time range');
+      const totalLine = validTotal ? `⏱️ Total: ${totalText}\n` : '';
 
       let text = `📆 : ${dateVal} , ${dayVal}\n`;
       text += `⏰ : ${start} - ${end}\n`;
-      text += totalHoursText;
+      text += totalLine;
       text += `🏟️ : ${venueVal}\n`;
       text += `        (${courtVal})\n`;
       text += `💵 : RM${priceVal} Per player\n\n`;
@@ -419,7 +655,7 @@
       }
     });
 
-    // ---------- Save / Load bookings ----------
+    // ---------- Save / Load ----------
     const STORAGE_KEY = 'badminton_bookings';
 
     function getSavedBookings() {
@@ -462,9 +698,9 @@
             <strong>📅 ${b.date || '...'} ${b.day || ''}</strong><br>
             <small>${escapeHtml(shortPreview)} ...</small>
           </div>
-          <div>
-            <button class="secondary load-booking" data-index="${idx}">📂 Load</button>
-            <button class="danger delete-booking" data-index="${idx}">🗑️</button>
+          <div style="display:flex; gap:6px;">
+            <button class="secondary load-booking" data-index="${idx}" style="padding:8px 12px;">Load</button>
+            <button class="danger delete-booking" data-index="${idx}" style="padding:8px 12px;">Del</button>
           </div>
         `;
         savedBookingsList.appendChild(div);
@@ -529,8 +765,7 @@
       }
     });
 
-    // ---------- Init ----------
-    updateTotalHours();
+    // ---------- Final init ----------
     renderPlayers();
     updatePreview();
     renderSavedBookings();
