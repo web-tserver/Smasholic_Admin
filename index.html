@@ -23,6 +23,8 @@
     button.secondary:hover { background: #dce4ec; }
     button.danger { background: #ef5350; }
     button.danger:hover { background: #d32f2f; }
+    button.warning { background: #f59e0b; }
+    button.warning:hover { background: #d97706; }
     .players-section { margin: 20px 0 10px; }
     .player-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: #f8fafc; padding: 8px 12px; border-radius: 10px; }
     .player-row .num { font-weight: 700; width: 28px; color: #1e3c72; }
@@ -31,6 +33,7 @@
     .player-row .paid-btn.paid { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
     .player-row .remove-btn { background: none; border: none; color: #999; font-size: 1.2rem; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
     .player-row .remove-btn:hover { background: #fee2e2; color: #d32f2f; }
+    .player-row.duplicate input { border-color: #ef4444; background: #fef2f2; }
     .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
     .preview-box { background: #f1f5f9; border-radius: 12px; padding: 20px; border: 1px dashed #94a3b8; margin-top: 10px; }
     .preview-box pre { white-space: pre-wrap; font-family: monospace; font-size: 0.95rem; line-height: 1.6; color: #1e293b; margin: 0; }
@@ -39,6 +42,9 @@
     .hidden { display: none; }
     .auto-add-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
     .auto-add-row input { width: 80px; text-align: center; }
+    .total-hours { font-size: 0.85rem; color: #1e3c72; margin-top: 4px; }
+    .duplicate-warning { color: #ef4444; font-size: 0.85rem; margin-top: 4px; display: none; }
+    .duplicate-warning.active { display: block; }
   </style>
 </head>
 <body>
@@ -63,6 +69,9 @@
       <div class="form-group">
         <label>End Time</label>
         <input type="time" id="endTime" value="23:30">
+      </div>
+      <div class="form-group full total-hours" id="totalHoursDisplay">
+        Total: <span id="totalHours">2.0 hours</span>
       </div>
       <div class="form-group full">
         <label>🏟️ Venue</label>
@@ -90,13 +99,22 @@
       <label style="font-weight:600;">👥 Players (click ✅ to mark paid)</label>
       <div id="playersContainer"></div>
 
+      <!-- Duplicate warning -->
+      <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name detected! Please check.</div>
+
       <!-- Manual add + Auto add section -->
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px;">
         <button class="secondary" id="addPlayerBtn">+ Add Player Slot</button>
         <div class="auto-add-row">
-          <input type="number" id="autoAddCount" placeholder="e.g. 6" min="1" value="6" style="width:70px;">
+          <input type="number" id="autoAddCount" placeholder="e.g. 6" min="1" value="6">
           <button id="autoAddBtn" class="secondary">Auto Add Slots</button>
         </div>
+      </div>
+
+      <!-- Clear All / Reset Session -->
+      <div style="margin-top: 12px; display: flex; gap: 10px;">
+        <button id="clearPlayersBtn" class="warning">🗑️ Clear All Players</button>
+        <button id="resetSessionBtn" class="danger">🔄 Reset Session</button>
       </div>
     </div>
 
@@ -126,6 +144,7 @@
     const dayInput = document.getElementById('dayInput');
     const startTime = document.getElementById('startTime');
     const endTime = document.getElementById('endTime');
+    const totalHoursSpan = document.getElementById('totalHours');
     const venue = document.getElementById('venue');
     const court = document.getElementById('court');
     const price = document.getElementById('price');
@@ -135,6 +154,9 @@
     const addPlayerBtn = document.getElementById('addPlayerBtn');
     const autoAddCount = document.getElementById('autoAddCount');
     const autoAddBtn = document.getElementById('autoAddBtn');
+    const clearPlayersBtn = document.getElementById('clearPlayersBtn');
+    const resetSessionBtn = document.getElementById('resetSessionBtn');
+    const duplicateWarning = document.getElementById('duplicateWarning');
     const previewDiv = document.getElementById('preview');
     const copyBtn = document.getElementById('copyBtn');
     const saveBookingBtn = document.getElementById('saveBookingBtn');
@@ -173,6 +195,27 @@
       return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    // Compute total hours from start and end
+    function updateTotalHours() {
+      const start = startTime.value;
+      const end = endTime.value;
+      if (!start || !end) {
+        totalHoursSpan.textContent = '—';
+        return;
+      }
+      const [sh, sm] = start.split(':').map(Number);
+      const [eh, em] = end.split(':').map(Number);
+      const startMin = sh * 60 + sm;
+      const endMin = eh * 60 + em;
+      if (endMin <= startMin) {
+        totalHoursSpan.textContent = 'Invalid (end ≤ start)';
+        return;
+      }
+      const diffMin = endMin - startMin;
+      const hours = diffMin / 60;
+      totalHoursSpan.textContent = hours % 1 === 0 ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
+    }
+
     // Auto‑select today's date
     const today = new Date().toISOString().slice(0,10);
     dateInput.value = today;
@@ -181,12 +224,39 @@
       dayInput.value = getDayFromDate(dateInput.value);
     });
 
+    startTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
+    endTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
+
+    // Load remembered auto-add count from localStorage
+    const savedAutoCount = localStorage.getItem('autoAddCount');
+    if (savedAutoCount) autoAddCount.value = savedAutoCount;
+
     // ---------- Players ----------
+    function findDuplicates() {
+      const names = players.map(p => p.name.trim().toLowerCase()).filter(n => n !== '');
+      const duplicates = new Set();
+      const seen = new Set();
+      names.forEach(name => {
+        if (seen.has(name)) duplicates.add(name);
+        else seen.add(name);
+      });
+      return duplicates;
+    }
+
     function renderPlayers() {
       playersContainer.innerHTML = '';
+      const duplicates = findDuplicates();
+      let hasDup = false;
+
       players.forEach((player, idx) => {
         const row = document.createElement('div');
         row.className = 'player-row';
+        const nameLower = player.name.trim().toLowerCase();
+        const isDuplicate = nameLower !== '' && duplicates.has(nameLower);
+        if (isDuplicate) {
+          row.classList.add('duplicate');
+          hasDup = true;
+        }
         row.innerHTML = `
           <span class="num">${idx + 1}.</span>
           <input type="text" class="player-name" value="${escapeHtml(player.name)}" placeholder="Player name" data-index="${idx}">
@@ -196,10 +266,19 @@
         playersContainer.appendChild(row);
       });
 
+      // Toggle duplicate warning
+      if (hasDup) {
+        duplicateWarning.classList.add('active');
+      } else {
+        duplicateWarning.classList.remove('active');
+      }
+
+      // Attach events
       document.querySelectorAll('.player-name').forEach(input => {
         input.addEventListener('input', (e) => {
           const idx = e.target.dataset.index;
           players[idx].name = e.target.value;
+          renderPlayers(); // re-render to update duplicate highlights
           updatePreview();
         });
       });
@@ -230,24 +309,58 @@
       updatePreview();
     });
 
-    // Auto add multiple slots
+    // Auto add multiple
     autoAddBtn.addEventListener('click', () => {
       let count = parseInt(autoAddCount.value);
       if (isNaN(count) || count < 1) {
         alert("Please enter a valid number (e.g., 6).");
         return;
       }
-      // Limit to avoid accidental huge numbers
       if (count > 100) {
         alert("Maximum 100 slots at a time.");
         count = 100;
       }
+      // Save the count to localStorage
+      localStorage.setItem('autoAddCount', count);
       for (let i = 0; i < count; i++) {
         players.push({ name: "", paid: false });
       }
       renderPlayers();
       updatePreview();
-      autoAddCount.value = ''; // clear the input for next use
+      autoAddCount.value = ''; // clear for next manual entry, but saved value remains for next session
+    });
+
+    // Clear all players
+    clearPlayersBtn.addEventListener('click', () => {
+      if (players.length === 0) return;
+      if (confirm('Remove all players? This cannot be undone.')) {
+        players = [];
+        renderPlayers();
+        updatePreview();
+      }
+    });
+
+    // Reset session (keep venue, reset rest)
+    resetSessionBtn.addEventListener('click', () => {
+      if (confirm('Reset the entire session to defaults? Venue will be kept.')) {
+        // Reset date to today
+        const today = new Date().toISOString().slice(0,10);
+        dateInput.value = today;
+        dayInput.value = getDayFromDate(today);
+        // Reset times to default
+        startTime.value = "21:30";
+        endTime.value = "23:30";
+        updateTotalHours();
+        // Clear other fields
+        court.value = "";
+        price.value = "";
+        shuttle.value = "";
+        host.value = "";
+        // Clear players
+        players = [];
+        renderPlayers();
+        updatePreview();
+      }
     });
 
     // ---------- Preview ----------
@@ -262,8 +375,13 @@
       const shuttleVal = shuttle.value || "......";
       const hostVal = host.value.trim() || "......";
 
+      // Add total hours line
+      const totalHoursText = totalHoursSpan.textContent !== '—' && totalHoursSpan.textContent !== 'Invalid (end ≤ start)' 
+        ? `⏱️ Total: ${totalHoursSpan.textContent}\n` : '';
+
       let text = `📆 : ${dateVal} , ${dayVal}\n`;
       text += `⏰ : ${start} - ${end}\n`;
+      text += totalHoursText;
       text += `🏟️ : ${venueVal}\n`;
       text += `        (${courtVal})\n`;
       text += `💵 : RM${priceVal} Per player\n\n`;
@@ -373,6 +491,7 @@
       dayInput.value = booking.day || '';
       startTime.value = booking.start || '';
       endTime.value = booking.end || '';
+      updateTotalHours();
       venue.value = booking.venue || '';
       court.value = booking.court || '';
       price.value = booking.price || '';
@@ -411,6 +530,7 @@
     });
 
     // ---------- Init ----------
+    updateTotalHours();
     renderPlayers();
     updatePreview();
     renderSavedBookings();
