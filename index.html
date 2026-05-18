@@ -165,47 +165,19 @@
       gap: 6px;
     }
 
-    /* Swipe row wrapper */
-    .swipe-row {
-      position: relative;
-      margin-bottom: 8px;
-      overflow: hidden;
-      border-radius: 14px;
-    }
-    .swipe-row .player-row {
-      position: relative;
-      z-index: 2;
-      background: #fff;
-      border: 1px solid var(--border);
-      transition: transform 0.2s ease;
-      will-change: transform;
-      touch-action: pan-y;
-    }
-    .swipe-row .delete-action {
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 80px;
-      background: var(--danger);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      border-radius: 0 14px 14px 0;
-      z-index: 1;
-      cursor: pointer;
-    }
+    /* Player row (no swipe wrapper) */
     .player-row {
       display: flex;
       align-items: center;
       gap: 6px;
+      margin-bottom: 8px;
+      background: #fff;
       padding: 8px 10px;
       border-radius: 14px;
+      border: 1px solid var(--border);
       max-width: 100%;
       overflow: hidden;
+      position: relative; /* for autocomplete positioning */
     }
     .player-row.dragging {
       opacity: 0.6;
@@ -245,12 +217,16 @@
       color: #a1a1a6;
       transition: 0.15s;
     }
+    .player-row .remove-btn {
+      border: none;
+      color: #d1d5db;
+    }
+    .player-row .remove-btn:hover { background: #fef2f2; color: var(--danger); }
     .player-row .paid-btn.paid {
       background: var(--yellow-light);
       border-color: var(--yellow);
       color: var(--yellow-dark);
     }
-    .player-row .remove-btn { border: none; display: none; }
     .player-row.duplicate input { border-color: #fecaca; background: #fff5f5; }
     .actions-row {
       display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0;
@@ -457,7 +433,7 @@
       </div>
 
       <div class="players-section">
-        <div class="section-title">👥 Players (long‑press to reorder)</div>
+        <div class="section-title">👥 Players (long‑press to reorder, tap ✕ to delete)</div>
         <div id="playersContainer"></div>
         <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name!</div>
 
@@ -566,11 +542,9 @@
     let players = [];
     let actionSheetCallback = null;
 
-    // Haptic feedback (vibrate)
+    // Haptic feedback
     function vibrate(ms = 10) {
-      if (navigator.vibrate) {
-        navigator.vibrate(ms);
-      }
+      if (navigator.vibrate) navigator.vibrate(ms);
     }
 
     // Custom action sheet
@@ -633,57 +607,16 @@
       row.appendChild(list);
     }
 
-    // Swipe-to-delete + long‑press for reorder
+    // Drag‑to‑reorder (long press)
     let longPressTimer = null;
     let isDragging = false;
     let dragStartIdx = null;
     let dragTargetIdx = null;
 
-    function addSwipeAndDragListeners() {
-      document.querySelectorAll('.swipe-row').forEach(swipeRow => {
-        const playerRow = swipeRow.querySelector('.player-row');
-        const idx = parseInt(swipeRow.dataset.idx);
-        let startX = 0, currentX = 0, isSwiping = false;
+    function addDragListeners() {
+      document.querySelectorAll('.player-row').forEach((playerRow) => {
+        const idx = parseInt(playerRow.dataset.idx);
 
-        // Swipe left for delete
-        playerRow.addEventListener('touchstart', (e) => {
-          startX = e.touches[0].clientX;
-          isSwiping = true;
-          vibrate(5);
-        }, { passive: true });
-
-        playerRow.addEventListener('touchmove', (e) => {
-          if (!isSwiping) return;
-          currentX = e.touches[0].clientX;
-          const diff = startX - currentX;
-          if (diff > 10) {
-            e.preventDefault();
-            playerRow.style.transition = 'none';
-            playerRow.style.transform = `translateX(-${Math.min(diff, 80)}px)`;
-          }
-        }, { passive: false });
-
-        playerRow.addEventListener('touchend', (e) => {
-          if (!isSwiping) return;
-          isSwiping = false;
-          const diff = startX - currentX;
-          playerRow.style.transition = '';
-          if (diff > 40) {
-            // Delete
-            playerRow.style.transform = 'translateX(-100%)';
-            playerRow.style.opacity = '0';
-            vibrate(20);
-            setTimeout(() => {
-              players.splice(idx, 1);
-              renderPlayers();
-              updatePreview();
-            }, 200);
-          } else {
-            playerRow.style.transform = '';
-          }
-        });
-
-        // Long press for drag reorder
         playerRow.addEventListener('touchstart', (e) => {
           clearTimeout(longPressTimer);
           longPressTimer = setTimeout(() => {
@@ -708,22 +641,22 @@
             }
             dragStartIdx = null;
             dragTargetIdx = null;
+            // Clear any borders
+            document.querySelectorAll('.player-row').forEach(r => r.style.borderTop = '');
           }
         });
 
-        // Track drag over other rows
         playerRow.addEventListener('touchmove', (e) => {
           if (!isDragging) return;
           e.preventDefault();
           const touch = e.touches[0];
           const target = document.elementFromPoint(touch.clientX, touch.clientY);
-          const row = target?.closest('.swipe-row');
-          if (row && row !== swipeRow) {
+          const row = target?.closest('.player-row');
+          if (row && row !== playerRow) {
             dragTargetIdx = parseInt(row.dataset.idx);
-            // Simple visual feedback: add a border
-            playersContainer.querySelectorAll('.player-row').forEach(r => r.style.borderTop = '');
-            const targetRow = row.querySelector('.player-row');
-            if (targetRow) targetRow.style.borderTop = '3px solid var(--purple)';
+            // Visual feedback
+            document.querySelectorAll('.player-row').forEach(r => r.style.borderTop = '');
+            row.style.borderTop = '3px solid var(--purple)';
           }
         }, { passive: false });
       });
@@ -791,14 +724,13 @@
     function updateDuplicateStyling() {
       const dups = findDuplicates();
       let hasDup = false;
-      const rows = playersContainer.querySelectorAll('.swipe-row');
-      rows.forEach(row => {
+      document.querySelectorAll('.player-row').forEach(row => {
         const idx = parseInt(row.dataset.idx);
         const player = players[idx];
         if (!player) return;
         const nameLow = player.name.trim().toLowerCase();
         const isDup = nameLow !== '' && dups.has(nameLow);
-        row.querySelector('.player-row').classList.toggle('duplicate', isDup);
+        row.classList.toggle('duplicate', isDup);
         if (isDup) hasDup = true;
       });
       duplicateWarning.classList.toggle('active', hasDup);
@@ -808,29 +740,28 @@
       playersContainer.innerHTML = '';
       const dups = findDuplicates();
       players.forEach((p, idx) => {
-        const swipeRow = document.createElement('div');
-        swipeRow.className = 'swipe-row';
-        swipeRow.dataset.idx = idx;
+        const row = document.createElement('div');
+        row.className = 'player-row';
+        row.dataset.idx = idx;
         const isDup = p.name.trim().toLowerCase() !== '' && dups.has(p.name.trim().toLowerCase());
+        if (isDup) row.classList.add('duplicate');
 
-        swipeRow.innerHTML = `
-          <div class="player-row ${isDup ? 'duplicate' : ''}">
-            <span class="num">${idx+1}.</span>
-            <input type="text" class="pname" value="${escapeHtml(p.name)}" placeholder="Name" data-idx="${idx}" autocomplete="off">
-            <button class="paid-btn ${p.paid?'paid':''}" data-idx="${idx}">✅</button>
-            <button class="remove-btn" data-idx="${idx}" style="display:none;">✕</button>
-          </div>
-          <div class="delete-action">Delete</div>
+        row.innerHTML = `
+          <span class="num">${idx+1}.</span>
+          <input type="text" class="pname" value="${escapeHtml(p.name)}" placeholder="Name" data-idx="${idx}" autocomplete="off">
+          <button class="paid-btn ${p.paid?'paid':''}" data-idx="${idx}">✅</button>
+          <button class="remove-btn" data-idx="${idx}">✕</button>
         `;
-        playersContainer.appendChild(swipeRow);
+        playersContainer.appendChild(row);
       });
 
       attachPlayerEvents();
-      addSwipeAndDragListeners();
+      addDragListeners();
       duplicateWarning.classList.toggle('active', dups.size > 0);
     }
 
     function attachPlayerEvents() {
+      // Name inputs – autocomplete + live update
       document.querySelectorAll('.pname').forEach(inp => {
         const idx = parseInt(inp.dataset.idx);
         const newInp = inp.cloneNode(true);
@@ -853,6 +784,7 @@
         });
       });
 
+      // Paid toggle
       document.querySelectorAll('.paid-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
           vibrate();
@@ -864,6 +796,7 @@
         });
       });
 
+      // Delete button (✕)
       document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
           vibrate();
