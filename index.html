@@ -4,287 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>🏸 Badminton Slot Booking</title>
-  <!-- Poppins font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
-    }
-    body {
-      background: #f5f7fa;
-      min-height: 100vh;
-      padding: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-    .container {
-      max-width: 500px;
-      width: 100%;
-    }
-    h1 {
-      text-align: center;
-      font-weight: 600;
-      font-size: 1.6rem;
-      color: #1a1a1a;
-      margin-bottom: 4px;
-      letter-spacing: -0.3px;
-    }
-    .subtitle {
-      text-align: center;
-      color: #6b7280;
-      margin-bottom: 24px;
-      font-size: 0.85rem;
-      font-weight: 400;
-    }
-    .card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-      margin-bottom: 16px;
-      border: 1px solid #f0f2f5;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    @media (min-width: 500px) {
-      .form-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .form-group.full {
-        grid-column: span 2;
-      }
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-    label {
-      font-weight: 500;
-      font-size: 0.8rem;
-      margin-bottom: 6px;
-      color: #4b5563;
-      letter-spacing: 0.2px;
-    }
-    input, select {
-      padding: 12px 14px;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 400;
-      background: #ffffff;
-      color: #111827;
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    input:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    }
-    button {
-      background: #111827;
-      color: white;
-      border: none;
-      padding: 13px 20px;
-      border-radius: 12px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background 0.15s, transform 0.1s;
-      letter-spacing: 0.2px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    button:active {
-      transform: scale(0.97);
-    }
-    button.secondary {
-      background: #f9fafb;
-      color: #111827;
-      border: 1px solid #e5e7eb;
-    }
-    button.secondary:active {
-      background: #f3f4f6;
-    }
-    button.danger {
-      background: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-    }
-    button.danger:active {
-      background: #fee2e2;
-    }
-    button.warning {
-      background: #fffbeb;
-      color: #d97706;
-      border: 1px solid #fde68a;
-    }
-    button.warning:active {
-      background: #fef3c7;
-    }
-    .players-section {
-      margin: 24px 0 12px;
-    }
-    .player-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-      background: #ffffff;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid #f0f2f5;
-      transition: border-color 0.15s;
-    }
-    .player-row:hover {
-      border-color: #e5e7eb;
-    }
-    .player-row .num {
-      font-weight: 600;
-      width: 22px;
-      color: #6366f1;
-      flex-shrink: 0;
-      font-size: 0.9rem;
-    }
-    .player-row input {
-      flex: 1;
-      border: 1px solid transparent;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: transparent;
-    }
-    .player-row input:focus {
-      border-color: #6366f1;
-      background: #fff;
-      box-shadow: none;
-    }
-    .player-row .paid-btn {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 6px 14px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: #9ca3af;
-      min-width: 44px;
-      flex-shrink: 0;
-      cursor: pointer;
-      transition: 0.15s;
-    }
-    .player-row .paid-btn.paid {
-      background: #ecfdf5;
-      border-color: #6ee7b7;
-      color: #059669;
-    }
-    .player-row .remove-btn {
-      background: none;
-      border: none;
-      color: #d1d5db;
-      font-size: 1.2rem;
-      cursor: pointer;
-      padding: 4px 6px;
-      border-radius: 8px;
-      flex-shrink: 0;
-      transition: 0.15s;
-    }
-    .player-row .remove-btn:hover {
-      background: #fef2f2;
-      color: #dc2626;
-    }
-    .player-row.duplicate input {
-      border-color: #fecaca;
-      background: #fef2f2;
-    }
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 20px 0 12px;
-    }
-    .preview-box {
-      background: #f9fafb;
-      border-radius: 16px;
-      padding: 18px;
-      border: 1px solid #f0f2f5;
-      margin-top: 10px;
-      font-family: 'SF Mono', 'Cascadia Code', monospace;
-      font-size: 0.85rem;
-      white-space: pre-wrap;
-      overflow-x: auto;
-      color: #1f2937;
-      line-height: 1.5;
-    }
-    .booking-list-item {
-      background: #fff;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 10px;
-      border: 1px solid #f0f2f5;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      transition: border-color 0.15s;
-    }
-    .booking-list-item:hover {
-      border-color: #e5e7eb;
-    }
-    .hidden { display: none !important; }
-    .auto-add-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .auto-add-row input {
-      width: 70px;
-      text-align: center;
-    }
-    /* FIXED: total hours left-aligned like other form details */
-    .total-hours {
-      font-size: 0.85rem;
-      color: #6366f1;
-      font-weight: 500;
-      margin: 4px 0;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      text-align: left;               /* explicitly left */
-      justify-content: flex-start;    /* ensure left alignment */
-    }
-    .duplicate-warning {
-      color: #dc2626;
-      font-size: 0.8rem;
-      display: none;
-      align-items: center;
-      gap: 4px;
-      margin-top: 8px;
-    }
-    .duplicate-warning.active {
-      display: flex;
-    }
-    hr {
-      border: none;
-      border-top: 1px solid #f0f2f5;
-      margin: 16px 0;
-    }
-    .section-title {
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-      color: #111827;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',system-ui,sans-serif; }
+    body { background:#f5f7fa; min-height:100vh; padding:16px; display:flex; justify-content:center; align-items:flex-start; }
+    .container { max-width:500px; width:100%; }
+    h1 { text-align:center; font-weight:600; font-size:1.6rem; color:#1a1a1a; margin-bottom:4px; }
+    .subtitle { text-align:center; color:#6b7280; margin-bottom:24px; font-size:0.85rem; }
+    .card { background:#fff; border-radius:20px; padding:20px; box-shadow:0 4px 16px rgba(0,0,0,0.03); margin-bottom:16px; border:1px solid #f0f2f5; }
+    .form-grid { display:grid; grid-template-columns:1fr; gap:16px; }
+    @media(min-width:500px){ .form-grid{ grid-template-columns:1fr 1fr; } .form-group.full{ grid-column:span 2; } }
+    .form-group { display:flex; flex-direction:column; }
+    label { font-weight:500; font-size:0.8rem; margin-bottom:6px; color:#4b5563; }
+    input, select, textarea { padding:12px 14px; border:1px solid #e5e7eb; border-radius:12px; font-size:0.95rem; background:#fff; color:#111827; outline:none; transition:border-color 0.15s, box-shadow 0.15s; }
+    input:focus, textarea:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,0.1); }
+    textarea { resize:vertical; min-height:120px; font-family:monospace; font-size:0.85rem; }
+    button { background:#111827; color:white; border:none; padding:13px 20px; border-radius:12px; font-weight:500; font-size:0.9rem; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:0.15s; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+    button:active { transform:scale(0.97); }
+    button.secondary { background:#f9fafb; color:#111827; border:1px solid #e5e7eb; }
+    button.secondary:active { background:#f3f4f6; }
+    button.danger { background:#fef2f2; color:#dc2626; border:1px solid #fecaca; }
+    button.danger:active { background:#fee2e2; }
+    button.warning { background:#fffbeb; color:#d97706; border:1px solid #fde68a; }
+    button.warning:active { background:#fef3c7; }
+    .players-section { margin:24px 0 12px; }
+    .player-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; background:#fff; padding:12px 14px; border-radius:14px; border:1px solid #f0f2f5; }
+    .player-row .num { font-weight:600; width:22px; color:#6366f1; flex-shrink:0; }
+    .player-row input { flex:1; border:1px solid transparent; padding:8px 10px; border-radius:10px; background:transparent; }
+    .player-row input:focus { border-color:#6366f1; background:#fff; }
+    .player-row .paid-btn { background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; padding:6px 14px; font-weight:600; font-size:0.9rem; color:#9ca3af; min-width:44px; flex-shrink:0; cursor:pointer; transition:0.15s; }
+    .player-row .paid-btn.paid { background:#ecfdf5; border-color:#6ee7b7; color:#059669; }
+    .player-row .remove-btn { background:none; border:none; color:#d1d5db; font-size:1.2rem; cursor:pointer; padding:4px 6px; border-radius:8px; flex-shrink:0; }
+    .player-row .remove-btn:hover { background:#fef2f2; color:#dc2626; }
+    .player-row.duplicate input { border-color:#fecaca; background:#fef2f2; }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin:20px 0 12px; }
+    .preview-box { background:#f9fafb; border-radius:16px; padding:18px; border:1px solid #f0f2f5; margin-top:10px; font-family:monospace; font-size:0.85rem; white-space:pre-wrap; overflow-x:auto; color:#1f2937; }
+    .booking-list-item { background:#fff; border-radius:14px; padding:16px; margin-bottom:10px; border:1px solid #f0f2f5; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+    .hidden { display:none !important; }
+    .auto-add-row { display:flex; align-items:center; gap:8px; }
+    .auto-add-row input { width:70px; text-align:center; }
+    .total-hours { font-size:0.85rem; color:#6366f1; font-weight:500; margin:4px 0; display:flex; align-items:center; gap:4px; text-align:left; justify-content:flex-start; }
+    .duplicate-warning { color:#dc2626; font-size:0.8rem; display:none; align-items:center; gap:4px; margin-top:8px; }
+    .duplicate-warning.active { display:flex; }
+    .section-title { font-weight:600; font-size:0.9rem; margin-bottom:8px; color:#111827; }
+    .import-modal { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px; }
+    .import-modal .modal-content { background:#fff; border-radius:20px; padding:20px; width:100%; max-width:500px; }
   </style>
 </head>
 <body>
@@ -310,12 +76,9 @@
         <label>End</label>
         <input type="time" id="endTime" value="23:30">
       </div>
-      <!-- Total hours now has a small label, left-aligned -->
       <div class="form-group full">
         <label>⏱️ Total</label>
-        <div class="total-hours" id="totalHoursDisplay">
-          <span id="totalHours">2.0 hours</span>
-        </div>
+        <div class="total-hours" id="totalHoursDisplay"><span id="totalHours">2.0 hours</span></div>
       </div>
       <div class="form-group full">
         <label>🏟️ Venue</label>
@@ -360,6 +123,7 @@
     <div class="actions">
       <button id="copyBtn" class="secondary">📋 Copy</button>
       <button id="saveBookingBtn">💾 Save</button>
+      <button id="importBtn" class="secondary">📥 Import</button>
     </div>
 
     <div>
@@ -373,6 +137,19 @@
     <div id="savedBookingsList"></div>
     <p id="noBookingsMsg" style="color:#9ca3af; font-size:0.85rem; text-align:center; padding:16px;">No saved bookings yet.</p>
     <button id="clearAllBtn" class="danger" style="width:100%; margin-top:12px;">Clear All Saved</button>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div id="importModal" class="import-modal hidden">
+  <div class="modal-content">
+    <h3 style="margin-bottom:12px;">📥 Paste Announcement</h3>
+    <textarea id="importTextarea" placeholder="Paste the full announcement here..."></textarea>
+    <div style="display:flex; gap:10px; margin-top:14px; justify-content:flex-end;">
+      <button id="importCancelBtn" class="secondary">Cancel</button>
+      <button id="importParseBtn">Parse & Fill</button>
+    </div>
+    <p id="importError" style="color:#dc2626; font-size:0.85rem; margin-top:8px; display:none;"></p>
   </div>
 </div>
 
@@ -401,9 +178,16 @@
     const savedBookingsList = document.getElementById('savedBookingsList');
     const noBookingsMsg = document.getElementById('noBookingsMsg');
     const clearAllBtn = document.getElementById('clearAllBtn');
+    const importBtn = document.getElementById('importBtn');
+    const importModal = document.getElementById('importModal');
+    const importTextarea = document.getElementById('importTextarea');
+    const importCancelBtn = document.getElementById('importCancelBtn');
+    const importParseBtn = document.getElementById('importParseBtn');
+    const importError = document.getElementById('importError');
 
     let players = [];
 
+    // ---------- Helpers ----------
     function format12Hour(t) {
       if (!t) return "";
       const [h, m] = t.split(':').map(Number);
@@ -430,31 +214,23 @@
     function updateTotalHours() {
       const s = startTime.value;
       const e = endTime.value;
-      if (!s || !e) {
-        totalHoursSpan.textContent = '—';
-        return;
-      }
+      if (!s || !e) { totalHoursSpan.textContent = '—'; return; }
       const [sh, sm] = s.split(':').map(Number);
       const [eh, em] = e.split(':').map(Number);
-      if (isNaN(sh) || isNaN(sm) || isNaN(eh) || isNaN(em)) {
-        totalHoursSpan.textContent = '—';
-        return;
-      }
-      let startMin = sh * 60 + sm;
-      let endMin = eh * 60 + em;
-      if (endMin <= startMin) {
-        endMin += 24 * 60;
-      }
+      if (isNaN(sh) || isNaN(sm) || isNaN(eh) || isNaN(em)) { totalHoursSpan.textContent = '—'; return; }
+      let startMin = sh*60+sm;
+      let endMin = eh*60+em;
+      if (endMin <= startMin) endMin += 24*60;
       const diffMin = endMin - startMin;
-      const hours = diffMin / 60;
-      totalHoursSpan.textContent = (hours % 1 === 0) ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
+      const hours = diffMin/60;
+      totalHoursSpan.textContent = (hours%1===0) ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
     }
 
+    // ---------- Init date ----------
     const today = new Date().toISOString().slice(0,10);
     dateInput.value = today;
     dayInput.value = getDayFromDate(today);
     dateInput.addEventListener('change', () => dayInput.value = getDayFromDate(dateInput.value));
-
     startTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
     endTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
     updateTotalHours();
@@ -462,6 +238,7 @@
     const savedAutoCount = localStorage.getItem('autoAddCount');
     if (savedAutoCount) autoAddCount.value = savedAutoCount;
 
+    // ---------- Players ----------
     function findDuplicates() {
       const names = players.map(p => p.name.trim().toLowerCase()).filter(n => n);
       const dups = new Set();
@@ -522,9 +299,7 @@
       if (n>100) n=100;
       localStorage.setItem('autoAddCount', n);
       for (let i=0; i<n; i++) players.push({name:"",paid:false});
-      renderPlayers();
-      updatePreview();
-      autoAddCount.value = '';
+      renderPlayers(); updatePreview(); autoAddCount.value = '';
     };
     clearPlayersBtn.onclick = () => {
       if (players.length && confirm('Remove all players?')) { players=[]; renderPlayers(); updatePreview(); }
@@ -539,6 +314,7 @@
       }
     };
 
+    // ---------- Preview ----------
     function buildPreviewText() {
       const d = formatDateDMY(dateInput.value) || ".........";
       const day = dayInput.value || ".......";
@@ -576,16 +352,148 @@
       catch { const ta = document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert("✅ Copied!"); }
     };
 
+    // ---------- Reverse import ----------
+    importBtn.onclick = () => {
+      importModal.classList.remove('hidden');
+      importTextarea.value = '';
+      importError.style.display = 'none';
+      importTextarea.focus();
+    };
+
+    importCancelBtn.onclick = () => importModal.classList.add('hidden');
+
+    function parseTime12to24(str) {
+      // e.g. "9.30pm" -> "21:30", "11.30pm" -> "23:30", "10.00am" -> "10:00"
+      const match = str.match(/^(\d{1,2})\.(\d{2})(am|pm)$/i);
+      if (!match) return null;
+      let h = parseInt(match[1]);
+      const m = match[2];
+      const period = match[3].toLowerCase();
+      if (period === 'pm' && h !== 12) h += 12;
+      if (period === 'am' && h === 12) h = 0;
+      return `${h.toString().padStart(2,'0')}:${m}`;
+    }
+
+    function parseDMYtoYMD(str) {
+      // "16/5/2026" -> "2026-05-16"
+      const parts = str.split('/');
+      if (parts.length !== 3) return null;
+      const day = parts[0].padStart(2,'0');
+      const month = parts[1].padStart(2,'0');
+      const year = parts[2];
+      return `${year}-${month}-${day}`;
+    }
+
+    importParseBtn.onclick = () => {
+      const raw = importTextarea.value.trim();
+      importError.style.display = 'none';
+      if (!raw) { importError.textContent = 'Please paste an announcement.'; importError.style.display = 'block'; return; }
+
+      try {
+        const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== '');
+        let parsedDate = '', parsedDay = '', parsedStart = '', parsedEnd = '';
+        let parsedVenue = '', parsedCourt = '', parsedPrice = '', parsedShuttle = '', parsedHost = '';
+        const parsedPlayers = [];
+
+        let i = 0;
+        while (i < lines.length) {
+          const line = lines[i];
+          // date line
+          if (line.startsWith('📆')) {
+            const match = line.match(/📆\s*:\s*(.+?)\s*,\s*(.+)/);
+            if (match) {
+              const dateDMY = match[1].trim();
+              parsedDay = match[2].trim();
+              const ymd = parseDMYtoYMD(dateDMY);
+              if (ymd) parsedDate = ymd;
+            }
+          }
+          // time line
+          else if (line.startsWith('⏰')) {
+            const match = line.match(/⏰\s*:\s*(.+?)\s*-\s*(.+)/);
+            if (match) {
+              const start24 = parseTime12to24(match[1].trim());
+              const end24 = parseTime12to24(match[2].trim());
+              if (start24) parsedStart = start24;
+              if (end24) parsedEnd = end24;
+            }
+          }
+          // venue line
+          else if (line.startsWith('🏟️')) {
+            const match = line.match(/🏟️\s*:\s*(.+)/);
+            if (match) parsedVenue = match[1].trim();
+            // check next line for court (indented)
+            if (i+1 < lines.length && lines[i+1].startsWith('(')) {
+              const courtMatch = lines[i+1].match(/\((.+)\)/);
+              if (courtMatch) parsedCourt = courtMatch[1].trim();
+              i++; // skip court line
+            }
+          }
+          // price line
+          else if (line.startsWith('💵')) {
+            const match = line.match(/💵\s*:\s*RM([\d.]+)/);
+            if (match) parsedPrice = match[1];
+          }
+          // shuttle line
+          else if (line.startsWith('🏸')) {
+            const match = line.match(/🏸:\s*Shuttle:\s*(.+)/);
+            if (match) parsedShuttle = match[1].trim();
+          }
+          // host line
+          else if (line.startsWith('Host ')) {
+            const match = line.match(/^Host\s+(.+)/);
+            if (match) parsedHost = match[1].trim();
+          }
+          // player lines
+          else if (/^\d+\./.test(line)) {
+            const match = line.match(/^(\d+)\.\s*(.+)$/);
+            if (match) {
+              let name = match[2].trim();
+              const paid = name.endsWith('✅️') || name.endsWith('✅');
+              if (paid) name = name.slice(0, - (name.endsWith('✅️')?2:1)).trim();
+              if (name === '(Open)' || name === '') name = '';
+              parsedPlayers.push({ name, paid });
+            }
+          }
+          // ignore other lines (Total, Done payment, etc.)
+          i++;
+        }
+
+        // Populate fields
+        if (parsedDate) {
+          dateInput.value = parsedDate;
+          dayInput.value = parsedDay || getDayFromDate(parsedDate);
+        }
+        if (parsedStart) startTime.value = parsedStart;
+        if (parsedEnd) endTime.value = parsedEnd;
+        updateTotalHours();
+        if (parsedVenue) venue.value = parsedVenue;
+        if (parsedCourt) court.value = parsedCourt;
+        if (parsedPrice) price.value = parsedPrice;
+        if (parsedShuttle) shuttle.value = parsedShuttle;
+        if (parsedHost) host.value = parsedHost;
+        if (parsedPlayers.length > 0) {
+          players = parsedPlayers;
+        } else {
+          players = [];
+        }
+        renderPlayers();
+        updatePreview();
+        importModal.classList.add('hidden');
+      } catch (err) {
+        importError.textContent = 'Could not parse the announcement. Please check the format.';
+        importError.style.display = 'block';
+      }
+    };
+
+    // ---------- Save / Load ----------
     const STORAGE_KEY = 'badminton_bookings';
     const getBookings = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; } catch { return []; } };
     const saveBookings = (b) => localStorage.setItem(STORAGE_KEY, JSON.stringify(b));
 
-    function addBooking(data) {
-      const bookings = getBookings(); bookings.push(data); saveBookings(bookings); renderSaved();
-    }
-    function deleteBooking(i) {
-      const bookings = getBookings(); bookings.splice(i,1); saveBookings(bookings); renderSaved();
-    }
+    function addBooking(data) { const bookings = getBookings(); bookings.push(data); saveBookings(bookings); renderSaved(); }
+    function deleteBooking(i) { const bookings = getBookings(); bookings.splice(i,1); saveBookings(bookings); renderSaved(); }
+
     function renderSaved() {
       const bookings = getBookings();
       savedBookingsList.innerHTML = '';
@@ -634,6 +542,7 @@
 
     function escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+    // Init
     renderPlayers();
     updatePreview();
     renderSaved();
