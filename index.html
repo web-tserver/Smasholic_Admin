@@ -26,13 +26,31 @@
     button.danger { background:#fef2f2; color:#dc2626; border:1px solid #fecaca; }
     button.warning { background:#fffbeb; color:#d97706; border:1px solid #fde68a; }
     .players-section { margin:18px 0 8px; }
-    .player-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; background:#fff; padding:10px 12px; border-radius:14px; border:1px solid #f0f2f5; }
-    .player-row .num { font-weight:600; width:20px; color:#6366f1; flex-shrink:0; font-size:0.9rem; }
-    .player-row input { flex:1; border:1px solid transparent; padding:8px 8px; border-radius:10px; background:transparent; font-size:0.9rem; }
+    .player-row {
+      display:flex; align-items:center; gap:6px; margin-bottom:8px;
+      background:#fff; padding:8px 10px; border-radius:14px; border:1px solid #f0f2f5;
+      /* Ensure row stays within screen */
+      max-width:100%; overflow:hidden;
+    }
+    .player-row .num { font-weight:600; width:20px; color:#6366f1; flex-shrink:0; font-size:0.9rem; text-align:center; }
+    .player-row input {
+      flex:1; min-width:0; /* allow input to shrink */
+      border:1px solid transparent; padding:8px 6px; border-radius:10px; background:transparent; font-size:0.9rem;
+    }
     .player-row input:focus { border-color:#6366f1; background:#fff; }
-    .player-row .paid-btn { background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; padding:6px 12px; font-weight:600; font-size:0.85rem; color:#9ca3af; min-width:40px; flex-shrink:0; cursor:pointer; }
+    .player-row .paid-btn, .player-row .remove-btn {
+      flex-shrink:0;
+      width:44px; height:44px; /* fixed square for easy tap */
+      display:flex; align-items:center; justify-content:center;
+      border-radius:10px; border:1px solid #e5e7eb;
+      font-weight:600; font-size:1rem;
+      padding:0; /* remove extra padding */
+      cursor:pointer;
+      background:#f9fafb; color:#9ca3af;
+      transition:0.15s;
+    }
     .player-row .paid-btn.paid { background:#ecfdf5; border-color:#6ee7b7; color:#059669; }
-    .player-row .remove-btn { background:none; border:none; color:#d1d5db; font-size:1.1rem; cursor:pointer; padding:4px 6px; border-radius:8px; flex-shrink:0; }
+    .player-row .remove-btn { border:none; color:#d1d5db; font-size:1.2rem; }
     .player-row .remove-btn:hover { background:#fef2f2; color:#dc2626; }
     .player-row.duplicate input { border-color:#fecaca; background:#fef2f2; }
     .actions { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 8px; }
@@ -223,7 +241,6 @@
       totalHoursSpan.textContent = (hours % 1 === 0) ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
     }
 
-    // ---------- Init date ----------
     const today = new Date().toISOString().slice(0,10);
     dateInput.value = today;
     dayInput.value = getDayFromDate(today);
@@ -235,7 +252,6 @@
     const savedAutoCount = localStorage.getItem('autoAddCount');
     if (savedAutoCount) autoAddCount.value = savedAutoCount;
 
-    // ---------- Duplicate detection ----------
     function findDuplicates() {
       const names = players.map(p => p.name.trim().toLowerCase()).filter(n => n);
       const dups = new Set();
@@ -244,7 +260,6 @@
       return dups;
     }
 
-    // Update only the duplicate styling (no re-render)
     function updateDuplicateStyling() {
       const dups = findDuplicates();
       let hasDup = false;
@@ -261,7 +276,6 @@
       duplicateWarning.classList.toggle('active', hasDup);
     }
 
-    // Full re-render (used for add/remove/reset)
     function renderPlayers() {
       playersContainer.innerHTML = '';
       const dups = findDuplicates();
@@ -288,7 +302,6 @@
     function attachPlayerEvents() {
       // Name input – live update without re-render
       document.querySelectorAll('.pname').forEach(inp => {
-        // Remove previous listeners to avoid duplicates (by cloning)
         const newInp = inp.cloneNode(true);
         inp.parentNode.replaceChild(newInp, inp);
         newInp.addEventListener('input', function(e) {
@@ -299,7 +312,7 @@
         });
       });
 
-      // Paid toggle – full re-render
+      // Paid toggle – full re-render (but it's a single tap, so fine)
       document.querySelectorAll('.paid-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
           const i = parseInt(this.dataset.idx);
@@ -342,7 +355,6 @@
       }
     };
 
-    // ---------- Preview ----------
     function buildPreviewText() {
       const d = formatDateDMY(dateInput.value) || ".........";
       const day = dayInput.value || ".......";
@@ -380,7 +392,6 @@
       catch { const ta = document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert("✅ Copied!"); }
     };
 
-    // ---------- Reverse import ----------
     importBtn.onclick = () => {
       importModal.classList.remove('hidden');
       importTextarea.value = '';
@@ -492,7 +503,6 @@
       }
     };
 
-    // ---------- Save / Load ----------
     const STORAGE_KEY = 'badminton_bookings';
     const getBookings = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; } catch { return []; } };
     const saveBookings = (b) => localStorage.setItem(STORAGE_KEY, JSON.stringify(b));
@@ -548,7 +558,6 @@
 
     function escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-    // Initial render
     renderPlayers();
     updatePreview();
     renderSaved();
