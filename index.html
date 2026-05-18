@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🏸 Live Badminton Slot Booking</title>
+  <title>🏸 Badminton Slot Booking</title>
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
     body { background: #f0f4f8; margin: 0; padding: 20px; display: flex; justify-content: center; }
@@ -19,7 +19,6 @@
     input:focus, textarea:focus, select:focus { outline: none; border-color: #1e88e5; box-shadow: 0 0 0 3px rgba(30,136,229,0.15); }
     button { background: #1e88e5; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
     button:hover { background: #1565c0; }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
     button.secondary { background: #e9eef2; color: #1e3c72; }
     button.secondary:hover { background: #dce4ec; }
     button.danger { background: #ef5350; }
@@ -35,499 +34,387 @@
     .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
     .preview-box { background: #f1f5f9; border-radius: 12px; padding: 20px; border: 1px dashed #94a3b8; margin-top: 10px; }
     .preview-box pre { white-space: pre-wrap; font-family: monospace; font-size: 0.95rem; line-height: 1.6; color: #1e293b; margin: 0; }
-    .hidden { display: none !important; }
-    #qrPreviewContainer img { max-width: 200px; border-radius: 8px; border: 1px solid #ccc; }
-    .loading { text-align: center; padding: 20px; color: #888; }
+    .booking-list-item { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 5px solid #1e88e5; display: flex; justify-content: space-between; align-items: center; }
+    .booking-list-item .info { font-size: 0.9rem; }
+    .hidden { display: none; }
+    .auto-add-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .auto-add-row input { width: 80px; text-align: center; }
   </style>
 </head>
 <body>
 <div class="container">
-  <h1>🏸 Live Badminton Slot Booking</h1>
-  <p class="subtitle">Real‑time shared booking – add your name!</p>
+  <h1>🏸 Badminton Slot Booking</h1>
+  <p class="subtitle">Create your booking and copy the announcement</p>
 
-  <div class="card hidden" id="adminLoginCard">
-    <h3>🔐 Admin Login</h3>
-    <div class="form-group">
-      <label>Password</label>
-      <input type="password" id="adminPasswordInput" placeholder="Enter admin password">
+  <div class="card">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>📆 Date</label>
+        <input type="date" id="dateInput">
+      </div>
+      <div class="form-group">
+        <label>Day (auto)</label>
+        <input type="text" id="dayInput" placeholder="Auto-filled" readonly>
+      </div>
+      <div class="form-group">
+        <label>⏰ Start Time</label>
+        <input type="time" id="startTime" value="21:30">
+      </div>
+      <div class="form-group">
+        <label>End Time</label>
+        <input type="time" id="endTime" value="23:30">
+      </div>
+      <div class="form-group full">
+        <label>🏟️ Venue</label>
+        <input type="text" id="venue" value="Forum Sba, Setia Alam" placeholder="Venue name & location">
+      </div>
+      <div class="form-group full">
+        <label>Court Details (Rubber Court 6 & 7, etc.)</label>
+        <input type="text" id="court" value="Rubber Court 6 & 7" placeholder="Court numbers / type">
+      </div>
+      <div class="form-group">
+        <label>💵 Price per player (RM)</label>
+        <input type="number" id="price" value="17" step="0.5" min="0">
+      </div>
+      <div class="form-group">
+        <label>🏸 Shuttle brand</label>
+        <input type="text" id="shuttle" value="RSL" placeholder="e.g. RSL, Yonex AS30">
+      </div>
+      <div class="form-group full">
+        <label>👤 Host name</label>
+        <input type="text" id="host" value="" placeholder="Host name">
+      </div>
     </div>
-    <button id="adminLoginBtn">Login</button>
-    <button id="adminLogoutBtn" class="secondary hidden">Logout</button>
+
+    <div class="players-section">
+      <label style="font-weight:600;">👥 Players (click ✅ to mark paid)</label>
+      <div id="playersContainer"></div>
+
+      <!-- Manual add + Auto add section -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px;">
+        <button class="secondary" id="addPlayerBtn">+ Add Player Slot</button>
+        <div class="auto-add-row">
+          <input type="number" id="autoAddCount" placeholder="e.g. 6" min="1" value="6" style="width:70px;">
+          <button id="autoAddBtn" class="secondary">Auto Add Slots</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="copyBtn" class="secondary">📋 Copy Announcement</button>
+      <button id="saveBookingBtn">💾 Save Booking</button>
+    </div>
+
+    <div>
+      <label style="font-weight:600;">📄 Announcement Preview:</label>
+      <div class="preview-box" id="preview"></div>
+    </div>
   </div>
 
-  <div class="card hidden" id="mainCard">
-    <div id="loadingMsg" class="loading">🔄 Loading booking data...</div>
-
-    <div id="bookingForm" class="hidden">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>📆 Date</label>
-          <input type="date" id="dateInput" disabled>
-        </div>
-        <div class="form-group">
-          <label>Day (auto)</label>
-          <input type="text" id="dayInput" placeholder="Auto-filled" readonly>
-        </div>
-        <div class="form-group">
-          <label>⏰ Start Time</label>
-          <input type="time" id="startTime" disabled>
-        </div>
-        <div class="form-group">
-          <label>End Time</label>
-          <input type="time" id="endTime" disabled>
-        </div>
-        <div class="form-group full">
-          <label>🏟️ Venue</label>
-          <input type="text" id="venue" value="Forum Sba, Setia Alam" disabled>
-        </div>
-        <div class="form-group full">
-          <label>Court Details</label>
-          <input type="text" id="court" disabled>
-        </div>
-        <div class="form-group">
-          <label>💵 Price (RM)</label>
-          <input type="number" id="price" step="0.5" min="0" disabled>
-        </div>
-        <div class="form-group">
-          <label>🏸 Shuttle</label>
-          <input type="text" id="shuttle" disabled>
-        </div>
-        <div class="form-group full">
-          <label>👤 Host</label>
-          <input type="text" id="host" disabled>
-        </div>
-        <div class="form-group full hidden" id="qrSection">
-          <label>💳 QR Label</label>
-          <input type="text" id="qrLabel" disabled>
-        </div>
-        <div class="form-group full hidden" id="qrImageSection">
-          <label>📷 QR Image</label>
-          <input type="file" id="qrImageInput" accept="image/*" style="display:none;" disabled>
-          <button type="button" id="qrImageBtn" class="secondary" disabled>🖼️ Choose QR</button>
-          <button type="button" id="qrRemoveBtn" class="danger" style="display:none;" disabled>🗑️ Remove QR</button>
-          <div id="qrPreviewContainer" style="margin-top:10px; display:none;">
-            <img id="qrPreviewImg" alt="QR Payment">
-          </div>
-        </div>
-      </div>
-
-      <div class="players-section">
-        <label style="font-weight:600;">👥 Players (click on an open slot to add your name)</label>
-        <div id="playersContainer"></div>
-        <button class="secondary" id="addPlayerBtn" style="margin-top:8px;">+ Add Player Slot</button>
-      </div>
-
-      <div class="actions">
-        <button id="copyBtn" class="secondary">📋 Copy Announcement</button>
-      </div>
-
-      <div>
-        <label style="font-weight:600;">📄 Announcement Preview:</label>
-        <div class="preview-box" id="preview"></div>
-      </div>
-    </div>
+  <div class="card">
+    <h3 style="margin-top:0;">📂 Saved Bookings</h3>
+    <div id="savedBookingsList"></div>
+    <p id="noBookingsMsg" style="color:#777;">No saved bookings yet.</p>
+    <button id="clearAllBtn" class="danger" style="margin-top:8px;">🗑️ Clear All Saved</button>
   </div>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+<script>
+  (function() {
+    // ---------- DOM ----------
+    const dateInput = document.getElementById('dateInput');
+    const dayInput = document.getElementById('dayInput');
+    const startTime = document.getElementById('startTime');
+    const endTime = document.getElementById('endTime');
+    const venue = document.getElementById('venue');
+    const court = document.getElementById('court');
+    const price = document.getElementById('price');
+    const shuttle = document.getElementById('shuttle');
+    const host = document.getElementById('host');
+    const playersContainer = document.getElementById('playersContainer');
+    const addPlayerBtn = document.getElementById('addPlayerBtn');
+    const autoAddCount = document.getElementById('autoAddCount');
+    const autoAddBtn = document.getElementById('autoAddBtn');
+    const previewDiv = document.getElementById('preview');
+    const copyBtn = document.getElementById('copyBtn');
+    const saveBookingBtn = document.getElementById('saveBookingBtn');
+    const savedBookingsList = document.getElementById('savedBookingsList');
+    const noBookingsMsg = document.getElementById('noBookingsMsg');
+    const clearAllBtn = document.getElementById('clearAllBtn');
 
-  const LOG_PREFIX = "[JARVIS]";
-  console.log(LOG_PREFIX, "Boot sequence initiated.");
+    // Players start empty
+    let players = [];
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAjP-ZKJdvM7FF_C9tsqf_UytY-A4lIWGE",
-    authDomain: "badminton-booking-f9f0a.firebaseapp.com",
-    databaseURL: "https://badminton-booking-f9f0a-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "badminton-booking-f9f0a",
-    storageBucket: "badminton-booking-f9f0a.firebasestorage.app",
-    messagingSenderId: "189775108709",
-    appId: "1:189775108709:web:9813bd79c1550df3cec48c",
-    measurementId: "G-NSMY5B1F17"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  console.log(LOG_PREFIX, "Firebase initialized. App name:", app.name);
-
-  const bookingRef = ref(db, 'bookings/current');
-
-  const ADMIN_PASSWORD = "badminton123";
-  let isAdmin = false;
-  let currentData = null;
-  let dataLoaded = false;
-
-  // DOM references
-  const adminLoginCard = document.getElementById('adminLoginCard');
-  const adminLoginBtn = document.getElementById('adminLoginBtn');
-  const adminLogoutBtn = document.getElementById('adminLogoutBtn');
-  const adminPasswordInput = document.getElementById('adminPasswordInput');
-  const mainCard = document.getElementById('mainCard');
-  const loadingMsg = document.getElementById('loadingMsg');
-  const bookingForm = document.getElementById('bookingForm');
-  const dateInput = document.getElementById('dateInput');
-  const dayInput = document.getElementById('dayInput');
-  const startTime = document.getElementById('startTime');
-  const endTime = document.getElementById('endTime');
-  const venue = document.getElementById('venue');
-  const court = document.getElementById('court');
-  const price = document.getElementById('price');
-  const shuttle = document.getElementById('shuttle');
-  const host = document.getElementById('host');
-  const qrLabel = document.getElementById('qrLabel');
-  const qrSection = document.getElementById('qrSection');
-  const qrImageSection = document.getElementById('qrImageSection');
-  const qrImageInput = document.getElementById('qrImageInput');
-  const qrImageBtn = document.getElementById('qrImageBtn');
-  const qrRemoveBtn = document.getElementById('qrRemoveBtn');
-  const qrPreviewContainer = document.getElementById('qrPreviewContainer');
-  const qrPreviewImg = document.getElementById('qrPreviewImg');
-  const playersContainer = document.getElementById('playersContainer');
-  const addPlayerBtn = document.getElementById('addPlayerBtn');
-  const previewDiv = document.getElementById('preview');
-  const copyBtn = document.getElementById('copyBtn');
-
-  console.log(LOG_PREFIX, "DOM elements acquired. addPlayerBtn:", addPlayerBtn);
-
-  // ---------- Helpers ----------
-  function format12Hour(time24) {
-    if (!time24) return "";
-    const [h, m] = time24.split(':').map(Number);
-    if (isNaN(h) || isNaN(m)) return "";
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    let hour12 = h % 12;
-    if (hour12 === 0) hour12 = 12;
-    return `${hour12}:${m.toString().padStart(2, '0')} ${ampm}`;
-  }
-
-  function formatDateDMY(dateStr) {
-    if (!dateStr) return "";
-    const [year, month, day] = dateStr.split('-');
-    return `${parseInt(day)}/${parseInt(month)}/${year}`;
-  }
-
-  function getDayFromDate(dateStr) {
-    if (!dateStr) return "";
-    const d = new Date(dateStr + "T00:00:00");
-    const days = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
-    return days[d.getDay()];
-  }
-
-  // ---------- Admin login ----------
-  adminLoginBtn.addEventListener('click', () => {
-    console.log(LOG_PREFIX, "Login attempt with password:", adminPasswordInput.value ? "***" : "(empty)");
-    if (adminPasswordInput.value === ADMIN_PASSWORD) {
-      isAdmin = true;
-      adminLoginBtn.classList.add('hidden');
-      adminLogoutBtn.classList.remove('hidden');
-      adminPasswordInput.value = '';
-      console.log(LOG_PREFIX, "Admin authenticated. isAdmin =", isAdmin);
-      applyAdminState();
-    } else {
-      alert("Wrong password!");
-    }
-  });
-
-  adminLogoutBtn.addEventListener('click', () => {
-    isAdmin = false;
-    adminLoginBtn.classList.remove('hidden');
-    adminLogoutBtn.classList.add('hidden');
-    console.log(LOG_PREFIX, "Admin logged out.");
-    applyAdminState();
-  });
-
-  function applyAdminState() {
-    console.log(LOG_PREFIX, "Applying admin state. isAdmin =", isAdmin, "dataLoaded =", dataLoaded);
-    const adminFields = [dateInput, startTime, endTime, venue, court, price, shuttle, host, qrLabel, qrImageBtn, qrRemoveBtn];
-    adminFields.forEach(el => { if (el) el.disabled = !isAdmin; });
-
-    qrSection.classList.toggle('hidden', !isAdmin);
-    qrImageSection.classList.toggle('hidden', !isAdmin);
-
-    if (isAdmin) {
-      addPlayerBtn.style.display = 'inline-flex';
-      console.log(LOG_PREFIX, "Add button visible (admin).");
-    } else {
-      addPlayerBtn.style.display = 'none';
-      console.log(LOG_PREFIX, "Add button hidden (non-admin).");
-    }
-  }
-
-  // ---------- Add player slot ----------
-  addPlayerBtn.addEventListener('click', async () => {
-    console.log(LOG_PREFIX, "Add Player Slot button clicked.");
-    console.log(LOG_PREFIX, "isAdmin =", isAdmin, "currentData =", currentData);
-    if (!isAdmin) {
-      alert("Only admin can add slots.");
-      return;
-    }
-    if (!currentData) {
-      alert("Booking data not loaded yet. Please wait.");
-      console.warn(LOG_PREFIX, "currentData is null.");
-      return;
-    }
-    const updatedPlayers = [...currentData.players, { name: "", paid: false }];
-    console.log(LOG_PREFIX, "Attempting to set new players array:", updatedPlayers);
-    try {
-      await set(bookingRef, { ...currentData, players: updatedPlayers });
-      console.log(LOG_PREFIX, "✅ Slot added successfully.");
-    } catch (error) {
-      console.error(LOG_PREFIX, "❌ Failed to add slot:", error);
-      alert("❌ Failed to add slot. Check console. Likely Firebase rules issue.");
-    }
-  });
-
-  // ---------- Render UI from data ----------
-  function renderFromData(data) {
-    console.log(LOG_PREFIX, "renderFromData called with data:", data ? "present" : "null");
-    if (!data) {
-      bookingForm.classList.add('hidden');
-      loadingMsg.classList.remove('hidden');
-      dataLoaded = false;
-      return;
+    // ---------- Helpers ----------
+    function format12Hour(time24) {
+      if (!time24) return "";
+      const [h, m] = time24.split(':').map(Number);
+      if (isNaN(h) || isNaN(m)) return "";
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      let hour12 = h % 12;
+      if (hour12 === 0) hour12 = 12;
+      return `${hour12}:${m.toString().padStart(2, '0')} ${ampm}`;
     }
 
-    dataLoaded = true;
-    currentData = data;
-    loadingMsg.classList.add('hidden');
-    bookingForm.classList.remove('hidden');
-    console.log(LOG_PREFIX, "Data loaded. Players count:", data.players?.length);
-
-    dateInput.value = data.date || '';
-    dayInput.value = data.day || '';
-    startTime.value = data.start || '';
-    endTime.value = data.end || '';
-    venue.value = data.venue || '';
-    court.value = data.court || '';
-    price.value = data.price || '';
-    shuttle.value = data.shuttle || '';
-    host.value = data.host || '';
-    qrLabel.value = data.qrLabel || '';
-
-    if (data.qrDataUrl) {
-      qrPreviewImg.src = data.qrDataUrl;
-      qrPreviewContainer.style.display = 'block';
-      if (isAdmin) qrRemoveBtn.style.display = 'inline-block';
-    } else {
-      qrPreviewImg.src = '';
-      qrPreviewContainer.style.display = 'none';
-      qrRemoveBtn.style.display = 'none';
+    function formatDateDMY(dateStr) {
+      if (!dateStr) return "";
+      const [year, month, day] = dateStr.split('-');
+      return `${parseInt(day)}/${parseInt(month)}/${year}`;
     }
 
-    renderPlayers(data.players || []);
-    updatePreview(data);
-    applyAdminState();
-  }
+    function getDayFromDate(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr + "T00:00:00");
+      const days = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
+      return days[d.getDay()];
+    }
 
-  function renderPlayers(players) {
-    playersContainer.innerHTML = '';
-    players.forEach((player, idx) => {
-      const row = document.createElement('div');
-      row.className = 'player-row';
-      const isOccupied = player.name && player.name.trim() !== '';
-      row.innerHTML = `
-        <span class="num">${idx + 1}.</span>
-        ${isOccupied 
-          ? `<span style="flex:1;">${escapeHtml(player.name)}</span>`
-          : `<input type="text" class="player-name" placeholder="Your name" data-index="${idx}" ${isAdmin ? '' : ''}>`
-        }
-        <button class="paid-btn ${player.paid ? 'paid' : ''}" data-index="${idx}" ${!isAdmin && !isOccupied ? 'disabled' : ''}>✅</button>
-        ${isAdmin ? `<button class="remove-btn" data-index="${idx}">✕</button>` : ''}
-      `;
-      if (!isAdmin && !isOccupied) {
-        row.querySelector('.player-name').removeAttribute('readonly');
-      }
-      playersContainer.appendChild(row);
-    });
+    function escapeHtml(text) {
+      return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
 
-    document.querySelectorAll('.player-name').forEach(input => {
-      input.addEventListener('change', (e) => {
-        const idx = e.target.dataset.index;
-        const name = e.target.value.trim();
-        if (name && currentData) {
-          const updatedPlayers = [...currentData.players];
-          updatedPlayers[idx] = { ...updatedPlayers[idx], name: name };
-          set(bookingRef, { ...currentData, players: updatedPlayers }).catch(err => {
-            alert("❌ Failed to update name.");
-          });
-        }
-      });
-    });
-
-    document.querySelectorAll('.paid-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const idx = e.target.dataset.index;
-        if (currentData && currentData.players[idx]) {
-          const updatedPlayers = [...currentData.players];
-          updatedPlayers[idx] = { ...updatedPlayers[idx], paid: !updatedPlayers[idx].paid };
-          set(bookingRef, { ...currentData, players: updatedPlayers }).catch(err => {
-            alert("❌ Failed to toggle paid.");
-          });
-        }
-      });
-    });
-
-    document.querySelectorAll('.remove-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const idx = e.target.dataset.index;
-        const updatedPlayers = [...currentData.players];
-        updatedPlayers.splice(idx, 1);
-        set(bookingRef, { ...currentData, players: updatedPlayers }).catch(err => {
-          alert("❌ Failed to remove player.");
-        });
-      });
-    });
-  }
-
-  // Admin field listeners
-  function setupAdminFieldListeners() {
-    const fields = [
-      { el: dateInput, key: 'date' },
-      { el: startTime, key: 'start' },
-      { el: endTime, key: 'end' },
-      { el: venue, key: 'venue' },
-      { el: court, key: 'court' },
-      { el: price, key: 'price' },
-      { el: shuttle, key: 'shuttle' },
-      { el: host, key: 'host' },
-      { el: qrLabel, key: 'qrLabel' }
-    ];
-    fields.forEach(({ el, key }) => {
-      el.addEventListener('change', () => {
-        if (isAdmin && currentData) {
-          set(bookingRef, { ...currentData, [key]: el.value }).catch(err => {
-            alert("❌ Failed to update field.");
-          });
-        }
-      });
-    });
+    // Auto‑select today's date
+    const today = new Date().toISOString().slice(0,10);
+    dateInput.value = today;
+    dayInput.value = getDayFromDate(today);
     dateInput.addEventListener('change', () => {
       dayInput.value = getDayFromDate(dateInput.value);
-      if (isAdmin && currentData) {
-        set(bookingRef, { ...currentData, date: dateInput.value, day: dayInput.value }).catch(err => {
-          alert("❌ Failed to update date.");
-        });
-      }
     });
-  }
 
-  qrImageBtn.addEventListener('click', () => {
-    if (!isAdmin) return;
-    qrImageInput.click();
-  });
-  qrImageInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target.result;
-      qrPreviewImg.src = dataUrl;
-      qrPreviewContainer.style.display = 'block';
-      qrRemoveBtn.style.display = 'inline-block';
-      if (currentData) {
-        set(bookingRef, { ...currentData, qrDataUrl: dataUrl }).catch(err => {
-          alert("❌ Failed to upload QR.");
+    // ---------- Players ----------
+    function renderPlayers() {
+      playersContainer.innerHTML = '';
+      players.forEach((player, idx) => {
+        const row = document.createElement('div');
+        row.className = 'player-row';
+        row.innerHTML = `
+          <span class="num">${idx + 1}.</span>
+          <input type="text" class="player-name" value="${escapeHtml(player.name)}" placeholder="Player name" data-index="${idx}">
+          <button class="paid-btn ${player.paid ? 'paid' : ''}" data-index="${idx}" title="Toggle paid">✅</button>
+          <button class="remove-btn" data-index="${idx}" title="Remove player">✕</button>
+        `;
+        playersContainer.appendChild(row);
+      });
+
+      document.querySelectorAll('.player-name').forEach(input => {
+        input.addEventListener('input', (e) => {
+          const idx = e.target.dataset.index;
+          players[idx].name = e.target.value;
+          updatePreview();
         });
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-  qrRemoveBtn.addEventListener('click', () => {
-    qrPreviewImg.src = '';
-    qrPreviewContainer.style.display = 'none';
-    qrRemoveBtn.style.display = 'none';
-    if (currentData) {
-      set(bookingRef, { ...currentData, qrDataUrl: null }).catch(err => {
-        alert("❌ Failed to remove QR.");
+      });
+
+      document.querySelectorAll('.paid-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = e.target.dataset.index;
+          players[idx].paid = !players[idx].paid;
+          renderPlayers();
+          updatePreview();
+        });
+      });
+
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt(e.target.dataset.index);
+          players.splice(idx, 1);
+          renderPlayers();
+          updatePreview();
+        });
       });
     }
-  });
 
-  function updatePreview(data) {
-    if (!data) return;
-    const dateVal = formatDateDMY(data.date) || ".........";
-    const dayVal = data.day || ".......";
-    const start = format12Hour(data.start) || ".....";
-    const end = format12Hour(data.end) || ".....";
-    const venueVal = data.venue || "................";
-    const courtVal = data.court || "................";
-    const priceVal = data.price || "0";
-    const shuttleVal = data.shuttle || "......";
-    const hostVal = data.host || "......";
-    const qrLabelText = data.qrLabel ? `💳 ${data.qrLabel}\n` : (data.qrDataUrl ? "💳 Scan QR to pay:\n" : "");
-
-    let text = `📆 : ${dateVal} , ${dayVal}\n`;
-    text += `⏰ : ${start} - ${end}\n`;
-    text += `🏟️ : ${venueVal}\n`;
-    text += `        (${courtVal})\n`;
-    text += `💵 : RM${priceVal} Per player\n\n`;
-    text += `🏸: Shuttle: ${shuttleVal}\n\n`;
-    if (qrLabelText) text += qrLabelText + '\n';
-    text += `Done payment sila tick ✅ ‼️\n\n`;
-    text += `Host ${hostVal}\n\n`;
-
-    (data.players || []).forEach((p, i) => {
-      const num = i + 1;
-      const name = p.name || "(Open)";
-      const paidMark = p.paid ? "✅️" : "";
-      text += `${num}. ${name}${paidMark}\n`;
+    // Manual add one
+    addPlayerBtn.addEventListener('click', () => {
+      players.push({ name: "", paid: false });
+      renderPlayers();
+      updatePreview();
     });
 
-    previewDiv.innerHTML = `<pre>${text}</pre>`;
-    if (data.qrDataUrl) {
-      const imgDiv = document.createElement('div');
-      imgDiv.style.marginTop = '12px';
-      imgDiv.style.textAlign = 'center';
-      const img = document.createElement('img');
-      img.src = data.qrDataUrl;
-      img.alt = 'QR Payment';
-      img.style.maxWidth = '200px';
-      img.style.borderRadius = '8px';
-      img.style.border = '1px solid #ccc';
-      imgDiv.appendChild(img);
-      previewDiv.appendChild(imgDiv);
-    }
-  }
+    // Auto add multiple slots
+    autoAddBtn.addEventListener('click', () => {
+      let count = parseInt(autoAddCount.value);
+      if (isNaN(count) || count < 1) {
+        alert("Please enter a valid number (e.g., 6).");
+        return;
+      }
+      // Limit to avoid accidental huge numbers
+      if (count > 100) {
+        alert("Maximum 100 slots at a time.");
+        count = 100;
+      }
+      for (let i = 0; i < count; i++) {
+        players.push({ name: "", paid: false });
+      }
+      renderPlayers();
+      updatePreview();
+      autoAddCount.value = ''; // clear the input for next use
+    });
 
-  copyBtn.addEventListener('click', async () => {
-    const text = previewDiv.querySelector('pre')?.textContent || '';
-    try {
-      await navigator.clipboard.writeText(text);
-      alert("✅ Text copied!");
-    } catch {
-      alert("Copy failed.");
-    }
-  });
+    // ---------- Preview ----------
+    function buildPreviewText() {
+      const dateVal = formatDateDMY(dateInput.value) || ".........";
+      const dayVal = dayInput.value || ".......";
+      const start = format12Hour(startTime.value) || ".....";
+      const end = format12Hour(endTime.value) || ".....";
+      const venueVal = venue.value || "................";
+      const courtVal = court.value || "................";
+      const priceVal = price.value || "0";
+      const shuttleVal = shuttle.value || "......";
+      const hostVal = host.value.trim() || "......";
 
-  // Firebase listener
-  onValue(bookingRef, (snapshot) => {
-    const data = snapshot.val();
-    console.log(LOG_PREFIX, "Received database update:", data ? "data present" : "null");
-    if (!data) {
-      const defaultBooking = {
-        date: "", day: "", start: "", end: "",
-        venue: "Forum Sba, Setia Alam", court: "", price: "", shuttle: "", host: "",
-        qrDataUrl: null, qrLabel: "",
-        players: []
+      let text = `📆 : ${dateVal} , ${dayVal}\n`;
+      text += `⏰ : ${start} - ${end}\n`;
+      text += `🏟️ : ${venueVal}\n`;
+      text += `        (${courtVal})\n`;
+      text += `💵 : RM${priceVal} Per player\n\n`;
+      text += `🏸: Shuttle: ${shuttleVal}\n\n`;
+      text += `Done payment sila tick ✅ ‼️\n\n`;
+      text += `Host ${hostVal}\n\n`;
+
+      players.forEach((p, i) => {
+        const num = i + 1;
+        const name = p.name.trim() || "(Open)";
+        const paidMark = p.paid ? "✅️" : "";
+        text += `${num}. ${name}${paidMark}\n`;
+      });
+
+      return text;
+    }
+
+    function updatePreview() {
+      previewDiv.innerHTML = `<pre>${buildPreviewText()}</pre>`;
+    }
+
+    copyBtn.addEventListener('click', async () => {
+      const text = buildPreviewText();
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("✅ Text copied!");
+      } catch {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert("✅ Text copied!");
+      }
+    });
+
+    // ---------- Save / Load bookings ----------
+    const STORAGE_KEY = 'badminton_bookings';
+
+    function getSavedBookings() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function saveBookingsToStorage(bookings) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
+    }
+
+    function addBookingToStorage(bookingData) {
+      const bookings = getSavedBookings();
+      bookings.push(bookingData);
+      saveBookingsToStorage(bookings);
+      renderSavedBookings();
+    }
+
+    function deleteBooking(index) {
+      const bookings = getSavedBookings();
+      bookings.splice(index, 1);
+      saveBookingsToStorage(bookings);
+      renderSavedBookings();
+    }
+
+    function renderSavedBookings() {
+      const bookings = getSavedBookings();
+      savedBookingsList.innerHTML = "";
+      if (bookings.length === 0) {
+        noBookingsMsg.classList.remove('hidden');
+        return;
+      }
+      noBookingsMsg.classList.add('hidden');
+      bookings.forEach((b, idx) => {
+        const div = document.createElement('div');
+        div.className = 'booking-list-item';
+        const shortPreview = b.text.split('\n').slice(0, 4).join(' | ');
+        div.innerHTML = `
+          <div class="info">
+            <strong>📅 ${b.date || '...'} ${b.day || ''}</strong><br>
+            <small>${escapeHtml(shortPreview)} ...</small>
+          </div>
+          <div>
+            <button class="secondary load-booking" data-index="${idx}">📂 Load</button>
+            <button class="danger delete-booking" data-index="${idx}">🗑️</button>
+          </div>
+        `;
+        savedBookingsList.appendChild(div);
+      });
+
+      document.querySelectorAll('.load-booking').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = e.target.dataset.index;
+          const bookings = getSavedBookings();
+          const booking = bookings[idx];
+          if (booking) loadBooking(booking);
+        });
+      });
+      document.querySelectorAll('.delete-booking').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = e.target.dataset.index;
+          if (confirm('Delete this booking?')) deleteBooking(idx);
+        });
+      });
+    }
+
+    function loadBooking(booking) {
+      dateInput.value = booking.date || '';
+      dayInput.value = booking.day || '';
+      startTime.value = booking.start || '';
+      endTime.value = booking.end || '';
+      venue.value = booking.venue || '';
+      court.value = booking.court || '';
+      price.value = booking.price || '';
+      shuttle.value = booking.shuttle || '';
+      host.value = booking.host || '';
+      players = booking.players ? JSON.parse(JSON.stringify(booking.players)) : [];
+      renderPlayers();
+      updatePreview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    saveBookingBtn.addEventListener('click', () => {
+      const bookingData = {
+        date: dateInput.value,
+        day: dayInput.value,
+        start: startTime.value,
+        end: endTime.value,
+        venue: venue.value,
+        court: court.value,
+        price: price.value,
+        shuttle: shuttle.value,
+        host: host.value,
+        players: JSON.parse(JSON.stringify(players)),
+        text: buildPreviewText(),
+        savedAt: new Date().toISOString()
       };
-      console.log(LOG_PREFIX, "Initializing default booking.");
-      set(bookingRef, defaultBooking);
-    } else {
-      renderFromData(data);
-    }
-  });
+      addBookingToStorage(bookingData);
+      alert("💾 Booking saved to browser!");
+    });
 
-  // Final boot
-  adminLoginCard.classList.remove('hidden');
-  mainCard.classList.remove('hidden');
-  setupAdminFieldListeners();
-  applyAdminState();
-  console.log(LOG_PREFIX, "All systems nominal. Awaiting input.");
+    clearAllBtn.addEventListener('click', () => {
+      if (confirm('Delete ALL saved bookings?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        renderSavedBookings();
+      }
+    });
 
-  function escapeHtml(text) {
-    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
+    // ---------- Init ----------
+    renderPlayers();
+    updatePreview();
+    renderSavedBookings();
+  })();
 </script>
 </body>
 </html>
