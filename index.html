@@ -19,6 +19,7 @@
     input:focus, textarea:focus, select:focus { outline: none; border-color: #1e88e5; box-shadow: 0 0 0 3px rgba(30,136,229,0.15); }
     button { background: #1e88e5; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
     button:hover { background: #1565c0; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
     button.secondary { background: #e9eef2; color: #1e3c72; }
     button.secondary:hover { background: #dce4ec; }
     button.danger { background: #ef5350; }
@@ -34,9 +35,9 @@
     .actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
     .preview-box { background: #f1f5f9; border-radius: 12px; padding: 20px; border: 1px dashed #94a3b8; margin-top: 10px; }
     .preview-box pre { white-space: pre-wrap; font-family: monospace; font-size: 0.95rem; line-height: 1.6; color: #1e293b; margin: 0; }
-    .admin-panel { background: #fff8e1; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 2px solid #ffc107; }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
     #qrPreviewContainer img { max-width: 200px; border-radius: 8px; border: 1px solid #ccc; }
+    .loading { text-align: center; padding: 20px; color: #888; }
   </style>
 </head>
 <body>
@@ -44,7 +45,6 @@
   <h1>🏸 Live Badminton Slot Booking</h1>
   <p class="subtitle">Real‑time shared booking – add your name!</p>
 
-  <!-- Admin login / panel -->
   <div class="card hidden" id="adminLoginCard">
     <h3>🔐 Admin Login</h3>
     <div class="form-group">
@@ -55,86 +55,87 @@
     <button id="adminLogoutBtn" class="secondary hidden">Logout</button>
   </div>
 
-  <!-- Main form (only visible when booking loaded) -->
   <div class="card hidden" id="mainCard">
-    <div class="form-grid">
-      <div class="form-group">
-        <label>📆 Date</label>
-        <input type="date" id="dateInput" disabled>
-      </div>
-      <div class="form-group">
-        <label>Day (auto)</label>
-        <input type="text" id="dayInput" placeholder="Auto-filled" readonly>
-      </div>
-      <div class="form-group">
-        <label>⏰ Start Time</label>
-        <input type="time" id="startTime" disabled>
-      </div>
-      <div class="form-group">
-        <label>End Time</label>
-        <input type="time" id="endTime" disabled>
-      </div>
-      <div class="form-group full">
-        <label>🏟️ Venue</label>
-        <input type="text" id="venue" value="Forum Sba, Setia Alam" disabled>
-      </div>
-      <div class="form-group full">
-        <label>Court Details</label>
-        <input type="text" id="court" disabled>
-      </div>
-      <div class="form-group">
-        <label>💵 Price (RM)</label>
-        <input type="number" id="price" step="0.5" min="0" disabled>
-      </div>
-      <div class="form-group">
-        <label>🏸 Shuttle</label>
-        <input type="text" id="shuttle" disabled>
-      </div>
-      <div class="form-group full">
-        <label>👤 Host</label>
-        <input type="text" id="host" disabled>
-      </div>
-      <!-- QR (admin only) -->
-      <div class="form-group full hidden" id="qrSection">
-        <label>💳 QR Label</label>
-        <input type="text" id="qrLabel" disabled>
-      </div>
-      <div class="form-group full hidden" id="qrImageSection">
-        <label>📷 QR Image</label>
-        <input type="file" id="qrImageInput" accept="image/*" style="display:none;" disabled>
-        <button type="button" id="qrImageBtn" class="secondary" disabled>🖼️ Choose QR</button>
-        <button type="button" id="qrRemoveBtn" class="danger" style="display:none;" disabled>🗑️ Remove QR</button>
-        <div id="qrPreviewContainer" style="margin-top:10px; display:none;">
-          <img id="qrPreviewImg" alt="QR Payment">
+    <div id="loadingMsg" class="loading">🔄 Loading booking data...</div>
+
+    <div id="bookingForm" class="hidden">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>📆 Date</label>
+          <input type="date" id="dateInput" disabled>
+        </div>
+        <div class="form-group">
+          <label>Day (auto)</label>
+          <input type="text" id="dayInput" placeholder="Auto-filled" readonly>
+        </div>
+        <div class="form-group">
+          <label>⏰ Start Time</label>
+          <input type="time" id="startTime" disabled>
+        </div>
+        <div class="form-group">
+          <label>End Time</label>
+          <input type="time" id="endTime" disabled>
+        </div>
+        <div class="form-group full">
+          <label>🏟️ Venue</label>
+          <input type="text" id="venue" value="Forum Sba, Setia Alam" disabled>
+        </div>
+        <div class="form-group full">
+          <label>Court Details</label>
+          <input type="text" id="court" disabled>
+        </div>
+        <div class="form-group">
+          <label>💵 Price (RM)</label>
+          <input type="number" id="price" step="0.5" min="0" disabled>
+        </div>
+        <div class="form-group">
+          <label>🏸 Shuttle</label>
+          <input type="text" id="shuttle" disabled>
+        </div>
+        <div class="form-group full">
+          <label>👤 Host</label>
+          <input type="text" id="host" disabled>
+        </div>
+        <div class="form-group full hidden" id="qrSection">
+          <label>💳 QR Label</label>
+          <input type="text" id="qrLabel" disabled>
+        </div>
+        <div class="form-group full hidden" id="qrImageSection">
+          <label>📷 QR Image</label>
+          <input type="file" id="qrImageInput" accept="image/*" style="display:none;" disabled>
+          <button type="button" id="qrImageBtn" class="secondary" disabled>🖼️ Choose QR</button>
+          <button type="button" id="qrRemoveBtn" class="danger" style="display:none;" disabled>🗑️ Remove QR</button>
+          <div id="qrPreviewContainer" style="margin-top:10px; display:none;">
+            <img id="qrPreviewImg" alt="QR Payment">
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Player slots (players can add themselves here) -->
-    <div class="players-section">
-      <label style="font-weight:600;">👥 Players (click on an open slot to add your name)</label>
-      <div id="playersContainer"></div>
-      <!-- "Add Slot" button only for admin -->
-      <button class="secondary hidden" id="addPlayerBtn" style="margin-top:8px;">+ Add Player Slot (Admin)</button>
-    </div>
+      <div class="players-section">
+        <label style="font-weight:600;">👥 Players (click on an open slot to add your name)</label>
+        <div id="playersContainer"></div>
+        <button class="secondary" id="addPlayerBtn" style="margin-top:8px;">+ Add Player Slot</button>
+      </div>
 
-    <div class="actions">
-      <button id="copyBtn" class="secondary">📋 Copy Announcement</button>
-    </div>
+      <div class="actions">
+        <button id="copyBtn" class="secondary">📋 Copy Announcement</button>
+      </div>
 
-    <div>
-      <label style="font-weight:600;">📄 Announcement Preview:</label>
-      <div class="preview-box" id="preview"></div>
+      <div>
+        <label style="font-weight:600;">📄 Announcement Preview:</label>
+        <div class="preview-box" id="preview"></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  // 🔥 Your Firebase configuration
+  const LOG_PREFIX = "[JARVIS]";
+  console.log(LOG_PREFIX, "Boot sequence initiated.");
+
   const firebaseConfig = {
     apiKey: "AIzaSyAjP-ZKJdvM7FF_C9tsqf_UytY-A4lIWGE",
     authDomain: "badminton-booking-f9f0a.firebaseapp.com",
@@ -143,15 +144,19 @@
     storageBucket: "badminton-booking-f9f0a.firebasestorage.app",
     messagingSenderId: "189775108709",
     appId: "1:189775108709:web:9813bd79c1550df3cec48c",
-    measurementId: "G-NSMY5B1F17" // Not used in this app, but harmless
+    measurementId: "G-NSMY5B1F17"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+  console.log(LOG_PREFIX, "Firebase initialized. App name:", app.name);
 
-  // Admin password – CHANGE THIS to your own secret password
+  const bookingRef = ref(db, 'bookings/current');
+
   const ADMIN_PASSWORD = "badminton123";
   let isAdmin = false;
+  let currentData = null;
+  let dataLoaded = false;
 
   // DOM references
   const adminLoginCard = document.getElementById('adminLoginCard');
@@ -159,6 +164,8 @@
   const adminLogoutBtn = document.getElementById('adminLogoutBtn');
   const adminPasswordInput = document.getElementById('adminPasswordInput');
   const mainCard = document.getElementById('mainCard');
+  const loadingMsg = document.getElementById('loadingMsg');
+  const bookingForm = document.getElementById('bookingForm');
   const dateInput = document.getElementById('dateInput');
   const dayInput = document.getElementById('dayInput');
   const startTime = document.getElementById('startTime');
@@ -181,8 +188,7 @@
   const previewDiv = document.getElementById('preview');
   const copyBtn = document.getElementById('copyBtn');
 
-  const bookingRef = ref(db, 'bookings/current');
-  let currentData = null;
+  console.log(LOG_PREFIX, "DOM elements acquired. addPlayerBtn:", addPlayerBtn);
 
   // ---------- Helpers ----------
   function format12Hour(time24) {
@@ -208,14 +214,16 @@
     return days[d.getDay()];
   }
 
-  // ---------- Admin login / logout ----------
+  // ---------- Admin login ----------
   adminLoginBtn.addEventListener('click', () => {
+    console.log(LOG_PREFIX, "Login attempt with password:", adminPasswordInput.value ? "***" : "(empty)");
     if (adminPasswordInput.value === ADMIN_PASSWORD) {
       isAdmin = true;
       adminLoginBtn.classList.add('hidden');
       adminLogoutBtn.classList.remove('hidden');
       adminPasswordInput.value = '';
-      setAdminMode(true);
+      console.log(LOG_PREFIX, "Admin authenticated. isAdmin =", isAdmin);
+      applyAdminState();
     } else {
       alert("Wrong password!");
     }
@@ -225,26 +233,66 @@
     isAdmin = false;
     adminLoginBtn.classList.remove('hidden');
     adminLogoutBtn.classList.add('hidden');
-    setAdminMode(false);
+    console.log(LOG_PREFIX, "Admin logged out.");
+    applyAdminState();
   });
 
-  function setAdminMode(enable) {
+  function applyAdminState() {
+    console.log(LOG_PREFIX, "Applying admin state. isAdmin =", isAdmin, "dataLoaded =", dataLoaded);
     const adminFields = [dateInput, startTime, endTime, venue, court, price, shuttle, host, qrLabel, qrImageBtn, qrRemoveBtn];
-    adminFields.forEach(el => { if (el) el.disabled = !enable; });
-    addPlayerBtn.classList.toggle('hidden', !enable);
-    qrSection.classList.toggle('hidden', !enable);
-    qrImageSection.classList.toggle('hidden', !enable);
-    if (!enable) qrRemoveBtn.style.display = 'none';
+    adminFields.forEach(el => { if (el) el.disabled = !isAdmin; });
+
+    qrSection.classList.toggle('hidden', !isAdmin);
+    qrImageSection.classList.toggle('hidden', !isAdmin);
+
+    if (isAdmin) {
+      addPlayerBtn.style.display = 'inline-flex';
+      console.log(LOG_PREFIX, "Add button visible (admin).");
+    } else {
+      addPlayerBtn.style.display = 'none';
+      console.log(LOG_PREFIX, "Add button hidden (non-admin).");
+    }
   }
 
-  // ---------- Render UI from database ----------
-  function renderFromData(data) {
-    if (!data) {
-      mainCard.classList.add('hidden');
+  // ---------- Add player slot ----------
+  addPlayerBtn.addEventListener('click', async () => {
+    console.log(LOG_PREFIX, "Add Player Slot button clicked.");
+    console.log(LOG_PREFIX, "isAdmin =", isAdmin, "currentData =", currentData);
+    if (!isAdmin) {
+      alert("Only admin can add slots.");
       return;
     }
-    mainCard.classList.remove('hidden');
+    if (!currentData) {
+      alert("Booking data not loaded yet. Please wait.");
+      console.warn(LOG_PREFIX, "currentData is null.");
+      return;
+    }
+    const updatedPlayers = [...currentData.players, { name: "", paid: false }];
+    console.log(LOG_PREFIX, "Attempting to set new players array:", updatedPlayers);
+    try {
+      await set(bookingRef, { ...currentData, players: updatedPlayers });
+      console.log(LOG_PREFIX, "✅ Slot added successfully.");
+    } catch (error) {
+      console.error(LOG_PREFIX, "❌ Failed to add slot:", error);
+      alert("❌ Failed to add slot. Check console. Likely Firebase rules issue.");
+    }
+  });
+
+  // ---------- Render UI from data ----------
+  function renderFromData(data) {
+    console.log(LOG_PREFIX, "renderFromData called with data:", data ? "present" : "null");
+    if (!data) {
+      bookingForm.classList.add('hidden');
+      loadingMsg.classList.remove('hidden');
+      dataLoaded = false;
+      return;
+    }
+
+    dataLoaded = true;
     currentData = data;
+    loadingMsg.classList.add('hidden');
+    bookingForm.classList.remove('hidden');
+    console.log(LOG_PREFIX, "Data loaded. Players count:", data.players?.length);
 
     dateInput.value = data.date || '';
     dayInput.value = data.day || '';
@@ -269,6 +317,7 @@
 
     renderPlayers(data.players || []);
     updatePreview(data);
+    applyAdminState();
   }
 
   function renderPlayers(players) {
@@ -299,7 +348,9 @@
         if (name && currentData) {
           const updatedPlayers = [...currentData.players];
           updatedPlayers[idx] = { ...updatedPlayers[idx], name: name };
-          updateBooking({ players: updatedPlayers });
+          set(bookingRef, { ...currentData, players: updatedPlayers }).catch(err => {
+            alert("❌ Failed to update name.");
+          });
         }
       });
     });
@@ -310,7 +361,9 @@
         if (currentData && currentData.players[idx]) {
           const updatedPlayers = [...currentData.players];
           updatedPlayers[idx] = { ...updatedPlayers[idx], paid: !updatedPlayers[idx].paid };
-          updateBooking({ players: updatedPlayers });
+          set(bookingRef, { ...currentData, players: updatedPlayers }).catch(err => {
+            alert("❌ Failed to toggle paid.");
+          });
         }
       });
     });
@@ -320,18 +373,14 @@
         const idx = e.target.dataset.index;
         const updatedPlayers = [...currentData.players];
         updatedPlayers.splice(idx, 1);
-        updateBooking({ players: updatedPlayers });
+        set(bookingRef, { ...currentData, players: updatedPlayers }).catch(err => {
+          alert("❌ Failed to remove player.");
+        });
       });
     });
   }
 
-  addPlayerBtn.addEventListener('click', () => {
-    if (!isAdmin || !currentData) return;
-    const updatedPlayers = [...currentData.players, { name: "", paid: false }];
-    updateBooking({ players: updatedPlayers });
-  });
-
-  // ---------- Admin field listeners ----------
+  // Admin field listeners
   function setupAdminFieldListeners() {
     const fields = [
       { el: dateInput, key: 'date' },
@@ -347,14 +396,18 @@
     fields.forEach(({ el, key }) => {
       el.addEventListener('change', () => {
         if (isAdmin && currentData) {
-          updateBooking({ [key]: el.value });
+          set(bookingRef, { ...currentData, [key]: el.value }).catch(err => {
+            alert("❌ Failed to update field.");
+          });
         }
       });
     });
     dateInput.addEventListener('change', () => {
       dayInput.value = getDayFromDate(dateInput.value);
       if (isAdmin && currentData) {
-        updateBooking({ date: dateInput.value, day: dayInput.value });
+        set(bookingRef, { ...currentData, date: dateInput.value, day: dayInput.value }).catch(err => {
+          alert("❌ Failed to update date.");
+        });
       }
     });
   }
@@ -372,7 +425,11 @@
       qrPreviewImg.src = dataUrl;
       qrPreviewContainer.style.display = 'block';
       qrRemoveBtn.style.display = 'inline-block';
-      updateBooking({ qrDataUrl: dataUrl });
+      if (currentData) {
+        set(bookingRef, { ...currentData, qrDataUrl: dataUrl }).catch(err => {
+          alert("❌ Failed to upload QR.");
+        });
+      }
     };
     reader.readAsDataURL(file);
   });
@@ -380,17 +437,13 @@
     qrPreviewImg.src = '';
     qrPreviewContainer.style.display = 'none';
     qrRemoveBtn.style.display = 'none';
-    updateBooking({ qrDataUrl: null });
+    if (currentData) {
+      set(bookingRef, { ...currentData, qrDataUrl: null }).catch(err => {
+        alert("❌ Failed to remove QR.");
+      });
+    }
   });
 
-  // ---------- Firebase update ----------
-  function updateBooking(partial) {
-    if (!currentData) return;
-    const updated = { ...currentData, ...partial };
-    set(bookingRef, updated);
-  }
-
-  // ---------- Preview builder ----------
   function updatePreview(data) {
     if (!data) return;
     const dateVal = formatDateDMY(data.date) || ".........";
@@ -441,15 +494,16 @@
     const text = previewDiv.querySelector('pre')?.textContent || '';
     try {
       await navigator.clipboard.writeText(text);
-      alert("✅ Text copied! (QR image must be shared separately)");
+      alert("✅ Text copied!");
     } catch {
-      alert("Copy failed. Please manually select and copy the announcement.");
+      alert("Copy failed.");
     }
   });
 
-  // ---------- Real-time listener ----------
+  // Firebase listener
   onValue(bookingRef, (snapshot) => {
     const data = snapshot.val();
+    console.log(LOG_PREFIX, "Received database update:", data ? "data present" : "null");
     if (!data) {
       const defaultBooking = {
         date: "", day: "", start: "", end: "",
@@ -457,15 +511,19 @@
         qrDataUrl: null, qrLabel: "",
         players: []
       };
+      console.log(LOG_PREFIX, "Initializing default booking.");
       set(bookingRef, defaultBooking);
     } else {
       renderFromData(data);
     }
   });
 
-  // Initialize
+  // Final boot
   adminLoginCard.classList.remove('hidden');
+  mainCard.classList.remove('hidden');
   setupAdminFieldListeners();
+  applyAdminState();
+  console.log(LOG_PREFIX, "All systems nominal. Awaiting input.");
 
   function escapeHtml(text) {
     return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
