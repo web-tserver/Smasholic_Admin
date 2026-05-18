@@ -184,6 +184,7 @@
 
     let players = [];
 
+    // ---------- Helpers ----------
     function format12Hour(t) {
       if (!t) return "";
       const [h, m] = t.split(':').map(Number);
@@ -222,6 +223,7 @@
       totalHoursSpan.textContent = (hours % 1 === 0) ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
     }
 
+    // ---------- Init date ----------
     const today = new Date().toISOString().slice(0,10);
     dateInput.value = today;
     dayInput.value = getDayFromDate(today);
@@ -233,6 +235,7 @@
     const savedAutoCount = localStorage.getItem('autoAddCount');
     if (savedAutoCount) autoAddCount.value = savedAutoCount;
 
+    // ---------- Duplicate detection ----------
     function findDuplicates() {
       const names = players.map(p => p.name.trim().toLowerCase()).filter(n => n);
       const dups = new Set();
@@ -241,16 +244,34 @@
       return dups;
     }
 
+    // Update only the duplicate styling (no re-render)
+    function updateDuplicateStyling() {
+      const dups = findDuplicates();
+      let hasDup = false;
+      const rows = playersContainer.children;
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const player = players[i];
+        if (!player) continue;
+        const nameLow = player.name.trim().toLowerCase();
+        const isDup = nameLow !== '' && dups.has(nameLow);
+        row.classList.toggle('duplicate', isDup);
+        if (isDup) hasDup = true;
+      }
+      duplicateWarning.classList.toggle('active', hasDup);
+    }
+
+    // Full re-render (used for add/remove/reset)
     function renderPlayers() {
       playersContainer.innerHTML = '';
       const dups = findDuplicates();
-      let hasDup = false;
       players.forEach((p, idx) => {
         const row = document.createElement('div');
         row.className = 'player-row';
         const nameLow = p.name.trim().toLowerCase();
-        const isDup = nameLow && dups.has(nameLow);
-        if (isDup) { row.classList.add('duplicate'); hasDup = true; }
+        const isDup = nameLow !== '' && dups.has(nameLow);
+        if (isDup) row.classList.add('duplicate');
+
         row.innerHTML = `
           <span class="num">${idx+1}.</span>
           <input type="text" class="pname" value="${escapeHtml(p.name)}" placeholder="Name" data-idx="${idx}">
@@ -259,27 +280,40 @@
         `;
         playersContainer.appendChild(row);
       });
-      duplicateWarning.classList.toggle('active', hasDup);
 
+      attachPlayerEvents();
+      duplicateWarning.classList.toggle('active', dups.size > 0);
+    }
+
+    function attachPlayerEvents() {
+      // Name input – live update without re-render
       document.querySelectorAll('.pname').forEach(inp => {
-        inp.addEventListener('input', e => {
-          const i = e.target.dataset.idx;
-          players[i].name = e.target.value;
-          renderPlayers();
+        // Remove previous listeners to avoid duplicates (by cloning)
+        const newInp = inp.cloneNode(true);
+        inp.parentNode.replaceChild(newInp, inp);
+        newInp.addEventListener('input', function(e) {
+          const i = parseInt(this.dataset.idx);
+          players[i].name = this.value;
+          updateDuplicateStyling();
           updatePreview();
         });
       });
+
+      // Paid toggle – full re-render
       document.querySelectorAll('.paid-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          const i = e.target.dataset.idx;
+        btn.addEventListener('click', function(e) {
+          const i = parseInt(this.dataset.idx);
           players[i].paid = !players[i].paid;
           renderPlayers();
           updatePreview();
         });
       });
+
+      // Remove button – full re-render
       document.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          players.splice(parseInt(e.target.dataset.idx), 1);
+        btn.addEventListener('click', function(e) {
+          const i = parseInt(this.dataset.idx);
+          players.splice(i, 1);
           renderPlayers();
           updatePreview();
         });
@@ -308,6 +342,7 @@
       }
     };
 
+    // ---------- Preview ----------
     function buildPreviewText() {
       const d = formatDateDMY(dateInput.value) || ".........";
       const day = dayInput.value || ".......";
@@ -345,6 +380,7 @@
       catch { const ta = document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert("✅ Copied!"); }
     };
 
+    // ---------- Reverse import ----------
     importBtn.onclick = () => {
       importModal.classList.remove('hidden');
       importTextarea.value = '';
@@ -456,6 +492,7 @@
       }
     };
 
+    // ---------- Save / Load ----------
     const STORAGE_KEY = 'badminton_bookings';
     const getBookings = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; } catch { return []; } };
     const saveBookings = (b) => localStorage.setItem(STORAGE_KEY, JSON.stringify(b));
@@ -511,6 +548,7 @@
 
     function escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+    // Initial render
     renderPlayers();
     updatePreview();
     renderSaved();
