@@ -4,15 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>🏸 Badminton Slot Booking</title>
+  <!-- Poppins font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
     }
     body {
-      background: linear-gradient(135deg, #f0f4f8 0%, #e9eff5 100%);
+      background: #f5f7fa;
       min-height: 100vh;
       padding: 16px;
       display: flex;
@@ -25,29 +29,31 @@
     }
     h1 {
       text-align: center;
-      font-weight: 700;
+      font-weight: 600;
       font-size: 1.6rem;
       color: #1a1a1a;
       margin-bottom: 4px;
+      letter-spacing: -0.3px;
     }
     .subtitle {
       text-align: center;
-      color: #666;
-      margin-bottom: 20px;
+      color: #6b7280;
+      margin-bottom: 24px;
       font-size: 0.85rem;
+      font-weight: 400;
     }
     .card {
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(20px);
+      background: #ffffff;
       border-radius: 20px;
       padding: 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
       margin-bottom: 16px;
+      border: 1px solid #f0f2f5;
     }
     .form-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 14px;
+      gap: 16px;
     }
     @media (min-width: 500px) {
       .form-grid {
@@ -62,138 +68,178 @@
       flex-direction: column;
     }
     label {
-      font-weight: 600;
+      font-weight: 500;
       font-size: 0.8rem;
-      margin-bottom: 4px;
-      color: #444;
+      margin-bottom: 6px;
+      color: #4b5563;
+      letter-spacing: 0.2px;
     }
     input, select {
       padding: 12px 14px;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
       font-size: 0.95rem;
-      background: #f9fbfd;
-      color: #1a1a1a;
+      font-weight: 400;
+      background: #ffffff;
+      color: #111827;
       outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
     input:focus {
-      border-color: #1677ff;
-      background: #fff;
-      box-shadow: 0 0 0 4px rgba(22,119,255,0.1);
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
     }
     button {
-      background: #1677ff;
+      background: #111827;
       color: white;
       border: none;
       padding: 13px 20px;
-      border-radius: 14px;
-      font-weight: 600;
-      font-size: 0.95rem;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 0.9rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(22,119,255,0.2);
+      transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.2px;
+      cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
     button:active {
       transform: scale(0.97);
     }
     button.secondary {
-      background: #f0f4ff;
-      color: #1677ff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      border: 1px solid rgba(22,119,255,0.15);
+      background: #f9fafb;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+    }
+    button.secondary:active {
+      background: #f3f4f6;
     }
     button.danger {
-      background: #ff4d4f;
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    button.danger:active {
+      background: #fee2e2;
     }
     button.warning {
-      background: #fa8c16;
+      background: #fffbeb;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+    button.warning:active {
+      background: #fef3c7;
     }
     .players-section {
-      margin: 20px 0 10px;
+      margin: 24px 0 12px;
     }
     .player-row {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      background: #fff;
-      padding: 10px 12px;
+      gap: 10px;
+      margin-bottom: 10px;
+      background: #ffffff;
+      padding: 12px 14px;
       border-radius: 14px;
-      border: 1px solid #f0f0f0;
+      border: 1px solid #f0f2f5;
+      transition: border-color 0.15s;
+    }
+    .player-row:hover {
+      border-color: #e5e7eb;
     }
     .player-row .num {
-      font-weight: 700;
+      font-weight: 600;
       width: 22px;
-      color: #1677ff;
+      color: #6366f1;
       flex-shrink: 0;
+      font-size: 0.9rem;
     }
     .player-row input {
       flex: 1;
       border: 1px solid transparent;
       padding: 8px 10px;
-      border-radius: 12px;
+      border-radius: 10px;
+      background: transparent;
     }
     .player-row input:focus {
-      border-color: #1677ff;
+      border-color: #6366f1;
+      background: #fff;
+      box-shadow: none;
     }
     .player-row .paid-btn {
-      background: white;
-      border: 2px solid #e8e8e8;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
       border-radius: 10px;
-      padding: 6px 12px;
-      font-weight: bold;
-      min-width: 42px;
+      padding: 6px 14px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #9ca3af;
+      min-width: 44px;
       flex-shrink: 0;
+      cursor: pointer;
+      transition: 0.15s;
     }
     .player-row .paid-btn.paid {
-      background: #e6fffb;
-      border-color: #13c2c2;
-      color: #13c2c2;
+      background: #ecfdf5;
+      border-color: #6ee7b7;
+      color: #059669;
     }
     .player-row .remove-btn {
       background: none;
       border: none;
-      color: #bbb;
+      color: #d1d5db;
       font-size: 1.2rem;
-      padding: 4px 8px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 8px;
       flex-shrink: 0;
+      transition: 0.15s;
+    }
+    .player-row .remove-btn:hover {
+      background: #fef2f2;
+      color: #dc2626;
     }
     .player-row.duplicate input {
-      border-color: #ff4d4f;
-      background: #fff2f0;
+      border-color: #fecaca;
+      background: #fef2f2;
     }
     .actions {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin: 16px 0;
+      margin: 20px 0 12px;
     }
     .preview-box {
-      background: #fff;
+      background: #f9fafb;
       border-radius: 16px;
-      padding: 16px;
-      border: 1px solid #eef2f6;
-      margin-top: 12px;
-      font-family: monospace;
+      padding: 18px;
+      border: 1px solid #f0f2f5;
+      margin-top: 10px;
+      font-family: 'SF Mono', 'Cascadia Code', monospace;
       font-size: 0.85rem;
       white-space: pre-wrap;
       overflow-x: auto;
+      color: #1f2937;
+      line-height: 1.5;
     }
     .booking-list-item {
       background: #fff;
       border-radius: 14px;
-      padding: 14px;
+      padding: 16px;
       margin-bottom: 10px;
-      border-left: 4px solid #1677ff;
+      border: 1px solid #f0f2f5;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px;
+      transition: border-color 0.15s;
+    }
+    .booking-list-item:hover {
+      border-color: #e5e7eb;
     }
     .hidden { display: none !important; }
     .auto-add-row {
@@ -205,28 +251,46 @@
       width: 70px;
       text-align: center;
     }
+    /* FIXED: total hours left-aligned like other form details */
     .total-hours {
       font-size: 0.85rem;
-      color: #1677ff;
-      font-weight: 600;
+      color: #6366f1;
+      font-weight: 500;
       margin: 4px 0;
-    }
-    .duplicate-warning {
-      color: #ff4d4f;
-      font-size: 0.8rem;
-      display: none;
-    }
-    .duplicate-warning.active {
       display: flex;
       align-items: center;
       gap: 4px;
+      text-align: left;               /* explicitly left */
+      justify-content: flex-start;    /* ensure left alignment */
+    }
+    .duplicate-warning {
+      color: #dc2626;
+      font-size: 0.8rem;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .duplicate-warning.active {
+      display: flex;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #f0f2f5;
+      margin: 16px 0;
+    }
+    .section-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: #111827;
     }
   </style>
 </head>
 <body>
 <div class="container">
   <h1>🏸 Badminton Slot Booking</h1>
-  <p class="subtitle">Create your booking and copy the announcement</p>
+  <p class="subtitle">Minimal · Fast · Offline</p>
 
   <div class="card">
     <div class="form-grid">
@@ -239,15 +303,19 @@
         <input type="text" id="dayInput" readonly>
       </div>
       <div class="form-group">
-        <label>⏰ Start Time</label>
+        <label>⏰ Start</label>
         <input type="time" id="startTime" value="21:30">
       </div>
       <div class="form-group">
-        <label>End Time</label>
+        <label>End</label>
         <input type="time" id="endTime" value="23:30">
       </div>
-      <div class="form-group full total-hours">
-        <span id="totalHours">2.0 hours</span>
+      <!-- Total hours now has a small label, left-aligned -->
+      <div class="form-group full">
+        <label>⏱️ Total</label>
+        <div class="total-hours" id="totalHoursDisplay">
+          <span id="totalHours">2.0 hours</span>
+        </div>
       </div>
       <div class="form-group full">
         <label>🏟️ Venue</label>
@@ -272,20 +340,20 @@
     </div>
 
     <div class="players-section">
-      <div style="font-weight:600; margin-bottom:8px;">👥 Players (tap ✅ = paid)</div>
+      <div class="section-title">👥 Players · tap ✅ to mark paid</div>
       <div id="playersContainer"></div>
-      <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name!</div>
+      <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name detected</div>
 
-      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;">
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;">
         <button class="secondary" id="addPlayerBtn">+ Add Slot</button>
         <div class="auto-add-row">
           <input type="number" id="autoAddCount" placeholder="6" min="1" value="6">
           <button id="autoAddBtn" class="secondary">Auto Add</button>
         </div>
       </div>
-      <div style="display:flex; gap:8px; margin-top:12px;">
-        <button id="clearPlayersBtn" class="warning">🗑️ Clear</button>
-        <button id="resetSessionBtn" class="danger">🔄 Reset</button>
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <button id="clearPlayersBtn" class="warning">Clear Players</button>
+        <button id="resetSessionBtn" class="danger">Reset Session</button>
       </div>
     </div>
 
@@ -295,16 +363,16 @@
     </div>
 
     <div>
-      <div style="font-weight:600; margin-bottom:6px;">📄 Preview</div>
+      <div class="section-title">📄 Announcement Preview</div>
       <div class="preview-box" id="preview"></div>
     </div>
   </div>
 
   <div class="card">
-    <h3 style="font-size:1rem;">📂 Saved Bookings</h3>
+    <h3 style="font-size:1rem; font-weight:600;">📂 Saved Bookings</h3>
     <div id="savedBookingsList"></div>
-    <p id="noBookingsMsg" style="color:#777; font-size:0.85rem;">No saved bookings yet.</p>
-    <button id="clearAllBtn" class="danger" style="width:100%; margin-top:12px;">🗑️ Clear All Saved</button>
+    <p id="noBookingsMsg" style="color:#9ca3af; font-size:0.85rem; text-align:center; padding:16px;">No saved bookings yet.</p>
+    <button id="clearAllBtn" class="danger" style="width:100%; margin-top:12px;">Clear All Saved</button>
   </div>
 </div>
 
@@ -359,7 +427,6 @@
       return days[date.getDay()];
     }
 
-    // ----- FIXED total hours: handles overnight sessions -----
     function updateTotalHours() {
       const s = startTime.value;
       const e = endTime.value;
@@ -375,19 +442,14 @@
       }
       let startMin = sh * 60 + sm;
       let endMin = eh * 60 + em;
-
-      // If end time is earlier or equal, assume it's the next day (overnight)
       if (endMin <= startMin) {
-        endMin += 24 * 60; // add 24 hours
+        endMin += 24 * 60;
       }
-
       const diffMin = endMin - startMin;
       const hours = diffMin / 60;
       totalHoursSpan.textContent = (hours % 1 === 0) ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
     }
-    // --------------------------------------------
 
-    // Init date & times
     const today = new Date().toISOString().slice(0,10);
     dateInput.value = today;
     dayInput.value = getDayFromDate(today);
@@ -395,12 +457,11 @@
 
     startTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
     endTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
-    updateTotalHours(); // initial calculation
+    updateTotalHours();
 
     const savedAutoCount = localStorage.getItem('autoAddCount');
     if (savedAutoCount) autoAddCount.value = savedAutoCount;
 
-    // ----- Players -----
     function findDuplicates() {
       const names = players.map(p => p.name.trim().toLowerCase()).filter(n => n);
       const dups = new Set();
@@ -478,7 +539,6 @@
       }
     };
 
-    // ----- Preview -----
     function buildPreviewText() {
       const d = formatDateDMY(dateInput.value) || ".........";
       const day = dayInput.value || ".......";
@@ -516,7 +576,6 @@
       catch { const ta = document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert("✅ Copied!"); }
     };
 
-    // ----- Save / Load -----
     const STORAGE_KEY = 'badminton_bookings';
     const getBookings = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; } catch { return []; } };
     const saveBookings = (b) => localStorage.setItem(STORAGE_KEY, JSON.stringify(b));
@@ -538,8 +597,8 @@
         div.innerHTML = `
           <div><strong>📅 ${b.date||''} ${b.day||''}</strong><br><small>${escapeHtml(b.text.split('\n').slice(0,3).join(' | '))} ...</small></div>
           <div style="display:flex; gap:6px;">
-            <button class="secondary load-booking" data-idx="${idx}">Load</button>
-            <button class="danger delete-booking" data-idx="${idx}">Del</button>
+            <button class="secondary load-booking" data-idx="${idx}" style="padding:8px 14px;">Load</button>
+            <button class="danger delete-booking" data-idx="${idx}" style="padding:8px 14px;">Del</button>
           </div>
         `;
         savedBookingsList.appendChild(div);
@@ -575,7 +634,6 @@
 
     function escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-    // Init
     renderPlayers();
     updatePreview();
     renderSaved();
