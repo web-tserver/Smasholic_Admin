@@ -33,7 +33,6 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', system-ui, sans-serif; }
     
-    /* Native scrolling restored to fix bottom cutoff */
     body {
       background: var(--bg); color: var(--text-main);
       display: flex; justify-content: center; 
@@ -46,7 +45,6 @@
       width: 100%; max-width: 480px; background: var(--bg);
       min-height: 100vh; display: flex; flex-direction: column;
       position: relative; 
-      /* Ensures content clears the bottom nav bar */
       padding-bottom: calc(80px + env(safe-area-inset-bottom)); 
     }
 
@@ -165,14 +163,12 @@
 
     /* --- Bottom Navigation --- */
     .bottom-nav {
-      position: fixed; bottom: 0; 
-      width: 100%; max-width: 480px; 
+      position: fixed; bottom: 0; width: 100%; max-width: 480px;
       background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
-      border-top: 1px solid rgba(226, 232, 240, 0.6);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid rgba(226, 232, 240, 0.6);
       display: flex; justify-content: space-around; 
       padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
-      z-index: 50; 
+      z-index: 50;
     }
     .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: color 0.2s; padding: 4px 16px; }
     .nav-item:active { transform: scale(0.95); }
@@ -701,53 +697,65 @@ No cash on court please. Thank you ✨</textarea>
       players = []; waitingPlayers = []; updateDateData(); renderPlayers(); renderWaitingPlayers(); showToast('Reset complete!');
     });
 
-    // --- Import Parsing (Updated for Classic Format) ---
+    // --- Import Parsing (Updated with Regex Magic) ---
     els.import.onclick = () => { vibrate(); document.getElementById('importTextarea').value = ''; els.importModal.classList.add('active'); };
     document.getElementById('importCancelBtn').onclick = () => { vibrate(); els.importModal.classList.remove('active'); };
+    
     document.getElementById('importParseBtn').onclick = () => {
       vibrate(); const text = document.getElementById('importTextarea').value;
       if(!text.trim()) { showToast('Text is empty', '⚠️'); return; }
       
       try {
         let mode = 'head', newPlayers = [], newWaiting = [], newFooter = [];
+        
         text.split('\n').forEach(line => {
           const t = line.trim(), lower = t.toLowerCase();
           if(!t) return;
-          if(lower.startsWith('list player')) { mode = 'players'; return; }
-          if(lower.startsWith('waiting list')) { mode = 'waiting'; return; }
-          if(t.startsWith('📌')) mode = 'footer';
+          
+          if(lower.startsWith('list player') || lower.startsWith('players')) { mode = 'players'; return; }
+          if(lower.startsWith('waiting list') || lower.startsWith('waiting')) { mode = 'waiting'; return; }
+          if(t.startsWith('📌') || lower.startsWith('nota') || lower.startsWith('note')) { mode = 'footer'; }
 
           if(mode === 'head') {
-            if(t.includes('📆')) { 
-              const parts = t.split('📆')[1].replace(':', '').split(','); 
-              if(parts.length >= 2) {
-                const dp = parts[0].trim().split('/');
-                if(dp.length===3) els.date.value=`${dp[2]}-${dp[1].padStart(2,'0')}-${dp[0].padStart(2,'0')}`; 
-              }
+            // Safe Date Extraction
+            const dMatch = t.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+            if(dMatch) els.date.value = `${dMatch[3]}-${dMatch[2].padStart(2,'0')}-${dMatch[1].padStart(2,'0')}`;
+            
+            // Safe Time Extraction (handles 9:30pm and 9.30pm)
+            const tMatches = [...t.matchAll(/(\d{1,2})[:.](\d{2})\s*(am|pm)/gi)];
+            if(tMatches.length > 0) {
+              const pt = (m) => {
+                let h = parseInt(m[1], 10), min = m[2], mod = m[3].toLowerCase();
+                if(h === 12 && mod === 'am') h = 0;
+                else if(h !== 12 && mod === 'pm') h += 12;
+                return `${h.toString().padStart(2,'0')}:${min}`;
+              };
+              els.start.value = pt(tMatches[0]);
+              if(tMatches.length >= 2) els.end.value = pt(tMatches[1]);
             }
-            if(t.includes('⏰')) { 
-                const m = t.match(/(\d{1,2})\.(\d{2})(am|pm)/gi); 
-                if(m && m.length >= 1) {
-                    const pt = (str) => {
-                        let time = str.slice(0, -2), mod = str.slice(-2).toLowerCase();
-                        let [h, min] = time.split('.');
-                        if(h === '12') h = '00';
-                        if(mod === 'pm') h = parseInt(h, 10) + 12;
-                        return `${h.toString().padStart(2,'0')}:${min}`;
-                    };
-                    els.start.value = pt(m[0]);
-                    if(m.length >= 2) els.end.value = pt(m[1]);
-                }
-            }
-            if(t.includes('🏟️')) els.venue.value = t.split('🏟️')[1].replace(':', '').trim();
-            if(t.includes('Court')) els.court.value = t.split('Court')[1].replace(':', '').trim();
-            if(t.includes('💵') || t.includes('RM')) { const m = t.match(/RM\s*([\d.]+)/i); if(m) els.price.value = m[1]; }
-            if(t.includes('Shuttle')) els.shuttle.value = t.split('Shuttle')[1].replace(':', '').trim();
-            if(t.includes('Host')) els.host.value = t.split('Host')[1].replace(':', '').trim();
+            
+            if(t.includes('🏟️') || lower.includes('venue')) els.venue.value = t.replace(/.*?🏟️/i, '').replace(/.*?venue/i, '').replace(/^[:\s]+/, '').trim();
+            if(lower.includes('court')) els.court.value = t.replace(/.*?court/i, '').replace(/^[:\s]+/, '').trim();
+            if(t.includes('💵') || t.includes('RM') || lower.includes('price')) { const m = t.match(/RM\s*([\d.]+)/i); if(m) els.price.value = m[1]; }
+            if(lower.includes('shuttle')) els.shuttle.value = t.replace(/.*?shuttle/i, '').replace(/^[:\s]+/, '').trim();
+            if(lower.includes('host')) els.host.value = t.replace(/.*?host/i, '').replace(/^[:\s]+/, '').trim();
           } 
-          else if(mode === 'players') { const m = t.match(/^\d+\.\s*(.+)/); if(m) { let n=m[1].trim(), paid=false; if(n.includes('✅')){paid=true; n=n.replace('✅','').trim();} if(n!=='...') newPlayers.push({name:n, paid}); } }
-          else if(mode === 'waiting') { const m = t.match(/^\d+\.\s*(.+)/); if(m && m[1].trim()!=='...') newWaiting.push({name:m[1].trim()}); }
-          else if(mode === 'footer') newFooter.push(t);
+          else if(mode === 'players') { 
+            const m = t.match(/^\d+[\.\)]\s*(.+)/); 
+            if(m) { 
+              let n = m[1].trim(), paid = false; 
+              if(n.includes('✅') || n.includes('✔')) { paid = true; n = n.replace(/[✅✔]/g, '').trim(); } 
+              if(n !== '...' && n !== '') newPlayers.push({name: n, paid}); 
+            } 
+          }
+          else if(mode === 'waiting') { 
+            const m = t.match(/^\d+[\.\)]\s*(.+)/); 
+            if(m) { 
+              let n = m[1].trim(); 
+              if(n !== '...' && n !== '') newWaiting.push({name: n}); 
+            } 
+          }
+          else if(mode === 'footer') { newFooter.push(t); }
         });
         
         players = newPlayers; waitingPlayers = newWaiting;
@@ -755,7 +763,7 @@ No cash on court please. Thank you ✨</textarea>
         
         updateDateData(); renderPlayers(); renderWaitingPlayers();
         els.importModal.classList.remove('active'); showToast('Imported Successfully!');
-      } catch(e) { showToast('Format error', '❌'); }
+      } catch(e) { console.error(e); showToast('Format error', '❌'); }
     };
 
     renderPlayers(); renderWaitingPlayers(); updatePreview();
