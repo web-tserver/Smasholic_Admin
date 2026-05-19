@@ -130,6 +130,8 @@
           <div class="input-group"><label>Price (RM)</label><input type="number" id="price" value="17" step="0.5"></div>
           <div class="input-group full-width"><label>Venue</label><input type="text" id="venue" value="Forum Sba, Setia Alam"></div>
           <div class="input-group full-width"><label>Court</label><input type="text" id="court" value="Rubber Court 6 & 7"></div>
+          <!-- New Location Link Field -->
+          <div class="input-group full-width"><label>📍 Location Link</label><input type="url" id="locationLink" value="https://g.co/kgs/UMbmmAz" placeholder="Google Maps link"></div>
           <div class="input-group"><label>Shuttle</label><input type="text" id="shuttle" value="RSL"></div>
           <div class="input-group"><label>Host Name</label><input type="text" id="host" placeholder="Your name"></div>
         </div>
@@ -216,6 +218,7 @@
     date: document.getElementById('dateInput'), day: document.getElementById('dayInput'),
     start: document.getElementById('startTime'), end: document.getElementById('endTime'), duration: document.getElementById('totalHours'),
     venue: document.getElementById('venue'), court: document.getElementById('court'),
+    locationLink: document.getElementById('locationLink'), // new
     price: document.getElementById('price'), shuttle: document.getElementById('shuttle'),
     host: document.getElementById('host'), footer: document.getElementById('footerMessage'),
     preview: document.getElementById('preview'), playersContainer: document.getElementById('playersContainer'),
@@ -286,7 +289,8 @@
   els.start.addEventListener('input', updateDateData);
   els.end.addEventListener('input', updateDateData);
   updateDateData();
-  [els.venue, els.court, els.price, els.shuttle, els.host, els.footer].forEach(e => e.addEventListener('input', updatePreview));
+  // Listen to all relevant fields including the new location link
+  [els.venue, els.court, els.locationLink, els.price, els.shuttle, els.host, els.footer].forEach(e => e.addEventListener('input', updatePreview));
 
   const NAMES_KEY = 'smasholic_names';
   function getNames() { try { return JSON.parse(localStorage.getItem(NAMES_KEY)) || []; } catch { return []; } }
@@ -440,6 +444,7 @@
     const durationText = (durationHrs % 1 === 0 ? durationHrs.toFixed(0) : durationHrs.toFixed(1)) + ' hour(s)';
     const venueVal = els.venue.value;
     const courtVal = els.court.value;
+    const locationVal = els.locationLink.value.trim(); // new
     const priceVal = parseFloat(els.price.value || 0).toFixed(2);
     const shuttleVal = els.shuttle.value;
     const hostVal = els.host.value.trim() || '......';
@@ -448,6 +453,7 @@
     text += `⏰ : ${start} - ${end}\n`;
     text += `⏱️ Total: ${durationText}\n`;
     text += `🏟️ : ${venueVal}\n        (${courtVal})\n`;
+    if (locationVal) text += `📍 : ${locationVal}\n`;  // location link
     text += `💵 : RM${priceVal} Per player\n\n`;
     text += `🏸: Shuttle: ${shuttleVal}\n\n`;
     text += `Done payment sila tick ✅ ‼️\n\n`;
@@ -491,7 +497,7 @@
     }
   };
 
-  // --- REVERSE IMPORT (1:1 parsing) ---
+  // --- REVERSE IMPORT (updated for location link) ---
   function parseTime12to24(str) {
     const match = str.match(/^(\d{1,2})\.(\d{2})(am|pm)$/i);
     if (!match) return null;
@@ -516,14 +522,13 @@
     try {
       const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== '');
       let parsedDate = '', parsedDay = '', parsedStart = '', parsedEnd = '',
-          parsedVenue = '', parsedCourt = '', parsedPrice = '', parsedShuttle = '', parsedHost = '';
+          parsedVenue = '', parsedCourt = '', parsedLocation = '', parsedPrice = '', parsedShuttle = '', parsedHost = '';
       let newPlayers = [], newWaiting = [];
-      let mode = 'head'; // head, players, waiting, footer
+      let mode = 'head';
       let footerLines = [];
 
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        // Head lines
         if (line.startsWith('📆')) {
           const m = line.match(/📆\s*:\s*([\d\/]+)\s*,\s*(\w+)/);
           if (m) {
@@ -542,12 +547,14 @@
         } else if (line.startsWith('🏟️')) {
           const m = line.match(/🏟️\s*:\s*(.+)/);
           if (m) parsedVenue = m[1].trim();
-          // Court is next line in parentheses
           if (i+1 < lines.length && lines[i+1].startsWith('(') && lines[i+1].endsWith(')')) {
             const courtMatch = lines[i+1].match(/\((.+)\)/);
             if (courtMatch) parsedCourt = courtMatch[1].trim();
-            i++; // skip court line
+            i++;
           }
+        } else if (line.startsWith('📍')) {   // parse location link
+          const m = line.match(/📍\s*:\s*(.+)/);
+          if (m) parsedLocation = m[1].trim();
         } else if (line.startsWith('💵')) {
           const m = line.match(/RM\s*([\d.]+)/);
           if (m) parsedPrice = m[1];
@@ -557,10 +564,8 @@
         } else if (line.startsWith('Host ')) {
           const m = line.match(/^Host\s+(.+)/);
           if (m) parsedHost = m[1].trim();
-          mode = 'players'; // after host, players start
-        }
-        // Players lines (only after host)
-        else if (mode === 'players' && /^\d+\./.test(line)) {
+          mode = 'players';
+        } else if (mode === 'players' && /^\d+\./.test(line)) {
           const m = line.match(/^(\d+)\.\s*(.+)$/);
           if (m) {
             let name = m[2].trim();
@@ -572,42 +577,32 @@
             if (name === '(Open)' || name === '...') name = '';
             newPlayers.push({ name, paid });
           }
-        }
-        // Waiting list header
-        else if (line === 'Waiting List') {
+        } else if (line === 'Waiting List') {
           mode = 'waiting';
-        }
-        // Waiting lines
-        else if (mode === 'waiting' && /^\d+\./.test(line)) {
+        } else if (mode === 'waiting' && /^\d+\./.test(line)) {
           const m = line.match(/^(\d+)\.\s*(.+)$/);
           if (m) {
             let name = m[2].trim();
             if (name === '...') name = '';
             newWaiting.push({ name });
           }
-        }
-        // Anything else (including footer) after players/waiting
-        else if (mode === 'players' || mode === 'waiting') {
-          // non-numbered lines after players/waiting are footer
+        } else if (mode === 'players' || mode === 'waiting') {
           if (!/^\d+\./.test(line) && line !== '') {
             mode = 'footer';
             footerLines.push(line);
           }
-        }
-        else if (mode === 'footer') {
+        } else if (mode === 'footer') {
           footerLines.push(line);
         }
       }
 
-      // Fill form
-      if (parsedDate) {
-        els.date.value = parsedDate;
-        // day will auto-update via updateDateData
-      }
+      if (parsedDate) els.date.value = parsedDate;
       if (parsedStart) els.start.value = parsedStart;
       if (parsedEnd) els.end.value = parsedEnd;
       if (parsedVenue) els.venue.value = parsedVenue;
       if (parsedCourt) els.court.value = parsedCourt;
+      if (parsedLocation) els.locationLink.value = parsedLocation;
+      else els.locationLink.value = 'https://g.co/kgs/UMbmmAz'; // default if missing
       if (parsedPrice) els.price.value = parsedPrice;
       if (parsedShuttle) els.shuttle.value = parsedShuttle;
       if (parsedHost) els.host.value = parsedHost;
@@ -617,7 +612,7 @@
       if (footerLines.length) els.footer.value = footerLines.join('\n');
       else els.footer.value = '📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨';
 
-      updateDateData(); // updates day and duration
+      updateDateData();
       renderPlayers();
       renderWaitingPlayers();
       updatePreview();
@@ -628,9 +623,14 @@
     }
   };
 
-  // Save/Load (same as before)
+  // Save/Load (location included)
   els.save.onclick = () => { vibrate();
-    savedBookings.unshift({ id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value, venue: els.venue.value, court: els.court.value, price: els.price.value, shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value, players: JSON.parse(JSON.stringify(players)), waiting: JSON.parse(JSON.stringify(waitingPlayers)) });
+    savedBookings.unshift({
+      id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value,
+      venue: els.venue.value, court: els.court.value, location: els.locationLink.value, // save location
+      price: els.price.value, shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value,
+      players: JSON.parse(JSON.stringify(players)), waiting: JSON.parse(JSON.stringify(waitingPlayers))
+    });
     localStorage.setItem('smasholic_saved_bookings', JSON.stringify(savedBookings));
     showToast("Session Saved!", "💾");
   };
@@ -644,11 +644,11 @@
         <div style="display:flex;gap:8px;"><button class="btn btn-secondary load-btn" data-idx="${idx}" style="padding:8px 12px;">Load</button><button class="btn btn-danger del-btn" data-idx="${idx}" style="padding:8px 12px;">✕</button></div>`;
       list.appendChild(item);
     });
-    document.querySelectorAll('.load-btn').forEach(b => b.onclick = function() { vibrate(); const d = savedBookings[this.dataset.idx]; els.date.value = d.date; els.start.value = d.start; els.end.value = d.end; els.venue.value = d.venue; els.court.value = d.court; els.price.value = d.price; els.shuttle.value = d.shuttle; els.host.value = d.host; els.footer.value = d.footer; players = JSON.parse(JSON.stringify(d.players)); waitingPlayers = JSON.parse(JSON.stringify(d.waiting)); updateDateData(); renderPlayers(); renderWaitingPlayers(); document.querySelector('.nav-item[data-tab="booking"]').click(); showToast("Loaded!"); });
+    document.querySelectorAll('.load-btn').forEach(b => b.onclick = function() { vibrate(); const d = savedBookings[this.dataset.idx]; els.date.value = d.date; els.start.value = d.start; els.end.value = d.end; els.venue.value = d.venue; els.court.value = d.court; els.locationLink.value = d.location || 'https://g.co/kgs/UMbmmAz'; els.price.value = d.price; els.shuttle.value = d.shuttle; els.host.value = d.host; els.footer.value = d.footer; players = JSON.parse(JSON.stringify(d.players)); waitingPlayers = JSON.parse(JSON.stringify(d.waiting)); updateDateData(); renderPlayers(); renderWaitingPlayers(); document.querySelector('.nav-item[data-tab="booking"]').click(); showToast("Loaded!"); });
     document.querySelectorAll('.del-btn').forEach(b => b.onclick = function() { vibrate(); const idx = this.dataset.idx; showConfirm('Delete Session', 'Remove this saved booking permanently?', () => { savedBookings.splice(idx, 1); localStorage.setItem('smasholic_saved_bookings', JSON.stringify(savedBookings)); renderSaved(); }); });
   }
   els.clearSaved.onclick = () => { if(savedBookings.length) showConfirm('Clear All', 'Delete all saved sessions?', () => { savedBookings = []; localStorage.removeItem('smasholic_saved_bookings'); renderSaved(); }); };
-  els.reset.onclick = () => showConfirm('Reset Form', 'Clear all fields and players?', () => { els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30"; els.venue.value = "Forum Sba, Setia Alam"; els.court.value = "Rubber Court 6 & 7"; els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = ""; players = []; waitingPlayers = []; updateDateData(); renderPlayers(); renderWaitingPlayers(); showToast('Reset complete!'); });
+  els.reset.onclick = () => showConfirm('Reset Form', 'Clear all fields and players?', () => { els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30"; els.venue.value = "Forum Sba, Setia Alam"; els.court.value = "Rubber Court 6 & 7"; els.locationLink.value = "https://g.co/kgs/UMbmmAz"; els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = ""; players = []; waitingPlayers = []; updateDateData(); renderPlayers(); renderWaitingPlayers(); showToast('Reset complete!'); });
 
   renderPlayers(); renderWaitingPlayers(); updatePreview();
 })();
