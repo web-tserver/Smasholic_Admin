@@ -3,10 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Smasholic">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+  
   <title>Smasholic · Booking App</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
       --primary: #6366f1; 
@@ -25,148 +33,170 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', system-ui, sans-serif; }
     
+    /* Native scrolling restored to fix bottom cutoff */
     body {
       background: var(--bg); color: var(--text-main);
-      display: flex; justify-content: center; min-height: 100vh;
-      overscroll-behavior-y: none; -webkit-font-smoothing: antialiased;
+      display: flex; justify-content: center; 
+      min-height: 100vh; min-height: -webkit-fill-available;
+      -webkit-font-smoothing: antialiased;
       -webkit-tap-highlight-color: transparent;
     }
 
     .app-container {
       width: 100%; max-width: 480px; background: var(--bg);
       min-height: 100vh; display: flex; flex-direction: column;
-      position: relative; padding-bottom: 80px; 
+      position: relative; 
+      /* Ensures content clears the bottom nav bar */
+      padding-bottom: calc(80px + env(safe-area-inset-bottom)); 
     }
 
-    /* --- Header --- */
+    /* --- App Header --- */
     .header {
       position: sticky; top: 0; z-index: 50;
-      background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      padding: 10px 16px; border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+      background: rgba(255, 255, 255, 0.85); 
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      padding: calc(12px + env(safe-area-inset-top)) 16px 12px 16px; 
+      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
       display: flex; justify-content: center; align-items: center;
     }
     .header h1 {
-      font-size: 1.1rem; font-weight: 700; color: var(--primary);
-      display: flex; align-items: center; gap: 6px; letter-spacing: -0.5px;
+      font-size: 1.15rem; font-weight: 700; color: var(--primary);
+      display: flex; align-items: center; gap: 6px; letter-spacing: -0.3px;
     }
-    .header .icon { font-size: 1.25rem; }
+    .header .icon { font-size: 1.3rem; }
 
     /* --- Content Area --- */
-    .content { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+    .content { 
+      flex: 1; 
+      padding: 16px; 
+      display: flex; flex-direction: column; gap: 16px; 
+    }
 
     /* --- Cards --- */
     .card { background: var(--surface); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .card-title { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .card-title { font-size: 1.05rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
     
     /* --- Form Grid --- */
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
     .full-width { grid-column: span 2; }
     
     .input-group { display: flex; flex-direction: column; gap: 6px; }
     .input-group label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
     
     input, textarea {
-      width: 100%; background: var(--input-bg); border: 2px solid transparent; border-radius: 12px;
-      padding: 12px 16px; font-size: 0.95rem; color: var(--text-main); transition: all 0.2s ease; outline: none;
+      width: 100%; background: var(--input-bg); border: 2px solid transparent; border-radius: 14px;
+      padding: 14px 16px; font-size: 16px; color: var(--text-main); 
+      transition: all 0.2s ease; outline: none; -webkit-appearance: none;
     }
     input:focus, textarea:focus { background: var(--surface); border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
     
     .readonly-badge {
-      background: var(--primary-light); color: var(--primary); padding: 12px 16px;
-      border-radius: 12px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center;
+      background: var(--primary-light); color: var(--primary); padding: 14px 16px;
+      border-radius: 14px; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center;
     }
 
     /* --- Buttons --- */
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      background: var(--primary); color: white; border: none; padding: 14px 20px;
-      border-radius: 14px; font-weight: 600; font-size: 0.95rem; cursor: pointer;
-      transition: transform 0.1s ease, background 0.2s ease; width: 100%;
+      background: var(--primary); color: white; border: none; padding: 16px 20px;
+      border-radius: 14px; font-weight: 600; font-size: 16px; cursor: pointer;
+      transition: transform 0.15s ease, background 0.2s ease; width: 100%;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
     }
-    .btn:active { transform: scale(0.97); }
-    .btn-secondary { background: var(--input-bg); color: var(--text-main); }
-    .btn-danger { background: #fee2e2; color: var(--danger); }
+    .btn:active { transform: scale(0.96); }
+    .btn-secondary { background: var(--input-bg); color: var(--text-main); box-shadow: none; }
+    .btn-secondary:active { background: #e2e8f0; }
+    .btn-danger { background: #fee2e2; color: var(--danger); box-shadow: none; }
     .btn-danger:active { background: #fecaca; }
-    .btn-outline { background: transparent; border: 2px dashed var(--border); color: var(--text-muted); }
+    .btn-outline { background: transparent; border: 2px dashed var(--border); color: var(--text-muted); box-shadow: none; }
     
     /* --- Player Rows --- */
     .player-list { display: flex; flex-direction: column; gap: 10px; }
     .player-row {
-      display: flex; align-items: center; gap: 10px; background: var(--surface);
-      border: 1px solid var(--border); padding: 8px 10px; border-radius: 16px; transition: all 0.2s; position: relative;
+      display: flex; align-items: center; gap: 8px; background: var(--surface);
+      border: 1px solid var(--border); padding: 6px 8px; border-radius: 18px; 
+      transition: all 0.2s; position: relative;
     }
     .player-row.focused { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
     .player-row.duplicate { border-color: #fca5a5; background: #fef2f2; }
     
-    .player-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
-    .player-row input { flex: 1; padding: 6px 0; background: transparent; border: none; box-shadow: none; font-size: 0.95rem; }
+    .player-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; flex-shrink: 0; margin-left: 4px; }
     
-    .action-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; flex-shrink: 0; transition: 0.2s; font-size: 1.1rem; }
+    .player-row input { flex: 1; padding: 8px 4px; background: transparent; border: none; box-shadow: none; font-size: 16px; }
     
-    /* Tick Button Styling */
-    .paid-toggle { background: var(--input-bg); color: #cbd5e1; font-size: 1.2rem; }
-    .paid-toggle.active { background: var(--success); color: white; }
+    .action-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; flex-shrink: 0; transition: 0.2s; font-size: 1.15rem; }
+    .action-icon:active { transform: scale(0.92); }
+    
+    .paid-toggle { background: var(--input-bg); color: #cbd5e1; }
+    .paid-toggle.active { background: var(--success); color: white; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); }
     
     .remove-toggle { background: transparent; color: #cbd5e1; }
-    .remove-toggle:hover { color: var(--danger); background: #fee2e2; }
+    .remove-toggle:active { color: var(--danger); background: #fee2e2; }
 
-    .duplicate-warning { color: var(--danger); font-size: 0.8rem; font-weight: 500; display: none; margin-top: 10px; }
+    .duplicate-warning { color: var(--danger); font-size: 0.85rem; font-weight: 500; display: none; margin-top: 12px; text-align: center; }
     .duplicate-warning.active { display: block; }
 
     /* --- Stepper --- */
     .stepper-container { display: flex; flex-direction: column; align-items: center; margin-top: 16px; }
     .stepper {
       display: flex; align-items: center; justify-content: center; gap: 16px;
-      background: var(--input-bg); padding: 6px; border-radius: 14px; width: fit-content;
+      background: var(--input-bg); padding: 8px; border-radius: 18px; width: fit-content;
     }
-    .stepper-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--surface); border: none; box-shadow: var(--shadow-sm); font-size: 1.2rem; color: var(--text-main); cursor: pointer; }
-    .stepper-btn:active { transform: scale(0.9); }
+    .stepper-btn { width: 44px; height: 44px; border-radius: 14px; background: var(--surface); border: none; box-shadow: var(--shadow-sm); font-size: 1.4rem; color: var(--text-main); cursor: pointer; transition: 0.15s; }
+    .stepper-btn:active { transform: scale(0.9); background: #e2e8f0; }
     .stepper-count { 
-      font-weight: 700; font-size: 1.1rem; min-width: 24px; text-align: center; color: var(--primary); 
-      text-decoration: underline; text-underline-offset: 4px; cursor: pointer;
+      font-weight: 700; font-size: 1.15rem; min-width: 28px; text-align: center; color: var(--primary); 
+      text-decoration: underline; text-underline-offset: 4px; cursor: pointer; padding: 0 8px;
     }
-    .stepper-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+    .stepper-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
 
     /* --- Collapsible --- */
-    .collapsible-header { cursor: pointer; }
-    .collapsible-header .chevron { transition: transform 0.3s ease; color: var(--text-muted); }
+    .collapsible-header { cursor: pointer; padding: 4px 0; }
+    .collapsible-header:active { opacity: 0.7; }
+    .collapsible-header .chevron { transition: transform 0.3s ease; color: var(--text-muted); font-size: 0.9rem; }
     .collapsed .collapsible-header .chevron { transform: rotate(-90deg); }
-    .collapsible-body { transition: max-height 0.3s ease, opacity 0.3s ease; overflow: hidden; opacity: 1; }
+    .collapsible-body { transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; overflow: hidden; opacity: 1; }
     .collapsed .collapsible-body { max-height: 0 !important; opacity: 0; margin-top: 0; }
 
     /* --- Preview Box --- */
-    .preview-box { background: #1e293b; color: #f8fafc; border-radius: 16px; padding: 16px; font-family: monospace; font-size: 0.85rem; white-space: pre-wrap; line-height: 1.6; max-height: 300px; overflow-y: auto; }
-    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+    .preview-box { background: #1e293b; color: #f8fafc; border-radius: 16px; padding: 16px; font-family: monospace; font-size: 0.85rem; white-space: pre-wrap; line-height: 1.6; max-height: 300px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
 
     /* --- Bottom Navigation --- */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(226, 232, 240, 0.6);
-      display: flex; justify-content: space-around; padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
-      z-index: 50; max-width: 480px; margin: 0 auto;
+      position: fixed; bottom: 0; 
+      width: 100%; max-width: 480px; 
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
+      border-top: 1px solid rgba(226, 232, 240, 0.6);
+      display: flex; justify-content: space-around; 
+      padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+      z-index: 50; 
     }
-    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: color 0.2s; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: color 0.2s; padding: 4px 16px; }
+    .nav-item:active { transform: scale(0.95); }
     .nav-item.active { color: var(--primary); }
-    .nav-icon { font-size: 1.3rem; }
+    .nav-icon { font-size: 1.4rem; }
 
     /* --- Modals & Toasts --- */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.2s ease; padding: 20px; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.2s ease; padding: 20px; }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .modal-content { background: var(--surface); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; transform: translateY(20px); transition: 0.3s ease; box-shadow: var(--shadow-md); }
+    .modal-content { background: var(--surface); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; transform: translateY(20px); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: var(--shadow-md); }
     .modal-overlay.active .modal-content { transform: translateY(0); }
 
-    .toast { position: fixed; top: 24px; left: 50%; transform: translate(-50%, -20px); background: #1e293b; color: white; padding: 12px 24px; border-radius: 100px; font-size: 0.9rem; font-weight: 500; z-index: 200; opacity: 0; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-md); }
+    .toast { position: fixed; top: calc(24px + env(safe-area-inset-top)); left: 50%; transform: translate(-50%, -20px); background: #1e293b; color: white; padding: 14px 28px; border-radius: 100px; font-size: 0.95rem; font-weight: 500; z-index: 200; opacity: 0; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-md); white-space: nowrap; }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-    .saved-item { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-    .saved-info h4 { font-size: 1rem; color: var(--primary); margin-bottom: 4px; }
-    .saved-info p { font-size: 0.8rem; color: var(--text-muted); }
+    .saved-item { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm); }
+    .saved-info h4 { font-size: 1.05rem; color: var(--primary); margin-bottom: 4px; }
+    .saved-info p { font-size: 0.85rem; color: var(--text-muted); }
     .hidden { display: none !important; }
     
-    .autocomplete-list { position: absolute; top: calc(100% + 4px); left: 42px; right: 42px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-md); z-index: 50; max-height: 150px; overflow-y: auto; display: none; }
+    /* --- Autocomplete --- */
+    .autocomplete-list { position: absolute; top: calc(100% + 4px); left: 44px; right: 44px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-md); z-index: 50; max-height: 200px; overflow-y: auto; -webkit-overflow-scrolling: touch; display: none; }
     .autocomplete-list.active { display: block; }
-    .autocomplete-item { padding: 12px 16px; font-size: 0.9rem; cursor: pointer; border-bottom: 1px solid var(--input-bg); }
+    .autocomplete-item { padding: 14px 16px; font-size: 16px; cursor: pointer; border-bottom: 1px solid var(--input-bg); }
     .autocomplete-item:last-child { border-bottom: none; }
     .autocomplete-item:active { background: var(--input-bg); }
   </style>
@@ -207,7 +237,7 @@
           </div>
           <div class="input-group">
             <label>Price (RM)</label>
-            <input type="number" id="price" value="17" step="0.5">
+            <input type="number" id="price" value="17" step="0.5" inputmode="decimal">
           </div>
           <div class="input-group full-width">
             <label>Venue</label>
@@ -233,10 +263,10 @@
           <span class="card-title">👥 Roster</span>
           <span class="chevron">▼</span>
         </div>
-        <div class="collapsible-body" style="max-height: 2000px;">
+        <div class="collapsible-body" style="max-height: 3000px;">
           <div class="player-list" id="playersContainer"></div>
           
-          <button class="btn btn-outline" id="addPlayerBtn" style="margin-top: 12px;">+ Add Player</button>
+          <button class="btn btn-outline" id="addPlayerBtn" style="margin-top: 14px;">+ Add Player</button>
           <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name detected!</div>
           
           <div class="stepper-container">
@@ -256,7 +286,7 @@
           <span class="chevron">▼</span>
         </div>
         <div class="collapsible-body" style="max-height: 2000px;">
-          <div class="player-list" id="waitingContainer" style="margin-bottom: 12px;"></div>
+          <div class="player-list" id="waitingContainer" style="margin-bottom: 14px;"></div>
           <button class="btn btn-outline" id="addWaitingBtn">+ Add to Waiting List</button>
         </div>
       </div>
@@ -284,7 +314,7 @@ No cash on court please. Thank you ✨</textarea>
           <button class="btn btn-secondary" id="saveBookingBtn">💾 Save</button>
         </div>
         
-        <button class="btn btn-danger" id="resetSessionBtn" style="margin-top: 12px;">Reset All Fields</button>
+        <button class="btn btn-danger" id="resetSessionBtn" style="margin-top: 14px;">Reset All Fields</button>
       </div>
 
     </div>
@@ -319,8 +349,8 @@ No cash on court please. Thank you ✨</textarea>
 
 <div class="modal-overlay" id="importModal">
   <div class="modal-content">
-    <h3 style="margin-bottom: 12px; font-weight: 600;">Import Session</h3>
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Paste a previous announcement text here to auto-fill the form.</p>
+    <h3 style="margin-bottom: 12px; font-weight: 700;">Import Session</h3>
+    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px;">Paste a previous announcement text here to auto-fill the form.</p>
     <textarea id="importTextarea" rows="6" placeholder="Paste announcement text..."></textarea>
     <div class="action-row" style="margin-top: 16px;">
       <button class="btn btn-secondary" id="importCancelBtn">Cancel</button>
@@ -331,8 +361,8 @@ No cash on court please. Thank you ✨</textarea>
 
 <div class="modal-overlay" id="confirmModal">
   <div class="modal-content">
-    <h3 id="confirmTitle" style="margin-bottom: 12px; font-weight: 600;">Confirm</h3>
-    <p id="confirmMessage" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;"></p>
+    <h3 id="confirmTitle" style="margin-bottom: 12px; font-weight: 700;">Confirm</h3>
+    <p id="confirmMessage" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 24px;"></p>
     <div class="action-row">
       <button class="btn btn-secondary" id="confirmCancelBtn">Cancel</button>
       <button class="btn btn-danger" id="confirmActionBtn">Yes, do it</button>
@@ -406,7 +436,7 @@ No cash on court please. Thank you ✨</textarea>
 
     // --- Data Calculation (Time & Day) ---
     function calcDuration() {
-        if(!els.start.value || !els.end.value) return 0;
+        if(!els.start.value || !els.end.value) return "0.0";
         const [sh, sm] = els.start.value.split(':').map(Number);
         const [eh, em] = els.end.value.split(':').map(Number);
         let sMins = sh * 60 + sm;
@@ -418,7 +448,7 @@ No cash on court please. Thank you ✨</textarea>
     function updateDateData() {
       if(!els.date.value) return;
       const d = new Date(els.date.value);
-      els.day.textContent = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"][d.getDay()];
+      els.day.textContent = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"][d.getDay()];
       els.duration.textContent = calcDuration() + ' Hrs';
       updatePreview();
     }
@@ -576,15 +606,30 @@ No cash on court please. Thank you ✨</textarea>
       document.querySelectorAll('.w-remove').forEach(btn => btn.onclick = function() { vibrate(); waitingPlayers.splice(this.dataset.idx, 1); renderWaitingPlayers(); updatePreview(); });
     }
 
-    // --- Preview & Export ---
-    function formatTime(t) { if(!t)return''; let [h,m] = t.split(':'); h = parseInt(h); const ampm = h >= 12 ? 'PM' : 'AM'; return `${h%12||12}:${m} ${ampm}`; }
-    function formatDate(dStr) { if(!dStr)return''; const [y,m,d] = dStr.split('-'); return `${d}/${m}/${y}`; }
+    // --- Preview & Export (Classic Format) ---
+    function formatTime(t) { 
+        if(!t) return ''; 
+        let [h, m] = t.split(':'); 
+        h = parseInt(h, 10); 
+        const ampm = h >= 12 ? 'pm' : 'am'; 
+        return `${h % 12 || 12}.${m}${ampm}`; 
+    }
+    
+    function formatDate(dStr) { 
+        if(!dStr) return ''; 
+        const [y, m, d] = dStr.split('-'); 
+        return `${parseInt(d)}/${parseInt(m)}/${y}`; 
+    }
 
     function buildPreview() {
-      let t = `🏸 ${els.day.textContent}, ${formatDate(els.date.value)}\n`;
-      t += `⏰ ${formatTime(els.start.value)} - ${formatTime(els.end.value)} (${calcDuration()} Hrs)\n`;
-      t += `🏟️ ${els.venue.value}\n🏸 Court : ${els.court.value}\n`;
-      t += `💵 RM${parseFloat(els.price.value||0).toFixed(2)} / Pax\n🏸 Shuttle : ${els.shuttle.value}\n👤 Host : ${els.host.value}\n\n`;
+      let t = `📆 : ${formatDate(els.date.value)} , ${els.day.textContent}\n`;
+      t += `⏰ : ${formatTime(els.start.value)} - ${formatTime(els.end.value)}\n`;
+      t += `⏳ : ${calcDuration()} Hours\n`;
+      t += `🏟️ : ${els.venue.value}\n`;
+      t += `🏸 Court : ${els.court.value}\n`;
+      t += `💵 : RM${parseFloat(els.price.value||0).toFixed(2)} / Pax\n`;
+      t += `🏸 Shuttle : ${els.shuttle.value}\n`;
+      t += `👤 Host : ${els.host.value}\n\n`;
       
       if(players.length) { 
         const filled = players.filter(p => p.name.trim() !== '').length;
@@ -631,8 +676,8 @@ No cash on court please. Thank you ✨</textarea>
             <p>${b.venue} • ${b.players.length} Players</p>
           </div>
           <div style="display:flex; gap:8px;">
-            <button class="btn btn-secondary load-btn" data-idx="${idx}" style="padding:8px 12px; font-size:0.8rem;">Load</button>
-            <button class="btn btn-danger del-btn" data-idx="${idx}" style="padding:8px 12px; font-size:0.8rem;">✕</button>
+            <button class="btn btn-secondary load-btn" data-idx="${idx}" style="padding:8px 12px; font-size:0.9rem;">Load</button>
+            <button class="btn btn-danger del-btn" data-idx="${idx}" style="padding:8px 12px; font-size:0.9rem;">✕</button>
           </div>
         `;
         list.appendChild(item);
@@ -656,7 +701,7 @@ No cash on court please. Thank you ✨</textarea>
       players = []; waitingPlayers = []; updateDateData(); renderPlayers(); renderWaitingPlayers(); showToast('Reset complete!');
     });
 
-    // --- Import Parsing ---
+    // --- Import Parsing (Updated for Classic Format) ---
     els.import.onclick = () => { vibrate(); document.getElementById('importTextarea').value = ''; els.importModal.classList.add('active'); };
     document.getElementById('importCancelBtn').onclick = () => { vibrate(); els.importModal.classList.remove('active'); };
     document.getElementById('importParseBtn').onclick = () => {
@@ -673,13 +718,32 @@ No cash on court please. Thank you ✨</textarea>
           if(t.startsWith('📌')) mode = 'footer';
 
           if(mode === 'head') {
-            if(t.includes('🏸') && t.includes('/')) { const p = t.split('🏸')[1].split(','); if(p.length===2){ const dp=p[1].trim().split('/'); if(dp.length===3) els.date.value=`${dp[2]}-${dp[1]}-${dp[0]}`; } }
-            if(t.includes('⏰')) { const m = t.match(/(\d{1,2}:\d{2})/g); if(m && m.length >= 1) els.start.value = m[0]; }
-            if(t.includes('🏟️')) els.venue.value = t.split('🏟️')[1].trim();
-            if(t.includes('Court :')) els.court.value = t.split('Court :')[1].trim();
-            if(t.includes('💵')) { const m = t.match(/RM\s*([\d.]+)/); if(m) els.price.value = m[1]; }
-            if(t.includes('Shuttle :')) els.shuttle.value = t.split('Shuttle :')[1].trim();
-            if(t.includes('Host :')) els.host.value = t.split('Host :')[1].trim();
+            if(t.includes('📆')) { 
+              const parts = t.split('📆')[1].replace(':', '').split(','); 
+              if(parts.length >= 2) {
+                const dp = parts[0].trim().split('/');
+                if(dp.length===3) els.date.value=`${dp[2]}-${dp[1].padStart(2,'0')}-${dp[0].padStart(2,'0')}`; 
+              }
+            }
+            if(t.includes('⏰')) { 
+                const m = t.match(/(\d{1,2})\.(\d{2})(am|pm)/gi); 
+                if(m && m.length >= 1) {
+                    const pt = (str) => {
+                        let time = str.slice(0, -2), mod = str.slice(-2).toLowerCase();
+                        let [h, min] = time.split('.');
+                        if(h === '12') h = '00';
+                        if(mod === 'pm') h = parseInt(h, 10) + 12;
+                        return `${h.toString().padStart(2,'0')}:${min}`;
+                    };
+                    els.start.value = pt(m[0]);
+                    if(m.length >= 2) els.end.value = pt(m[1]);
+                }
+            }
+            if(t.includes('🏟️')) els.venue.value = t.split('🏟️')[1].replace(':', '').trim();
+            if(t.includes('Court')) els.court.value = t.split('Court')[1].replace(':', '').trim();
+            if(t.includes('💵') || t.includes('RM')) { const m = t.match(/RM\s*([\d.]+)/i); if(m) els.price.value = m[1]; }
+            if(t.includes('Shuttle')) els.shuttle.value = t.split('Shuttle')[1].replace(':', '').trim();
+            if(t.includes('Host')) els.host.value = t.split('Host')[1].replace(':', '').trim();
           } 
           else if(mode === 'players') { const m = t.match(/^\d+\.\s*(.+)/); if(m) { let n=m[1].trim(), paid=false; if(n.includes('✅')){paid=true; n=n.replace('✅','').trim();} if(n!=='...') newPlayers.push({name:n, paid}); } }
           else if(mode === 'waiting') { const m = t.match(/^\d+\.\s*(.+)/); if(m && m[1].trim()!=='...') newWaiting.push({name:m[1].trim()}); }
