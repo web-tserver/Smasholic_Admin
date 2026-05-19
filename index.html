@@ -2,573 +2,494 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Smasholic · Badminton Court Booking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Smasholic · Booking App</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIlNtYXNob2xpYyIsCiAgInNob3J0X25hbWUiOiAiU21hc2hvbGljIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmYWZhZjkiLAogICJ0aGVtZV9jb2xvciI6ICIjN2MzYWVkIiwKICAiaWNvbnMiOiBbewogICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWwsJTNDc3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjxyZWN0IHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJyByeD0nMjAnIGZpbGw9JyM3YzNhZWQnLz48dGV4dCB4PSc1MCUnIHk9JzU1JScgZm9udC1zaXplPSc1MCcgZmlsbD0nI2ZmZicgZm9udC1mYW1pbHk9J0FyaWFsJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkeT0nLjFlbSc+8J+PuDwvdGV4dD48L3N2Zz4iLAogICAgInNpemVzIjogIjE5MngxOTIiLAogICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICB9XSwKICAic2NvcGUiOiAiLiIsCiAgImRlc2NyaXB0aW9uIjogIkJhZG1pbnRvbiBjb3VydCBib29raW5nIHRvb2wiCn0=">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Smasholic">
-  <meta name="theme-color" content="#7c3aed">
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',system-ui,sans-serif; }
     :root {
-      --purple: #7c3aed;
-      --purple-light: #f5f3ff;
-      --purple-dark: #6d28d9;
-      --yellow: #f59e0b;
-      --yellow-light: #fffbeb;
-      --yellow-dark: #d97706;
-      --bg: #fafaf9;
-      --card-bg: #ffffff;
-      --text: #1c1c1e;
-      --sub: #6e6e73;
-      --border: #f0f0f2;
+      --primary: #6366f1; 
+      --primary-light: #e0e7ff;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --input-bg: #f1f5f9;
       --danger: #ef4444;
       --success: #10b981;
-      --sheet-bg: #ffffff;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.06);
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', system-ui, sans-serif; }
+    
     body {
-      background: var(--bg);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 0 0 20px 0;
-      overscroll-behavior: none;
-      -webkit-user-select: none;
-    }
-    .app-shell {
-      width: 100%;
-      max-width: 480px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background: var(--bg);
-    }
-    .app-header {
-      background: var(--card-bg);
-      padding: 16px 16px 12px;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(10px);
-      background: rgba(255,255,255,0.92);
-    }
-    .app-header h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--purple);
-      letter-spacing: -0.5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .app-header .logo-icon { font-size: 1.8rem; }
-    .app-content {
-      flex: 1;
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-      border: 1px solid var(--border);
-    }
-    .form-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-    label {
-      font-weight: 500;
-      font-size: 0.75rem;
-      margin-bottom: 4px;
-      color: var(--sub);
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-    input, textarea {
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: 0.95rem;
-      background: #fafaf9;
-      color: var(--text);
-      outline: none;
-      transition: 0.15s;
-      -webkit-appearance: none;
-    }
-    input:focus, textarea:focus {
-      border-color: var(--purple);
-      box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
-      background: #fff;
-    }
-    button {
-      background: var(--purple);
-      color: white;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: 0.15s;
-      cursor: pointer;
+      background: var(--bg); color: var(--text-main);
+      display: flex; justify-content: center; min-height: 100vh;
+      overscroll-behavior-y: none; -webkit-font-smoothing: antialiased;
       -webkit-tap-highlight-color: transparent;
-      white-space: nowrap;
-      box-shadow: 0 4px 10px rgba(124,58,237,0.2);
-    }
-    button:active { transform: scale(0.97); }
-    button.secondary {
-      background: #f5f5f7;
-      color: var(--text);
-      box-shadow: none;
-      border: 1px solid var(--border);
-    }
-    button.danger {
-      background: #fef2f2;
-      color: var(--danger);
-      box-shadow: none;
-      border: 1px solid #fecaca;
-    }
-    button.warning {
-      background: var(--yellow-light);
-      color: var(--yellow-dark);
-      box-shadow: none;
-      border: 1px solid #fde68a;
-    }
-    .players-section, .waiting-section { margin: 12px 0 6px; }
-    .section-title {
-      font-weight: 600;
-      font-size: 0.85rem;
-      margin-bottom: 10px;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
-    .player-row, .waiting-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-      background: #fff;
-      padding: 8px 10px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      max-width: 100%;
-      overflow: hidden;
-      position: relative;
+    .app-container {
+      width: 100%; max-width: 480px; background: var(--bg);
+      min-height: 100vh; display: flex; flex-direction: column;
+      position: relative; padding-bottom: 80px; 
     }
-    .player-row .num, .waiting-row .num {
-      font-weight: 600;
-      width: 22px;
-      color: var(--purple);
-      flex-shrink: 0;
-      font-size: 0.9rem;
-      text-align: center;
+
+    /* --- Header --- */
+    .header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      padding: 10px 16px; border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+      display: flex; justify-content: center; align-items: center;
     }
-    .player-row input, .waiting-row input {
-      flex: 1;
-      min-width: 0;
-      border: 1px solid transparent;
-      padding: 8px 6px;
-      border-radius: 10px;
-      background: transparent;
-      font-size: 0.9rem;
+    .header h1 {
+      font-size: 1.1rem; font-weight: 700; color: var(--primary);
+      display: flex; align-items: center; gap: 6px; letter-spacing: -0.5px;
     }
-    .player-row input:focus, .waiting-row input:focus {
-      border-color: var(--purple);
-      background: #fff;
+    .header .icon { font-size: 1.25rem; }
+
+    /* --- Content Area --- */
+    .content { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* --- Cards --- */
+    .card { background: var(--surface); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .card-title { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    
+    /* --- Form Grid --- */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+    .full-width { grid-column: span 2; }
+    
+    .input-group { display: flex; flex-direction: column; gap: 6px; }
+    .input-group label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    input, textarea {
+      width: 100%; background: var(--input-bg); border: 2px solid transparent; border-radius: 12px;
+      padding: 12px 16px; font-size: 0.95rem; color: var(--text-main); transition: all 0.2s ease; outline: none;
     }
-    .player-row .paid-btn, .player-row .remove-btn,
-    .waiting-row .remove-btn {
-      flex-shrink: 0;
-      width: 44px; height: 44px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      padding: 0;
-      cursor: pointer;
-      background: #f9f9f9;
-      border: 1px solid var(--border);
-      color: #a1a1a6;
-      transition: 0.15s;
+    input:focus, textarea:focus { background: var(--surface); border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
+    
+    .readonly-badge {
+      background: var(--primary-light); color: var(--primary); padding: 12px 16px;
+      border-radius: 12px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center;
     }
-    .player-row .remove-btn, .waiting-row .remove-btn {
-      border: none;
-      color: #d1d5db;
+
+    /* --- Buttons --- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--primary); color: white; border: none; padding: 14px 20px;
+      border-radius: 14px; font-weight: 600; font-size: 0.95rem; cursor: pointer;
+      transition: transform 0.1s ease, background 0.2s ease; width: 100%;
     }
-    .player-row .remove-btn:hover, .waiting-row .remove-btn:hover { background: #fef2f2; color: var(--danger); }
-    .player-row .paid-btn.paid {
-      background: var(--yellow-light);
-      border-color: var(--yellow);
-      color: var(--yellow-dark);
+    .btn:active { transform: scale(0.97); }
+    .btn-secondary { background: var(--input-bg); color: var(--text-main); }
+    .btn-danger { background: #fee2e2; color: var(--danger); }
+    .btn-danger:active { background: #fecaca; }
+    .btn-outline { background: transparent; border: 2px dashed var(--border); color: var(--text-muted); }
+    
+    /* --- Player Rows --- */
+    .player-list { display: flex; flex-direction: column; gap: 10px; }
+    .player-row {
+      display: flex; align-items: center; gap: 10px; background: var(--surface);
+      border: 1px solid var(--border); padding: 8px 10px; border-radius: 16px; transition: all 0.2s; position: relative;
     }
-    .player-row.duplicate input { border-color: #fecaca; background: #fff5f5; }
-    .actions-row {
-      display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0;
+    .player-row.focused { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .player-row.duplicate { border-color: #fca5a5; background: #fef2f2; }
+    
+    .player-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
+    .player-row input { flex: 1; padding: 6px 0; background: transparent; border: none; box-shadow: none; font-size: 0.95rem; }
+    
+    .action-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; flex-shrink: 0; transition: 0.2s; font-size: 1.1rem; }
+    
+    /* Tick Button Styling */
+    .paid-toggle { background: var(--input-bg); color: #cbd5e1; font-size: 1.2rem; }
+    .paid-toggle.active { background: var(--success); color: white; }
+    
+    .remove-toggle { background: transparent; color: #cbd5e1; }
+    .remove-toggle:hover { color: var(--danger); background: #fee2e2; }
+
+    .duplicate-warning { color: var(--danger); font-size: 0.8rem; font-weight: 500; display: none; margin-top: 10px; }
+    .duplicate-warning.active { display: block; }
+
+    /* --- Stepper --- */
+    .stepper-container { display: flex; flex-direction: column; align-items: center; margin-top: 16px; }
+    .stepper {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      background: var(--input-bg); padding: 6px; border-radius: 14px; width: fit-content;
     }
-    .actions-row button { flex: 1 1 auto; }
-    .preview-box {
-      background: #f9f9f9;
-      border-radius: 16px;
-      padding: 14px;
-      border: 1px solid var(--border);
-      font-family: 'SF Mono', 'Cascadia Code', monospace;
-      font-size: 0.8rem;
-      white-space: pre-wrap;
-      overflow-x: auto;
-      color: var(--text);
-      line-height: 1.5;
-      max-height: 300px;
+    .stepper-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--surface); border: none; box-shadow: var(--shadow-sm); font-size: 1.2rem; color: var(--text-main); cursor: pointer; }
+    .stepper-btn:active { transform: scale(0.9); }
+    .stepper-count { 
+      font-weight: 700; font-size: 1.1rem; min-width: 24px; text-align: center; color: var(--primary); 
+      text-decoration: underline; text-underline-offset: 4px; cursor: pointer;
     }
-    .booking-list-item {
-      background: #fff;
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 10px;
-      border: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
+    .stepper-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+
+    /* --- Collapsible --- */
+    .collapsible-header { cursor: pointer; }
+    .collapsible-header .chevron { transition: transform 0.3s ease; color: var(--text-muted); }
+    .collapsed .collapsible-header .chevron { transform: rotate(-90deg); }
+    .collapsible-body { transition: max-height 0.3s ease, opacity 0.3s ease; overflow: hidden; opacity: 1; }
+    .collapsed .collapsible-body { max-height: 0 !important; opacity: 0; margin-top: 0; }
+
+    /* --- Preview Box --- */
+    .preview-box { background: #1e293b; color: #f8fafc; border-radius: 16px; padding: 16px; font-family: monospace; font-size: 0.85rem; white-space: pre-wrap; line-height: 1.6; max-height: 300px; overflow-y: auto; }
+    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+
+    /* --- Bottom Navigation --- */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(226, 232, 240, 0.6);
+      display: flex; justify-content: space-around; padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+      z-index: 50; max-width: 480px; margin: 0 auto;
     }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: color 0.2s; }
+    .nav-item.active { color: var(--primary); }
+    .nav-icon { font-size: 1.3rem; }
+
+    /* --- Modals & Toasts --- */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.2s ease; padding: 20px; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-content { background: var(--surface); border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; transform: translateY(20px); transition: 0.3s ease; box-shadow: var(--shadow-md); }
+    .modal-overlay.active .modal-content { transform: translateY(0); }
+
+    .toast { position: fixed; top: 24px; left: 50%; transform: translate(-50%, -20px); background: #1e293b; color: white; padding: 12px 24px; border-radius: 100px; font-size: 0.9rem; font-weight: 500; z-index: 200; opacity: 0; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-md); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .saved-item { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .saved-info h4 { font-size: 1rem; color: var(--primary); margin-bottom: 4px; }
+    .saved-info p { font-size: 0.8rem; color: var(--text-muted); }
     .hidden { display: none !important; }
-    .auto-add-row {
-      display: flex; align-items: center; gap: 8px; flex: 1;
-    }
-    .auto-add-row input { width: 70px; text-align: center; }
-    .total-hours {
-      font-size: 0.8rem; color: var(--purple); font-weight: 600;
-      margin: 4px 0; display: flex; align-items: center; gap: 4px;
-    }
-    .duplicate-warning {
-      color: var(--danger); font-size: 0.75rem; display: none; align-items: center; gap: 4px; margin-top: 6px;
-    }
-    .duplicate-warning.active { display: flex; }
-    .import-modal {
-      position: fixed; top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
-      z-index: 100; padding: 16px;
-    }
-    .import-modal .modal-content {
-      background: #fff; border-radius: 24px; padding: 20px; width: 100%; max-width: 420px;
-    }
-    /* Make import textarea big like footer */
-    .import-modal .modal-content textarea {
-      min-height: 150px;
-      height: 150px;
-      font-size: 0.9rem;
-      padding: 14px;
-      line-height: 1.6;
-      font-family: 'Poppins', sans-serif;
-      resize: vertical;
-    }
-    .autocomplete-list {
-      position: absolute;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-      z-index: 30;
-      max-height: 200px;
-      overflow-y: auto;
-      width: calc(100% - 56px);
-      left: 28px;
-      top: 100%;
-      margin-top: 4px;
-      display: none;
-    }
+    
+    .autocomplete-list { position: absolute; top: calc(100% + 4px); left: 42px; right: 42px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-md); z-index: 50; max-height: 150px; overflow-y: auto; display: none; }
     .autocomplete-list.active { display: block; }
-    .autocomplete-list .autocomplete-item {
-      padding: 10px 14px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      border-bottom: 1px solid #f0f0f2;
-    }
-    .autocomplete-list .autocomplete-item:last-child { border-bottom: none; }
-    .autocomplete-list .autocomplete-item:hover, .autocomplete-list .autocomplete-item:active {
-      background: var(--purple-light);
-    }
-    hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-
-    #splash {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--purple);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      transition: opacity 0.5s ease;
-    }
-    #splash.hidden { opacity: 0; pointer-events: none; }
-    #splash .splash-content { text-align: center; color: white; }
-    #splash .splash-logo { font-size: 4rem; animation: pulse 1s infinite alternate; }
-    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
-
-    .action-sheet-overlay {
-      position: fixed; top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.4); display: flex; align-items: flex-end; justify-content: center;
-      z-index: 150; visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s;
-    }
-    .action-sheet-overlay.active { visibility: visible; opacity: 1; }
-    .action-sheet {
-      background: var(--sheet-bg); border-radius: 20px 20px 0 0; width: 100%; max-width: 480px;
-      padding: 20px; animation: slideUp 0.3s ease;
-    }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-    .action-sheet h3 { font-weight: 600; margin-bottom: 16px; }
-    .action-sheet button { width: 100%; margin-bottom: 8px; }
-
-    /* Footer card with full-length textarea */
-    .footer-card textarea {
-      min-height: 120px;
-      height: 120px;
-      font-size: 0.9rem;
-      font-family: 'Poppins', sans-serif;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      width: 100%;
-      resize: vertical;
-      line-height: 1.6;
-    }
+    .autocomplete-item { padding: 12px 16px; font-size: 0.9rem; cursor: pointer; border-bottom: 1px solid var(--input-bg); }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:active { background: var(--input-bg); }
   </style>
 </head>
 <body>
-<div id="splash"><div class="splash-content"><div class="splash-logo">🏸</div><h1 style="font-size:1.8rem;font-weight:700;">Smasholic</h1></div></div>
-<div class="app-shell">
-  <div class="app-header"><h1><span class="logo-icon">🏸</span> Smasholic</h1></div>
-  <div class="app-content">
-    <!-- Main Booking Card -->
-    <div class="card">
-      <div class="form-grid">
-        <div class="form-group"><label>📆 Date</label><input type="date" id="dateInput"></div>
-        <div class="form-group"><label>Day (auto)</label><input type="text" id="dayInput" readonly></div>
-        <div class="form-group"><label>⏰ Start</label><input type="time" id="startTime" value="21:30"></div>
-        <div class="form-group"><label>End</label><input type="time" id="endTime" value="23:30"></div>
-        <div class="form-group"><label>⏱️ Total</label><div class="total-hours"><span id="totalHours">2.0 hours</span></div></div>
-        <div class="form-group"><label>🏟️ Venue</label><input type="text" id="venue" value="Forum Sba, Setia Alam"></div>
-        <div class="form-group"><label>Court</label><input type="text" id="court" value="Rubber Court 6 & 7"></div>
-        <div class="form-group"><label>💵 Price (RM)</label><input type="number" id="price" value="17" step="0.5"></div>
-        <div class="form-group"><label>🏸 Shuttle</label><input type="text" id="shuttle" value="RSL"></div>
-        <div class="form-group"><label>👤 Host</label><input type="text" id="host" placeholder="Your name"></div>
-      </div>
 
-      <!-- Main Players -->
-      <div class="players-section">
-        <div class="section-title">👥 Players (long‑press to reorder, tap ✕ to delete)</div>
-        <div id="playersContainer"></div>
-        <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name!</div>
-        <div class="actions-row">
-          <button class="secondary" id="addPlayerBtn">+ Add Slot</button>
-          <div class="auto-add-row"><input type="number" id="autoAddCount" placeholder="6" min="1" value="6"><button id="autoAddBtn" class="secondary" style="flex:1;">Set Total</button></div>
+<div class="app-container">
+  
+  <div class="header">
+    <h1><span class="icon">🏸</span> Smasholic</h1>
+  </div>
+
+  <div class="content" id="mainContent">
+    
+    <div id="bookingTab">
+      
+      <div class="card">
+        <div class="form-grid">
+          <div class="input-group">
+            <label>Date</label>
+            <input type="date" id="dateInput">
+          </div>
+          <div class="input-group">
+            <label>Day</label>
+            <div class="readonly-badge" id="dayInput">Auto</div>
+          </div>
+          <div class="input-group">
+            <label>Start</label>
+            <input type="time" id="startTime" value="21:30">
+          </div>
+          <div class="input-group">
+            <label>End</label>
+            <input type="time" id="endTime" value="23:30">
+          </div>
+          <div class="input-group">
+            <label>Duration</label>
+            <div class="readonly-badge" id="totalHours">2.0 Hrs</div>
+          </div>
+          <div class="input-group">
+            <label>Price (RM)</label>
+            <input type="number" id="price" value="17" step="0.5">
+          </div>
+          <div class="input-group full-width">
+            <label>Venue</label>
+            <input type="text" id="venue" value="Forum Sba, Setia Alam">
+          </div>
+          <div class="input-group full-width">
+            <label>Court</label>
+            <input type="text" id="court" value="Rubber Court 6 & 7">
+          </div>
+          <div class="input-group">
+            <label>Shuttle</label>
+            <input type="text" id="shuttle" value="RSL">
+          </div>
+          <div class="input-group">
+            <label>Host Name</label>
+            <input type="text" id="host" placeholder="Your name">
+          </div>
         </div>
-        <div class="actions-row">
-          <button id="clearPlayersBtn" class="warning">Clear</button>
-          <button id="resetSessionBtn" class="danger">Reset</button>
+      </div>
+
+      <div class="card collapsible" id="playersCard">
+        <div class="card-header collapsible-header" onclick="toggleCollapse('playersCard')">
+          <span class="card-title">👥 Roster</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="collapsible-body" style="max-height: 2000px;">
+          <div class="player-list" id="playersContainer"></div>
+          
+          <button class="btn btn-outline" id="addPlayerBtn" style="margin-top: 12px;">+ Add Player</button>
+          <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name detected!</div>
+          
+          <div class="stepper-container">
+            <div class="stepper">
+              <button class="stepper-btn" id="stepperMinus">–</button>
+              <span class="stepper-count" id="playerCountDisplay" title="Tap to set total players">0</span>
+              <button class="stepper-btn" id="stepperPlus">+</button>
+            </div>
+            <span class="stepper-hint">Tap number to instantly set total players</span>
+          </div>
         </div>
       </div>
 
-      <!-- Waiting List -->
-      <div class="waiting-section">
-        <div class="section-title">📋 Waiting List</div>
-        <div id="waitingContainer"></div>
-        <div class="actions-row">
-          <button class="secondary" id="addWaitingBtn">+ Add Waiting</button>
-          <button id="clearWaitingBtn" class="warning">Clear Waiting</button>
+      <div class="card collapsible collapsed" id="waitingCard">
+        <div class="card-header collapsible-header" onclick="toggleCollapse('waitingCard')">
+          <span class="card-title">📋 Waiting List</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="collapsible-body" style="max-height: 2000px;">
+          <div class="player-list" id="waitingContainer" style="margin-bottom: 12px;"></div>
+          <button class="btn btn-outline" id="addWaitingBtn">+ Add to Waiting List</button>
         </div>
       </div>
 
-      <div class="actions-row">
-        <button id="copyBtn" class="secondary">📋 Copy</button>
-        <button id="saveBookingBtn">💾 Save</button>
-        <button id="importBtn" class="secondary">📥 Import</button>
+      <div class="card collapsible collapsed" id="footerCard">
+        <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')">
+          <span class="card-title">📌 Footer Message</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="collapsible-body" style="max-height: 500px;">
+          <textarea id="footerMessage" rows="2">📌 Pembayaran utk confirm slot last pada JUMAAT pagi (QR sahaja).
+No cash on court please. Thank you ✨</textarea>
+        </div>
       </div>
 
-      <div>
-        <div class="section-title">📄 Announcement</div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📄 Preview</span>
+        </div>
         <div class="preview-box" id="preview"></div>
+        
+        <div class="action-row">
+          <button class="btn" id="copyBtn" style="grid-column: span 2;">📋 Copy Announcement</button>
+          <button class="btn btn-secondary" id="importBtn">📥 Import</button>
+          <button class="btn btn-secondary" id="saveBookingBtn">💾 Save</button>
+        </div>
+        
+        <button class="btn btn-danger" id="resetSessionBtn" style="margin-top: 12px;">Reset All Fields</button>
+      </div>
+
+    </div>
+
+    <div id="savedTab" class="hidden">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📂 Saved Sessions</span>
+        </div>
+        <div id="savedBookingsList"></div>
+        <p id="noBookingsMsg" style="text-align:center; color:var(--text-muted); padding: 20px 0;">No saved sessions yet.</p>
+        <button class="btn btn-danger" id="clearAllBtn" style="margin-top: 16px;">Clear All Saved</button>
       </div>
     </div>
 
-    <!-- Footer Message Card (full-length) -->
-    <div class="card footer-card">
-      <h3 style="font-size:0.95rem; font-weight:600; margin-bottom:10px;">📌 Footer Message (editable)</h3>
-      <textarea id="footerMessage">📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi
-boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea>
-    </div>
-
-    <!-- Saved Sessions Card -->
-    <div class="card">
-      <h3 style="font-size:0.95rem; font-weight:600; margin-bottom:10px;">📂 Saved Sessions</h3>
-      <div id="savedBookingsList"></div>
-      <p id="noBookingsMsg" style="color:#a1a1a6; font-size:0.8rem; text-align:center; padding:12px;">No saved sessions yet</p>
-      <button id="clearAllBtn" class="danger" style="width:100%; margin-top:10px;">Clear All</button>
-    </div>
   </div>
+
+  <nav class="bottom-nav">
+    <div class="nav-item active" data-tab="booking">
+      <span class="nav-icon">📅</span>
+      <span>Booking</span>
+    </div>
+    <div class="nav-item" data-tab="saved">
+      <span class="nav-icon">📂</span>
+      <span>Saved</span>
+    </div>
+  </nav>
+
 </div>
 
-<!-- Import Modal (now with bigger textarea) -->
-<div id="importModal" class="import-modal hidden">
+<div id="toast" class="toast"></div>
+
+<div class="modal-overlay" id="importModal">
   <div class="modal-content">
-    <h3 style="font-weight:600; margin-bottom:12px;">📥 Paste Announcement</h3>
-    <textarea id="importTextarea" placeholder="Paste the full announcement..."></textarea>
-    <div style="display:flex; gap:8px; margin-top:14px; justify-content:flex-end;">
-      <button id="importCancelBtn" class="secondary">Cancel</button>
-      <button id="importParseBtn">Parse & Fill</button>
+    <h3 style="margin-bottom: 12px; font-weight: 600;">Import Session</h3>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Paste a previous announcement text here to auto-fill the form.</p>
+    <textarea id="importTextarea" rows="6" placeholder="Paste announcement text..."></textarea>
+    <div class="action-row" style="margin-top: 16px;">
+      <button class="btn btn-secondary" id="importCancelBtn">Cancel</button>
+      <button class="btn" id="importParseBtn">Parse Text</button>
     </div>
-    <p id="importError" style="color:var(--danger); font-size:0.8rem; margin-top:8px; display:none;"></p>
   </div>
 </div>
 
-<!-- Action Sheet -->
-<div class="action-sheet-overlay" id="actionSheetOverlay">
-  <div class="action-sheet" id="actionSheet">
-    <h3 id="actionSheetTitle">Confirm</h3>
-    <p id="actionSheetMessage" style="color:var(--sub); margin-bottom:16px;"></p>
-    <button id="actionSheetConfirm" class="danger">Confirm</button>
-    <button id="actionSheetCancel" class="secondary">Cancel</button>
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-content">
+    <h3 id="confirmTitle" style="margin-bottom: 12px; font-weight: 600;">Confirm</h3>
+    <p id="confirmMessage" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;"></p>
+    <div class="action-row">
+      <button class="btn btn-secondary" id="confirmCancelBtn">Cancel</button>
+      <button class="btn btn-danger" id="confirmActionBtn">Yes, do it</button>
+    </div>
   </div>
 </div>
 
 <script>
   (function() {
-    setTimeout(() => document.getElementById('splash').classList.add('hidden'), 1500);
+    // --- DOM Elements ---
+    const els = {
+      date: document.getElementById('dateInput'), day: document.getElementById('dayInput'),
+      start: document.getElementById('startTime'), end: document.getElementById('endTime'), duration: document.getElementById('totalHours'),
+      venue: document.getElementById('venue'), court: document.getElementById('court'),
+      price: document.getElementById('price'), shuttle: document.getElementById('shuttle'),
+      host: document.getElementById('host'), footer: document.getElementById('footerMessage'),
+      preview: document.getElementById('preview'), playersContainer: document.getElementById('playersContainer'),
+      waitingContainer: document.getElementById('waitingContainer'),
+      playerCount: document.getElementById('playerCountDisplay'), dupWarning: document.getElementById('duplicateWarning'),
+      
+      addPlayer: document.getElementById('addPlayerBtn'), addWaiting: document.getElementById('addWaitingBtn'),
+      stepMinus: document.getElementById('stepperMinus'), stepPlus: document.getElementById('stepperPlus'),
+      copy: document.getElementById('copyBtn'), save: document.getElementById('saveBookingBtn'), import: document.getElementById('importBtn'),
+      reset: document.getElementById('resetSessionBtn'), clearSaved: document.getElementById('clearAllBtn'),
+      
+      toast: document.getElementById('toast'), importModal: document.getElementById('importModal'),
+      confirmModal: document.getElementById('confirmModal')
+    };
 
-    // DOM elements – main
-    const dateInput = document.getElementById('dateInput');
-    const dayInput = document.getElementById('dayInput');
-    const startTime = document.getElementById('startTime');
-    const endTime = document.getElementById('endTime');
-    const totalHoursSpan = document.getElementById('totalHours');
-    const venue = document.getElementById('venue');
-    const court = document.getElementById('court');
-    const price = document.getElementById('price');
-    const shuttle = document.getElementById('shuttle');
-    const host = document.getElementById('host');
-    const playersContainer = document.getElementById('playersContainer');
-    const addPlayerBtn = document.getElementById('addPlayerBtn');
-    const autoAddCount = document.getElementById('autoAddCount');
-    const autoAddBtn = document.getElementById('autoAddBtn');
-    const clearPlayersBtn = document.getElementById('clearPlayersBtn');
-    const resetSessionBtn = document.getElementById('resetSessionBtn');
-    const duplicateWarning = document.getElementById('duplicateWarning');
-    const previewDiv = document.getElementById('preview');
-    const copyBtn = document.getElementById('copyBtn');
-    const saveBookingBtn = document.getElementById('saveBookingBtn');
-    const savedBookingsList = document.getElementById('savedBookingsList');
-    const noBookingsMsg = document.getElementById('noBookingsMsg');
-    const clearAllBtn = document.getElementById('clearAllBtn');
-    const importBtn = document.getElementById('importBtn');
-    const importModal = document.getElementById('importModal');
-    const importTextarea = document.getElementById('importTextarea');
-    const importCancelBtn = document.getElementById('importCancelBtn');
-    const importParseBtn = document.getElementById('importParseBtn');
-    const importError = document.getElementById('importError');
-
-    // Waiting list + footer
-    const waitingContainer = document.getElementById('waitingContainer');
-    const addWaitingBtn = document.getElementById('addWaitingBtn');
-    const clearWaitingBtn = document.getElementById('clearWaitingBtn');
-    const footerMessage = document.getElementById('footerMessage');
-
-    // Action sheet
-    const actionSheetOverlay = document.getElementById('actionSheetOverlay');
-    const actionSheetTitle = document.getElementById('actionSheetTitle');
-    const actionSheetMessage = document.getElementById('actionSheetMessage');
-    const actionSheetConfirm = document.getElementById('actionSheetConfirm');
-    const actionSheetCancel = document.getElementById('actionSheetCancel');
-
+    // --- State ---
     let players = [];
     let waitingPlayers = [];
-    let actionSheetCallback = null;
+    let savedBookings = JSON.parse(localStorage.getItem('smasholic_saved_bookings') || '[]');
+    let confirmCallback = null;
 
-    function vibrate(ms = 10) { if (navigator.vibrate) navigator.vibrate(ms); }
-
-    function showActionSheet(title, message, confirmText, onConfirm) {
-      actionSheetTitle.textContent = title;
-      actionSheetMessage.textContent = message;
-      actionSheetConfirm.textContent = confirmText || 'Confirm';
-      actionSheetCallback = onConfirm;
-      actionSheetOverlay.classList.add('active');
+    // --- Initialization ---
+    els.date.value = new Date().toISOString().split('T')[0];
+    
+    // --- UI Helpers ---
+    function showToast(msg, icon = '✅') {
+      els.toast.innerHTML = `<span>${icon}</span> ${msg}`;
+      els.toast.classList.add('show');
+      setTimeout(() => els.toast.classList.remove('show'), 2500);
     }
-    actionSheetConfirm.addEventListener('click', () => {
-      vibrate();
-      actionSheetOverlay.classList.remove('active');
-      if (actionSheetCallback) actionSheetCallback();
-    });
-    actionSheetCancel.addEventListener('click', () => {
-      vibrate();
-      actionSheetOverlay.classList.remove('active');
-      actionSheetCallback = null;
+    
+    function vibrate(ms = 10) { if(navigator.vibrate) navigator.vibrate(ms); }
+    function escapeHtml(str) { return (str||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+    window.toggleCollapse = (id) => document.getElementById(id).classList.toggle('collapsed');
+
+    function showConfirm(title, msg, onConfirm) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = msg;
+      confirmCallback = onConfirm;
+      els.confirmModal.classList.add('active');
+    }
+    document.getElementById('confirmCancelBtn').onclick = () => { els.confirmModal.classList.remove('active'); vibrate(); };
+    document.getElementById('confirmActionBtn').onclick = () => { els.confirmModal.classList.remove('active'); vibrate(); if(confirmCallback) confirmCallback(); };
+
+    document.querySelectorAll('.nav-item').forEach(nav => {
+      nav.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        nav.classList.add('active');
+        const isBooking = nav.dataset.tab === 'booking';
+        document.getElementById('bookingTab').classList.toggle('hidden', !isBooking);
+        document.getElementById('savedTab').classList.toggle('hidden', isBooking);
+        if(!isBooking) renderSaved();
+        vibrate();
+      });
     });
 
-    const NAMES_STORAGE_KEY = 'smasholic_used_names';
-    function getUsedNames() { try { return JSON.parse(localStorage.getItem(NAMES_STORAGE_KEY)) || []; } catch { return []; } }
-    function addUsedName(name) {
-      if (!name.trim()) return;
-      const names = getUsedNames().filter(n => n.toLowerCase() !== name.trim().toLowerCase());
-      names.unshift(name.trim());
-      if (names.length > 30) names.pop();
-      localStorage.setItem(NAMES_STORAGE_KEY, JSON.stringify(names));
+    // --- Data Calculation (Time & Day) ---
+    function calcDuration() {
+        if(!els.start.value || !els.end.value) return 0;
+        const [sh, sm] = els.start.value.split(':').map(Number);
+        const [eh, em] = els.end.value.split(':').map(Number);
+        let sMins = sh * 60 + sm;
+        let eMins = eh * 60 + em;
+        if (eMins < sMins) eMins += 24 * 60; // Crosses midnight
+        return ((eMins - sMins) / 60).toFixed(1);
+    }
+
+    function updateDateData() {
+      if(!els.date.value) return;
+      const d = new Date(els.date.value);
+      els.day.textContent = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"][d.getDay()];
+      els.duration.textContent = calcDuration() + ' Hrs';
+      updatePreview();
+    }
+    
+    els.date.addEventListener('change', updateDateData);
+    els.start.addEventListener('change', updateDateData);
+    els.end.addEventListener('change', updateDateData);
+    updateDateData();
+
+    [els.venue, els.court, els.price, els.shuttle, els.host, els.footer].forEach(e => e.addEventListener('input', updatePreview));
+
+    // --- Name Autocomplete ---
+    const NAMES_KEY = 'smasholic_names';
+    function getNames() { try { return JSON.parse(localStorage.getItem(NAMES_KEY)) || []; } catch { return []; } }
+    function addName(name) {
+      name = name.trim(); if(!name) return;
+      let names = getNames().filter(n => n.toLowerCase() !== name.toLowerCase());
+      names.unshift(name);
+      if(names.length > 40) names.pop();
+      localStorage.setItem(NAMES_KEY, JSON.stringify(names));
     }
 
     function showAutocomplete(input, idx, isWaiting = false) {
-      document.querySelectorAll('.autocomplete-list').forEach(el => el.remove());
-      const value = input.value.trim();
-      if (!value) return;
-      const names = getUsedNames().filter(n => n.toLowerCase().includes(value.toLowerCase()));
-      if (names.length === 0) return;
+      document.querySelectorAll('.autocomplete-list').forEach(e => e.remove());
+      const val = input.value.trim().toLowerCase();
+      if(!val) return;
+      const matches = getNames().filter(n => n.toLowerCase().includes(val) && n.toLowerCase() !== val);
+      if(!matches.length) return;
 
       const list = document.createElement('div');
       list.className = 'autocomplete-list active';
-      names.forEach(name => {
+      matches.forEach(name => {
         const item = document.createElement('div');
-        item.className = 'autocomplete-item';
-        item.textContent = name;
-        item.addEventListener('mousedown', (e) => {
-          e.preventDefault();
-          input.value = name;
-          if (isWaiting) {
-            waitingPlayers[idx].name = name;
-            renderWaitingPlayers();
-          } else {
-            players[idx].name = name;
-            updateDuplicateStyling();
-            updatePreview();
-          }
-          list.remove();
-          addUsedName(name);
-          vibrate();
-        });
+        item.className = 'autocomplete-item'; item.textContent = name;
+        item.onmousedown = (e) => {
+          e.preventDefault(); input.value = name;
+          if(isWaiting) waitingPlayers[idx].name = name; else { players[idx].name = name; updateDuplicateStyling(); }
+          list.remove(); updatePreview(); addName(name); vibrate();
+        };
         list.appendChild(item);
       });
-      const row = input.closest('.player-row, .waiting-row');
-      row.style.position = 'relative';
-      row.appendChild(list);
+      input.closest('.player-row').appendChild(list);
+    }
+
+    // --- Player Management ---
+    els.addPlayer.onclick = () => { players.push({name:"", paid:false}); renderPlayers(); updatePreview(); vibrate(); };
+    els.stepPlus.onclick = els.addPlayer.onclick;
+    els.stepMinus.onclick = () => { if(players.length) { players.pop(); renderPlayers(); updatePreview(); vibrate(); } };
+    
+    els.playerCount.onclick = () => {
+        const count = parseInt(prompt("Enter total number of players (e.g. 16):", players.length));
+        if (!isNaN(count) && count >= 0) {
+            while(players.length < count) players.push({name:"", paid:false});
+            while(players.length > count) players.pop();
+            renderPlayers(); updatePreview(); vibrate();
+        }
+    };
+
+    function findDuplicates() {
+      const counts = new Map(), dups = new Set();
+      players.forEach(p => { const n = p.name.trim().toLowerCase(); if(n) { counts.set(n, (counts.get(n)||0)+1); if(counts.get(n)>1) dups.add(n); }});
+      return dups;
+    }
+    
+    function updateDuplicateStyling() {
+      const dups = findDuplicates();
+      document.querySelectorAll('#playersContainer .player-row').forEach((row, idx) => {
+        if(!players[idx]) return;
+        row.classList.toggle('duplicate', dups.has(players[idx].name.trim().toLowerCase()));
+      });
+      els.dupWarning.classList.toggle('active', dups.size > 0);
     }
 
     let longPressTimer = null, isDragging = false, dragStartIdx = null, dragTargetIdx = null;
@@ -576,380 +497,204 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
       document.querySelectorAll('.player-row').forEach((playerRow) => {
         const idx = parseInt(playerRow.dataset.idx);
         playerRow.addEventListener('touchstart', (e) => {
+          if(e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
           clearTimeout(longPressTimer);
-          longPressTimer = setTimeout(() => { isDragging = true; dragStartIdx = idx; playerRow.classList.add('dragging'); vibrate(15); }, 500);
+          longPressTimer = setTimeout(() => { isDragging = true; dragStartIdx = idx; playerRow.style.opacity = '0.5'; vibrate(15); }, 400);
         }, { passive: true });
+        
         playerRow.addEventListener('touchend', () => {
           clearTimeout(longPressTimer);
           if (isDragging) {
-            isDragging = false; playerRow.classList.remove('dragging');
+            isDragging = false; document.querySelectorAll('.player-row').forEach(r => { r.style.opacity = '1'; r.style.borderTop = ''; });
             if (dragStartIdx !== null && dragTargetIdx !== null && dragStartIdx !== dragTargetIdx) {
-              const moved = players.splice(dragStartIdx, 1)[0];
-              players.splice(dragTargetIdx, 0, moved);
+              const moved = players.splice(dragStartIdx, 1)[0]; players.splice(dragTargetIdx, 0, moved);
               renderPlayers(); updatePreview(); vibrate(20);
             }
             dragStartIdx = null; dragTargetIdx = null;
-            document.querySelectorAll('.player-row').forEach(r => r.style.borderTop = '');
           }
         });
+        
         playerRow.addEventListener('touchmove', (e) => {
-          if (!isDragging) return;
-          e.preventDefault();
-          const touch = e.touches[0];
-          const target = document.elementFromPoint(touch.clientX, touch.clientY);
+          if (!isDragging) return; e.preventDefault();
+          const target = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
           const row = target?.closest('.player-row');
           if (row && row !== playerRow) {
             dragTargetIdx = parseInt(row.dataset.idx);
             document.querySelectorAll('.player-row').forEach(r => r.style.borderTop = '');
-            row.style.borderTop = '3px solid var(--purple)';
+            row.style.borderTop = '3px solid var(--primary)';
           }
         }, { passive: false });
       });
     }
 
-    function format12Hour(t) {
-      if (!t) return "";
-      const [h, m] = t.split(':').map(Number);
-      if (isNaN(h) || isNaN(m)) return "";
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      let h12 = h % 12;
-      if (h12 === 0) h12 = 12;
-      return `${h12}:${m.toString().padStart(2,'0')} ${ampm}`;
-    }
-    function formatDateDMY(d) {
-      if (!d) return "";
-      const [y, m, day] = d.split('-');
-      return `${parseInt(day)}/${parseInt(m)}/${y}`;
-    }
-    function getDayFromDate(d) {
-      if (!d) return "";
-      const date = new Date(d + "T00:00:00");
-      const days = ["AHAD","ISNIN","SELASA","RABU","KHAMIS","JUMAAT","SABTU"];
-      return days[date.getDay()];
-    }
-    function updateTotalHours() {
-      const s = startTime.value, e = endTime.value;
-      if (!s || !e) { totalHoursSpan.textContent = '—'; return; }
-      const [sh, sm] = s.split(':').map(Number), [eh, em] = e.split(':').map(Number);
-      if (isNaN(sh)||isNaN(sm)||isNaN(eh)||isNaN(em)) { totalHoursSpan.textContent = '—'; return; }
-      let startMin = sh*60+sm, endMin = eh*60+em;
-      if (endMin <= startMin) endMin += 24*60;
-      const diffMin = endMin - startMin, hours = diffMin/60;
-      totalHoursSpan.textContent = (hours % 1 === 0) ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
-    }
-
-    const today = new Date().toISOString().slice(0,10);
-    dateInput.value = today; dayInput.value = getDayFromDate(today);
-    dateInput.addEventListener('change', () => dayInput.value = getDayFromDate(dateInput.value));
-    startTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
-    endTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
-    updateTotalHours();
-
-    const savedAutoCount = localStorage.getItem('smasholic_autoCount');
-    if (savedAutoCount) autoAddCount.value = savedAutoCount;
-
-    function findDuplicates() {
-      const names = players.map(p => p.name.trim().toLowerCase()).filter(n => n);
-      const dups = new Set(), seen = new Set();
-      names.forEach(n => { if (seen.has(n)) dups.add(n); else seen.add(n); });
-      return dups;
-    }
-    function updateDuplicateStyling() {
-      const dups = findDuplicates();
-      let hasDup = false;
-      document.querySelectorAll('.player-row').forEach(row => {
-        const idx = parseInt(row.dataset.idx);
-        const player = players[idx];
-        if (!player) return;
-        const nameLow = player.name.trim().toLowerCase();
-        const isDup = nameLow !== '' && dups.has(nameLow);
-        row.classList.toggle('duplicate', isDup);
-        if (isDup) hasDup = true;
-      });
-      duplicateWarning.classList.toggle('active', hasDup);
-    }
-
     function renderPlayers() {
-      playersContainer.innerHTML = '';
-      const dups = findDuplicates();
+      els.playersContainer.innerHTML = '';
       players.forEach((p, idx) => {
         const row = document.createElement('div');
         row.className = 'player-row'; row.dataset.idx = idx;
-        const isDup = p.name.trim().toLowerCase() !== '' && dups.has(p.name.trim().toLowerCase());
-        if (isDup) row.classList.add('duplicate');
         row.innerHTML = `
-          <span class="num">${idx+1}.</span>
-          <input type="text" class="pname" value="${escapeHtml(p.name)}" placeholder="Name" data-idx="${idx}" autocomplete="off">
-          <button class="paid-btn ${p.paid?'paid':''}" data-idx="${idx}">✅</button>
-          <button class="remove-btn" data-idx="${idx}">✕</button>
+          <div class="player-avatar">${idx + 1}</div>
+          <input type="text" class="pname" value="${escapeHtml(p.name)}" placeholder="Enter name..." data-idx="${idx}" autocomplete="off">
+          <button class="action-icon paid-toggle ${p.paid ? 'active' : ''}" data-idx="${idx}">✔</button>
+          <button class="action-icon remove-toggle" data-idx="${idx}">✕</button>
         `;
-        playersContainer.appendChild(row);
+        els.playersContainer.appendChild(row);
       });
-      attachPlayerEvents();
-      addDragListeners();
-      duplicateWarning.classList.toggle('active', dups.size > 0);
-    }
 
-    function attachPlayerEvents() {
       document.querySelectorAll('.pname').forEach(inp => {
-        const idx = parseInt(inp.dataset.idx);
-        const newInp = inp.cloneNode(true); inp.parentNode.replaceChild(newInp, inp);
-        newInp.addEventListener('input', function(e) {
-          const i = parseInt(this.dataset.idx);
-          players[i].name = this.value;
-          updateDuplicateStyling(); updatePreview();
-          showAutocomplete(this, i, false);
-        });
-        newInp.addEventListener('blur', () => setTimeout(() => { const list = newInp.parentNode.querySelector('.autocomplete-list'); if (list) list.remove(); }, 150));
-        newInp.addEventListener('focus', function() { if (this.value.trim()) showAutocomplete(this, parseInt(this.dataset.idx), false); });
+        inp.oninput = function() { players[this.dataset.idx].name = this.value; updateDuplicateStyling(); updatePreview(); showAutocomplete(this, this.dataset.idx); };
+        inp.onfocus = function() { this.closest('.player-row').classList.add('focused'); if(this.value.trim()) showAutocomplete(this, this.dataset.idx); };
+        inp.onblur = function() { this.closest('.player-row').classList.remove('focused'); setTimeout(() => { const l = this.parentNode.querySelector('.autocomplete-list'); if(l) l.remove(); }, 150); };
       });
-      document.querySelectorAll('.paid-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          vibrate(); const i = parseInt(this.dataset.idx);
-          players[i].paid = !players[i].paid;
-          if (players[i].name.trim()) addUsedName(players[i].name.trim());
-          renderPlayers(); updatePreview();
-        });
-      });
-      document.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          vibrate(); const i = parseInt(this.dataset.idx);
-          players.splice(i, 1); renderPlayers(); updatePreview();
-        });
-      });
+      
+      document.querySelectorAll('.paid-toggle').forEach(btn => btn.onclick = function() { vibrate(); const i = this.dataset.idx; players[i].paid = !players[i].paid; if(players[i].paid && players[i].name) addName(players[i].name); renderPlayers(); updatePreview(); });
+      document.querySelectorAll('.remove-toggle').forEach(btn => btn.onclick = function() { vibrate(); players.splice(this.dataset.idx, 1); renderPlayers(); updatePreview(); });
+
+      els.playerCount.textContent = players.length;
+      updateDuplicateStyling(); addDragListeners();
     }
 
+    // --- Waiting List ---
+    els.addWaiting.onclick = () => { waitingPlayers.push({name:""}); renderWaitingPlayers(); updatePreview(); vibrate(); };
     function renderWaitingPlayers() {
-      waitingContainer.innerHTML = '';
-      waitingPlayers.forEach((wp, idx) => {
+      els.waitingContainer.innerHTML = '';
+      waitingPlayers.forEach((p, idx) => {
         const row = document.createElement('div');
-        row.className = 'waiting-row';
+        row.className = 'player-row';
         row.innerHTML = `
-          <span class="num">${idx+1}.</span>
-          <input type="text" class="wname" value="${escapeHtml(wp.name)}" placeholder="Name" data-idx="${idx}" autocomplete="off">
-          <button class="remove-btn" data-idx="${idx}">✕</button>
+          <div class="player-avatar" style="background:var(--input-bg);color:var(--text-muted);">${idx + 1}</div>
+          <input type="text" class="wname" value="${escapeHtml(p.name)}" placeholder="Waiting player..." data-idx="${idx}">
+          <button class="action-icon remove-toggle w-remove" data-idx="${idx}">✕</button>
         `;
-        waitingContainer.appendChild(row);
+        els.waitingContainer.appendChild(row);
       });
       document.querySelectorAll('.wname').forEach(inp => {
-        const idx = parseInt(inp.dataset.idx);
-        const newInp = inp.cloneNode(true); inp.parentNode.replaceChild(newInp, inp);
-        newInp.addEventListener('input', function(e) {
-          const i = parseInt(this.dataset.idx);
-          waitingPlayers[i].name = this.value;
-          updatePreview();
-          showAutocomplete(this, i, true);
-        });
-        newInp.addEventListener('blur', () => setTimeout(() => { const list = newInp.parentNode.querySelector('.autocomplete-list'); if (list) list.remove(); }, 150));
-        newInp.addEventListener('focus', function() { if (this.value.trim()) showAutocomplete(this, parseInt(this.dataset.idx), true); });
+        inp.oninput = function() { waitingPlayers[this.dataset.idx].name = this.value; updatePreview(); showAutocomplete(this, this.dataset.idx, true); };
+        inp.onfocus = function() { this.closest('.player-row').classList.add('focused'); if(this.value.trim()) showAutocomplete(this, this.dataset.idx, true); };
+        inp.onblur = function() { this.closest('.player-row').classList.remove('focused'); setTimeout(() => { const l = this.parentNode.querySelector('.autocomplete-list'); if(l) l.remove(); }, 150); };
       });
-      document.querySelectorAll('.waiting-row .remove-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          vibrate(); const i = parseInt(this.dataset.idx);
-          waitingPlayers.splice(i, 1); renderWaitingPlayers(); updatePreview();
-        });
-      });
+      document.querySelectorAll('.w-remove').forEach(btn => btn.onclick = function() { vibrate(); waitingPlayers.splice(this.dataset.idx, 1); renderWaitingPlayers(); updatePreview(); });
     }
 
-    addPlayerBtn.onclick = () => { vibrate(); players.push({name:"",paid:false}); renderPlayers(); updatePreview(); };
-    autoAddBtn.onclick = () => {
-      vibrate();
-      let n = parseInt(autoAddCount.value);
-      if (isNaN(n) || n < 1) { alert("Enter a valid total number"); return; }
-      if (n > 100) n = 100;
-      localStorage.setItem('smasholic_autoCount', n);
-      if (players.length > n) { players = players.slice(0, n); }
-      else if (players.length < n) { const toAdd = n - players.length; for (let i=0; i<toAdd; i++) players.push({name:"",paid:false}); }
-      renderPlayers(); updatePreview(); autoAddCount.value = n;
-    };
-    clearPlayersBtn.onclick = () => {
-      vibrate(); if (players.length) showActionSheet('Clear Players', 'Remove all players?', 'Clear', () => { players = []; renderPlayers(); updatePreview(); vibrate(20); });
-    };
-    resetSessionBtn.onclick = () => {
-      vibrate();
-      showActionSheet('Reset Session', 'Venue kept. Other fields cleared.', 'Reset', () => {
-        const t = new Date().toISOString().slice(0,10);
-        dateInput.value = t; dayInput.value = getDayFromDate(t);
-        startTime.value = "21:30"; endTime.value = "23:30"; updateTotalHours();
-        court.value = ""; price.value = ""; shuttle.value = ""; host.value = "";
-        players = []; waitingPlayers = []; renderPlayers(); renderWaitingPlayers(); updatePreview(); vibrate(20);
-      });
-    };
+    // --- Preview & Export ---
+    function formatTime(t) { if(!t)return''; let [h,m] = t.split(':'); h = parseInt(h); const ampm = h >= 12 ? 'PM' : 'AM'; return `${h%12||12}:${m} ${ampm}`; }
+    function formatDate(dStr) { if(!dStr)return''; const [y,m,d] = dStr.split('-'); return `${d}/${m}/${y}`; }
 
-    addWaitingBtn.onclick = () => { vibrate(); waitingPlayers.push({name:""}); renderWaitingPlayers(); updatePreview(); };
-    clearWaitingBtn.onclick = () => {
-      vibrate(); if (waitingPlayers.length) showActionSheet('Clear Waiting', 'Remove all waiting?', 'Clear', () => { waitingPlayers = []; renderWaitingPlayers(); updatePreview(); vibrate(20); });
-    };
-
-    footerMessage.addEventListener('input', updatePreview);
-
-    function buildPreviewText() {
-      const d = formatDateDMY(dateInput.value) || ".........";
-      const day = dayInput.value || ".......";
-      const s = format12Hour(startTime.value) || ".....";
-      const e = format12Hour(endTime.value) || ".....";
-      const v = venue.value || "................";
-      const c = court.value || "................";
-      const pr = price.value || "0";
-      const sh = shuttle.value || "......";
-      const h = host.value.trim() || "......";
-      const totalText = totalHoursSpan.textContent;
-      const totalLine = (totalText !== '—') ? `⏱️ Total: ${totalText}\n` : '';
-
-      let txt = `📆 : ${d} , ${day}\n`;
-      txt += `⏰ : ${s} - ${e}\n`;
-      txt += totalLine;
-      txt += `🏟️ : ${v}\n        (${c})\n`;
-      txt += `💵 : RM${pr} Per player\n\n`;
-      txt += `🏸: Shuttle: ${sh}\n\n`;
-      txt += `Done payment sila tick ✅ ‼️\n\n`;
-      txt += `Host ${h}\n\n`;
-
-      players.forEach((p,i) => {
-        const name = p.name.trim() || "(Open)";
-        txt += `${i+1}. ${name}${p.paid?'✅️':''}\n`;
-      });
-
-      if (waitingPlayers.length > 0) {
-        txt += `\nWaiting List\n`;
-        waitingPlayers.forEach((wp, i) => {
-          txt += `${i+1}. ${wp.name.trim() || ''}\n`;
-        });
+    function buildPreview() {
+      let t = `🏸 ${els.day.textContent}, ${formatDate(els.date.value)}\n`;
+      t += `⏰ ${formatTime(els.start.value)} - ${formatTime(els.end.value)} (${calcDuration()} Hrs)\n`;
+      t += `🏟️ ${els.venue.value}\n🏸 Court : ${els.court.value}\n`;
+      t += `💵 RM${parseFloat(els.price.value||0).toFixed(2)} / Pax\n🏸 Shuttle : ${els.shuttle.value}\n👤 Host : ${els.host.value}\n\n`;
+      
+      if(players.length) { 
+        const filled = players.filter(p => p.name.trim() !== '').length;
+        t += `List player (${filled}/${players.length} Pax) :\n`; 
+        players.forEach((p,i) => { t += `${i+1}. ${p.name.trim()||"..."} ${p.paid ? "✅" : ""}\n`; }); 
+        t += `\n`; 
       }
-
-      const footer = footerMessage.value.trim();
-      if (footer) txt += `\n${footer}\n`;
-
-      return txt;
+      if(waitingPlayers.length) { 
+        t += `Waiting list:\n`; 
+        waitingPlayers.forEach((p,i) => { t += `${i+1}. ${p.name.trim()||"..."}\n`; }); 
+        t += `\n`; 
+      }
+      t += els.footer.value;
+      return t;
     }
 
-    function updatePreview() { previewDiv.innerHTML = `<pre>${buildPreviewText()}</pre>`; }
+    function updatePreview() { els.preview.innerHTML = escapeHtml(buildPreview()); }
 
-    copyBtn.onclick = async () => {
-      vibrate(); const txt = buildPreviewText();
-      try { await navigator.clipboard.writeText(txt); alert("✅ Copied!"); }
-      catch { const ta = document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert("✅ Copied!"); }
+    els.copy.onclick = async () => { vibrate(); try { await navigator.clipboard.writeText(buildPreview()); showToast("Copied to clipboard!"); } catch { showToast("Copy failed", "❌"); } };
+
+    // --- Save & Load ---
+    els.save.onclick = () => {
+      vibrate();
+      savedBookings.unshift({
+        id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value,
+        venue: els.venue.value, court: els.court.value, price: els.price.value, shuttle: els.shuttle.value, host: els.host.value,
+        footer: els.footer.value, players: JSON.parse(JSON.stringify(players)), waiting: JSON.parse(JSON.stringify(waitingPlayers))
+      });
+      localStorage.setItem('smasholic_saved_bookings', JSON.stringify(savedBookings));
+      showToast("Session Saved!", "💾");
     };
 
-    importBtn.onclick = () => { vibrate(); importModal.classList.remove('hidden'); importTextarea.value = ''; importError.style.display = 'none'; importTextarea.focus(); };
-    importCancelBtn.onclick = () => importModal.classList.add('hidden');
-    function parseTime12to24(str) {
-      const match = str.match(/^(\d{1,2})\.(\d{2})(am|pm)$/i);
-      if (!match) return null;
-      let h = parseInt(match[1]), m = match[2], period = match[3].toLowerCase();
-      if (period === 'pm' && h !== 12) h += 12;
-      if (period === 'am' && h === 12) h = 0;
-      return `${h.toString().padStart(2,'0')}:${m}`;
-    }
-    function parseDMYtoYMD(str) {
-      const parts = str.split('/');
-      if (parts.length !== 3) return null;
-      return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
-    }
-    importParseBtn.onclick = () => {
-      vibrate(); const raw = importTextarea.value.trim();
-      importError.style.display = 'none';
-      if (!raw) { importError.textContent = 'Please paste an announcement.'; importError.style.display = 'block'; return; }
-      try {
-        const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
-        let parsedDate='', parsedDay='', parsedStart='', parsedEnd='', parsedVenue='', parsedCourt='', parsedPrice='', parsedShuttle='', parsedHost='';
-        const parsedPlayers = [], parsedWaiting = [];
-        let inWaiting = false, footerLines = [];
-        for (let i=0; i<lines.length; i++) {
-          const line = lines[i];
-          if (line.startsWith('📆')) { const m = line.match(/📆\s*:\s*(.+?)\s*,\s*(.+)/); if (m) { const ymd = parseDMYtoYMD(m[1].trim()); if(ymd) parsedDate=ymd; parsedDay=m[2].trim(); } }
-          else if (line.startsWith('⏰')) { const m = line.match(/⏰\s*:\s*(.+?)\s*-\s*(.+)/); if (m) { const s24=parseTime12to24(m[1].trim()); if(s24) parsedStart=s24; const e24=parseTime12to24(m[2].trim()); if(e24) parsedEnd=e24; } }
-          else if (line.startsWith('🏟️')) { const m = line.match(/🏟️\s*:\s*(.+)/); if (m) parsedVenue=m[1].trim(); if (i+1<lines.length && lines[i+1].startsWith('(')) { const cm = lines[i+1].match(/\((.+)\)/); if (cm) parsedCourt=cm[1].trim(); i++; } }
-          else if (line.startsWith('💵')) { const m = line.match(/💵\s*:\s*RM([\d.]+)/); if (m) parsedPrice=m[1]; }
-          else if (line.startsWith('🏸')) { const m = line.match(/🏸:\s*Shuttle:\s*(.+)/); if (m) parsedShuttle=m[1].trim(); }
-          else if (line.startsWith('Host ')) { const m = line.match(/^Host\s+(.+)/); if (m) parsedHost=m[1].trim(); }
-          else if (line === 'Waiting List') { inWaiting = true; continue; }
-          else if (inWaiting && /^\d+\./.test(line)) {
-            const m = line.match(/^(\d+)\.\s*(.+)$/);
-            if (m) { let name = m[2].trim(); parsedWaiting.push({ name }); }
-          } else if (!inWaiting && /^\d+\./.test(line)) {
-            const m = line.match(/^(\d+)\.\s*(.+)$/);
-            if (m) {
-              let name = m[2].trim();
-              const paid = name.endsWith('✅️') || name.endsWith('✅');
-              if (paid) name = name.slice(0, - (name.endsWith('✅️')?2:1)).trim();
-              if (name === '(Open)') name = '';
-              parsedPlayers.push({ name, paid });
-            }
-          } else if (line.startsWith('Done payment') || line.startsWith('⏱️ Total:')) continue;
-          else if (line !== '') footerLines.push(line);
-        }
-        if (parsedDate) { dateInput.value = parsedDate; dayInput.value = parsedDay || getDayFromDate(parsedDate); }
-        if (parsedStart) startTime.value = parsedStart;
-        if (parsedEnd) endTime.value = parsedEnd;
-        updateTotalHours();
-        if (parsedVenue) venue.value = parsedVenue;
-        if (parsedCourt) court.value = parsedCourt;
-        if (parsedPrice) price.value = parsedPrice;
-        if (parsedShuttle) shuttle.value = parsedShuttle;
-        if (parsedHost) host.value = parsedHost;
-        players = parsedPlayers.length ? parsedPlayers : [];
-        waitingPlayers = parsedWaiting.length ? parsedWaiting : [];
-        if (footerLines.length) footerMessage.value = footerLines.join('\n');
-        else footerMessage.value = '📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi\nboleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨';
-        renderPlayers(); renderWaitingPlayers(); updatePreview(); importModal.classList.add('hidden');
-      } catch { importError.textContent = 'Invalid format.'; importError.style.display = 'block'; }
-    };
-
-    const STORAGE_KEY = 'smasholic_sessions';
-    function getSessions() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; } catch { return []; } }
-    function saveSessions(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
-    function addSession(data) { const s = getSessions(); s.push(data); saveSessions(s); renderSaved(); }
-    function deleteSession(i) { const s = getSessions(); s.splice(i,1); saveSessions(s); renderSaved(); }
     function renderSaved() {
-      const sessions = getSessions();
-      savedBookingsList.innerHTML = '';
-      if (!sessions.length) { noBookingsMsg.classList.remove('hidden'); return; }
-      noBookingsMsg.classList.add('hidden');
-      sessions.forEach((s, idx) => {
-        const div = document.createElement('div'); div.className = 'booking-list-item';
-        div.innerHTML = `
-          <div style="flex:1;"><strong>📅 ${s.date||''} ${s.day||''}</strong><br><small>${escapeHtml(s.text.split('\n').slice(0,3).join(' | '))}</small></div>
-          <div style="display:flex;gap:6px;">
-            <button class="secondary load-session" data-idx="${idx}" style="padding:8px 12px;">Load</button>
-            <button class="danger delete-session" data-idx="${idx}" style="padding:8px 12px;">Del</button>
+      const list = document.getElementById('savedBookingsList');
+      list.innerHTML = '';
+      document.getElementById('noBookingsMsg').style.display = savedBookings.length ? 'none' : 'block';
+      
+      savedBookings.forEach((b, idx) => {
+        const item = document.createElement('div');
+        item.className = 'saved-item';
+        item.innerHTML = `
+          <div class="saved-info">
+            <h4>${b.day}, ${formatDate(b.date)}</h4>
+            <p>${b.venue} • ${b.players.length} Players</p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-secondary load-btn" data-idx="${idx}" style="padding:8px 12px; font-size:0.8rem;">Load</button>
+            <button class="btn btn-danger del-btn" data-idx="${idx}" style="padding:8px 12px; font-size:0.8rem;">✕</button>
           </div>
         `;
-        savedBookingsList.appendChild(div);
+        list.appendChild(item);
       });
-      document.querySelectorAll('.load-session').forEach(b => b.onclick = () => { vibrate(); const s = getSessions()[b.dataset.idx]; if (s) loadSession(s); });
-      document.querySelectorAll('.delete-session').forEach(b => b.onclick = () => { vibrate(); showActionSheet('Delete Session', 'Are you sure?', 'Delete', () => { deleteSession(b.dataset.idx); vibrate(20); }); });
-    }
-    function loadSession(s) {
-      dateInput.value = s.date || ''; dayInput.value = s.day || '';
-      startTime.value = s.start || ''; endTime.value = s.end || ''; updateTotalHours();
-      venue.value = s.venue || ''; court.value = s.court || ''; price.value = s.price || '';
-      shuttle.value = s.shuttle || ''; host.value = s.host || '';
-      players = s.players ? JSON.parse(JSON.stringify(s.players)) : [];
-      waitingPlayers = s.waitingPlayers ? JSON.parse(JSON.stringify(s.waitingPlayers)) : [];
-      footerMessage.value = s.footer || '📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi\nboleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨';
-      renderPlayers(); renderWaitingPlayers(); updatePreview(); window.scrollTo({top:0,behavior:'smooth'}); vibrate();
-    }
-    saveBookingBtn.onclick = () => {
-      vibrate();
-      addSession({
-        date: dateInput.value, day: dayInput.value, start: startTime.value, end: endTime.value,
-        venue: venue.value, court: court.value, price: price.value, shuttle: shuttle.value,
-        host: host.value, players: JSON.parse(JSON.stringify(players)),
-        waitingPlayers: JSON.parse(JSON.stringify(waitingPlayers)),
-        footer: footerMessage.value,
-        text: buildPreviewText(), savedAt: new Date().toISOString()
+
+      document.querySelectorAll('.load-btn').forEach(b => b.onclick = function() {
+        vibrate(); const d = savedBookings[this.dataset.idx];
+        els.date.value = d.date; els.start.value = d.start; els.end.value = d.end; els.venue.value = d.venue; els.court.value = d.court; els.price.value = d.price; els.shuttle.value = d.shuttle; els.host.value = d.host; els.footer.value = d.footer;
+        players = JSON.parse(JSON.stringify(d.players)); waitingPlayers = JSON.parse(JSON.stringify(d.waiting));
+        updateDateData(); renderPlayers(); renderWaitingPlayers(); document.querySelector('.nav-item[data-tab="booking"]').click(); showToast("Loaded!");
       });
-      alert("💾 Session saved!");
+      document.querySelectorAll('.del-btn').forEach(b => b.onclick = function() { vibrate(); showConfirm('Delete Session', 'Remove this saved booking permanently?', () => { savedBookings.splice(this.dataset.idx, 1); localStorage.setItem('smasholic_saved_bookings', JSON.stringify(savedBookings)); renderSaved(); }); });
+    }
+    
+    els.clearSaved.onclick = () => { if(savedBookings.length) showConfirm('Clear All', 'Delete all saved sessions?', () => { savedBookings = []; localStorage.removeItem('smasholic_saved_bookings'); renderSaved(); }); };
+
+    // --- Reset ---
+    els.reset.onclick = () => showConfirm('Reset Form', 'Clear all fields and players?', () => {
+      els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30";
+      els.venue.value = "Forum Sba, Setia Alam"; els.court.value = "Rubber Court 6 & 7"; els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = "";
+      players = []; waitingPlayers = []; updateDateData(); renderPlayers(); renderWaitingPlayers(); showToast('Reset complete!');
+    });
+
+    // --- Import Parsing ---
+    els.import.onclick = () => { vibrate(); document.getElementById('importTextarea').value = ''; els.importModal.classList.add('active'); };
+    document.getElementById('importCancelBtn').onclick = () => { vibrate(); els.importModal.classList.remove('active'); };
+    document.getElementById('importParseBtn').onclick = () => {
+      vibrate(); const text = document.getElementById('importTextarea').value;
+      if(!text.trim()) { showToast('Text is empty', '⚠️'); return; }
+      
+      try {
+        let mode = 'head', newPlayers = [], newWaiting = [], newFooter = [];
+        text.split('\n').forEach(line => {
+          const t = line.trim(), lower = t.toLowerCase();
+          if(!t) return;
+          if(lower.startsWith('list player')) { mode = 'players'; return; }
+          if(lower.startsWith('waiting list')) { mode = 'waiting'; return; }
+          if(t.startsWith('📌')) mode = 'footer';
+
+          if(mode === 'head') {
+            if(t.includes('🏸') && t.includes('/')) { const p = t.split('🏸')[1].split(','); if(p.length===2){ const dp=p[1].trim().split('/'); if(dp.length===3) els.date.value=`${dp[2]}-${dp[1]}-${dp[0]}`; } }
+            if(t.includes('⏰')) { const m = t.match(/(\d{1,2}:\d{2})/g); if(m && m.length >= 1) els.start.value = m[0]; }
+            if(t.includes('🏟️')) els.venue.value = t.split('🏟️')[1].trim();
+            if(t.includes('Court :')) els.court.value = t.split('Court :')[1].trim();
+            if(t.includes('💵')) { const m = t.match(/RM\s*([\d.]+)/); if(m) els.price.value = m[1]; }
+            if(t.includes('Shuttle :')) els.shuttle.value = t.split('Shuttle :')[1].trim();
+            if(t.includes('Host :')) els.host.value = t.split('Host :')[1].trim();
+          } 
+          else if(mode === 'players') { const m = t.match(/^\d+\.\s*(.+)/); if(m) { let n=m[1].trim(), paid=false; if(n.includes('✅')){paid=true; n=n.replace('✅','').trim();} if(n!=='...') newPlayers.push({name:n, paid}); } }
+          else if(mode === 'waiting') { const m = t.match(/^\d+\.\s*(.+)/); if(m && m[1].trim()!=='...') newWaiting.push({name:m[1].trim()}); }
+          else if(mode === 'footer') newFooter.push(t);
+        });
+        
+        players = newPlayers; waitingPlayers = newWaiting;
+        if(newFooter.length) els.footer.value = newFooter.join('\n');
+        
+        updateDateData(); renderPlayers(); renderWaitingPlayers();
+        els.importModal.classList.remove('active'); showToast('Imported Successfully!');
+      } catch(e) { showToast('Format error', '❌'); }
     };
-    clearAllBtn.onclick = () => { vibrate(); showActionSheet('Clear All Sessions', 'Delete all?', 'Clear All', () => { localStorage.removeItem(STORAGE_KEY); renderSaved(); vibrate(20); }); };
 
-    function escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-    renderPlayers();
-    renderWaitingPlayers();
-    updatePreview();
-    renderSaved();
+    renderPlayers(); renderWaitingPlayers(); updatePreview();
   })();
 </script>
 </body>
