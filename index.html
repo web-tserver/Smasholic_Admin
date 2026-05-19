@@ -154,7 +154,7 @@
       box-shadow: none;
       border: 1px solid #fde68a;
     }
-    .players-section { margin: 12px 0 6px; }
+    .players-section, .waiting-section { margin: 12px 0 6px; }
     .section-title {
       font-weight: 600;
       font-size: 0.85rem;
@@ -165,8 +165,7 @@
       gap: 6px;
     }
 
-    /* Player row (no swipe wrapper) */
-    .player-row {
+    .player-row, .waiting-row {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -177,13 +176,9 @@
       border: 1px solid var(--border);
       max-width: 100%;
       overflow: hidden;
-      position: relative; /* for autocomplete positioning */
+      position: relative;
     }
-    .player-row.dragging {
-      opacity: 0.6;
-      background: var(--purple-light);
-    }
-    .player-row .num {
+    .player-row .num, .waiting-row .num {
       font-weight: 600;
       width: 22px;
       color: var(--purple);
@@ -191,7 +186,7 @@
       font-size: 0.9rem;
       text-align: center;
     }
-    .player-row input {
+    .player-row input, .waiting-row input {
       flex: 1;
       min-width: 0;
       border: 1px solid transparent;
@@ -200,11 +195,12 @@
       background: transparent;
       font-size: 0.9rem;
     }
-    .player-row input:focus {
+    .player-row input:focus, .waiting-row input:focus {
       border-color: var(--purple);
       background: #fff;
     }
-    .player-row .paid-btn, .player-row .remove-btn {
+    .player-row .paid-btn, .player-row .remove-btn,
+    .waiting-row .remove-btn {
       flex-shrink: 0;
       width: 44px; height: 44px;
       display: flex; align-items: center; justify-content: center;
@@ -217,11 +213,11 @@
       color: #a1a1a6;
       transition: 0.15s;
     }
-    .player-row .remove-btn {
+    .player-row .remove-btn, .waiting-row .remove-btn {
       border: none;
       color: #d1d5db;
     }
-    .player-row .remove-btn:hover { background: #fef2f2; color: var(--danger); }
+    .player-row .remove-btn:hover, .waiting-row .remove-btn:hover { background: #fef2f2; color: var(--danger); }
     .player-row .paid-btn.paid {
       background: var(--yellow-light);
       border-color: var(--yellow);
@@ -278,7 +274,16 @@
     .import-modal .modal-content {
       background: #fff; border-radius: 24px; padding: 20px; width: 100%; max-width: 420px;
     }
-    /* Autocomplete dropdown */
+    /* Make import textarea big like footer */
+    .import-modal .modal-content textarea {
+      min-height: 150px;
+      height: 150px;
+      font-size: 0.9rem;
+      padding: 14px;
+      line-height: 1.6;
+      font-family: 'Poppins', sans-serif;
+      resize: vertical;
+    }
     .autocomplete-list {
       position: absolute;
       background: #fff;
@@ -307,7 +312,6 @@
     }
     hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
-    /* Splash Screen */
     #splash {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -318,135 +322,83 @@
       z-index: 200;
       transition: opacity 0.5s ease;
     }
-    #splash.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    #splash .splash-content {
-      text-align: center;
-      color: white;
-    }
-    #splash .splash-logo {
-      font-size: 4rem;
-      animation: pulse 1s infinite alternate;
-    }
-    @keyframes pulse {
-      from { transform: scale(1); }
-      to { transform: scale(1.1); }
-    }
+    #splash.hidden { opacity: 0; pointer-events: none; }
+    #splash .splash-content { text-align: center; color: white; }
+    #splash .splash-logo { font-size: 4rem; animation: pulse 1s infinite alternate; }
+    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
 
-    /* Action Sheet */
     .action-sheet-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.4);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 150;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s ease, visibility 0.3s;
+      position: fixed; top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.4); display: flex; align-items: flex-end; justify-content: center;
+      z-index: 150; visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s;
     }
-    .action-sheet-overlay.active {
-      visibility: visible;
-      opacity: 1;
-    }
+    .action-sheet-overlay.active { visibility: visible; opacity: 1; }
     .action-sheet {
-      background: var(--sheet-bg);
-      border-radius: 20px 20px 0 0;
+      background: var(--sheet-bg); border-radius: 20px 20px 0 0; width: 100%; max-width: 480px;
+      padding: 20px; animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .action-sheet h3 { font-weight: 600; margin-bottom: 16px; }
+    .action-sheet button { width: 100%; margin-bottom: 8px; }
+
+    /* Footer card with full-length textarea */
+    .footer-card textarea {
+      min-height: 120px;
+      height: 120px;
+      font-size: 0.9rem;
+      font-family: 'Poppins', sans-serif;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
       width: 100%;
-      max-width: 480px;
-      padding: 20px;
-      animation: slideUp 0.3s ease;
-    }
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-    .action-sheet h3 {
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-    .action-sheet button {
-      width: 100%;
-      margin-bottom: 8px;
+      resize: vertical;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
-<!-- Splash Screen -->
-<div id="splash">
-  <div class="splash-content">
-    <div class="splash-logo">🏸</div>
-    <h1 style="font-size:1.8rem; font-weight:700;">Smasholic</h1>
-  </div>
-</div>
-
+<div id="splash"><div class="splash-content"><div class="splash-logo">🏸</div><h1 style="font-size:1.8rem;font-weight:700;">Smasholic</h1></div></div>
 <div class="app-shell">
-  <div class="app-header">
-    <h1><span class="logo-icon">🏸</span> Smasholic</h1>
-  </div>
+  <div class="app-header"><h1><span class="logo-icon">🏸</span> Smasholic</h1></div>
   <div class="app-content">
+    <!-- Main Booking Card -->
     <div class="card">
       <div class="form-grid">
-        <div class="form-group">
-          <label>📆 Date</label>
-          <input type="date" id="dateInput">
-        </div>
-        <div class="form-group">
-          <label>Day (auto)</label>
-          <input type="text" id="dayInput" readonly>
-        </div>
-        <div class="form-group">
-          <label>⏰ Start</label>
-          <input type="time" id="startTime" value="21:30">
-        </div>
-        <div class="form-group">
-          <label>End</label>
-          <input type="time" id="endTime" value="23:30">
-        </div>
-        <div class="form-group">
-          <label>⏱️ Total</label>
-          <div class="total-hours"><span id="totalHours">2.0 hours</span></div>
-        </div>
-        <div class="form-group">
-          <label>🏟️ Venue</label>
-          <input type="text" id="venue" value="Forum Sba, Setia Alam">
-        </div>
-        <div class="form-group">
-          <label>Court</label>
-          <input type="text" id="court" value="Rubber Court 6 & 7">
-        </div>
-        <div class="form-group">
-          <label>💵 Price (RM)</label>
-          <input type="number" id="price" value="17" step="0.5">
-        </div>
-        <div class="form-group">
-          <label>🏸 Shuttle</label>
-          <input type="text" id="shuttle" value="RSL">
-        </div>
-        <div class="form-group">
-          <label>👤 Host</label>
-          <input type="text" id="host" placeholder="Your name">
-        </div>
+        <div class="form-group"><label>📆 Date</label><input type="date" id="dateInput"></div>
+        <div class="form-group"><label>Day (auto)</label><input type="text" id="dayInput" readonly></div>
+        <div class="form-group"><label>⏰ Start</label><input type="time" id="startTime" value="21:30"></div>
+        <div class="form-group"><label>End</label><input type="time" id="endTime" value="23:30"></div>
+        <div class="form-group"><label>⏱️ Total</label><div class="total-hours"><span id="totalHours">2.0 hours</span></div></div>
+        <div class="form-group"><label>🏟️ Venue</label><input type="text" id="venue" value="Forum Sba, Setia Alam"></div>
+        <div class="form-group"><label>Court</label><input type="text" id="court" value="Rubber Court 6 & 7"></div>
+        <div class="form-group"><label>💵 Price (RM)</label><input type="number" id="price" value="17" step="0.5"></div>
+        <div class="form-group"><label>🏸 Shuttle</label><input type="text" id="shuttle" value="RSL"></div>
+        <div class="form-group"><label>👤 Host</label><input type="text" id="host" placeholder="Your name"></div>
       </div>
 
+      <!-- Main Players -->
       <div class="players-section">
         <div class="section-title">👥 Players (long‑press to reorder, tap ✕ to delete)</div>
         <div id="playersContainer"></div>
         <div class="duplicate-warning" id="duplicateWarning">⚠️ Duplicate name!</div>
-
         <div class="actions-row">
           <button class="secondary" id="addPlayerBtn">+ Add Slot</button>
-          <div class="auto-add-row">
-            <input type="number" id="autoAddCount" placeholder="6" min="1" value="6">
-            <button id="autoAddBtn" class="secondary">Auto</button>
-          </div>
+          <div class="auto-add-row"><input type="number" id="autoAddCount" placeholder="6" min="1" value="6"><button id="autoAddBtn" class="secondary" style="flex:1;">Set Total</button></div>
         </div>
         <div class="actions-row">
           <button id="clearPlayersBtn" class="warning">Clear</button>
           <button id="resetSessionBtn" class="danger">Reset</button>
+        </div>
+      </div>
+
+      <!-- Waiting List -->
+      <div class="waiting-section">
+        <div class="section-title">📋 Waiting List</div>
+        <div id="waitingContainer"></div>
+        <div class="actions-row">
+          <button class="secondary" id="addWaitingBtn">+ Add Waiting</button>
+          <button id="clearWaitingBtn" class="warning">Clear Waiting</button>
         </div>
       </div>
 
@@ -462,6 +414,14 @@
       </div>
     </div>
 
+    <!-- Footer Message Card (full-length) -->
+    <div class="card footer-card">
+      <h3 style="font-size:0.95rem; font-weight:600; margin-bottom:10px;">📌 Footer Message (editable)</h3>
+      <textarea id="footerMessage">📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi
+boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea>
+    </div>
+
+    <!-- Saved Sessions Card -->
     <div class="card">
       <h3 style="font-size:0.95rem; font-weight:600; margin-bottom:10px;">📂 Saved Sessions</h3>
       <div id="savedBookingsList"></div>
@@ -471,7 +431,7 @@
   </div>
 </div>
 
-<!-- Import Modal -->
+<!-- Import Modal (now with bigger textarea) -->
 <div id="importModal" class="import-modal hidden">
   <div class="modal-content">
     <h3 style="font-weight:600; margin-bottom:12px;">📥 Paste Announcement</h3>
@@ -484,7 +444,7 @@
   </div>
 </div>
 
-<!-- Action Sheet Overlay -->
+<!-- Action Sheet -->
 <div class="action-sheet-overlay" id="actionSheetOverlay">
   <div class="action-sheet" id="actionSheet">
     <h3 id="actionSheetTitle">Confirm</h3>
@@ -496,12 +456,9 @@
 
 <script>
   (function() {
-    // Splash screen
-    setTimeout(() => {
-      document.getElementById('splash').classList.add('hidden');
-    }, 1500);
+    setTimeout(() => document.getElementById('splash').classList.add('hidden'), 1500);
 
-    // DOM elements
+    // DOM elements – main
     const dateInput = document.getElementById('dateInput');
     const dayInput = document.getElementById('dayInput');
     const startTime = document.getElementById('startTime');
@@ -532,7 +489,13 @@
     const importParseBtn = document.getElementById('importParseBtn');
     const importError = document.getElementById('importError');
 
-    // Action sheet elements
+    // Waiting list + footer
+    const waitingContainer = document.getElementById('waitingContainer');
+    const addWaitingBtn = document.getElementById('addWaitingBtn');
+    const clearWaitingBtn = document.getElementById('clearWaitingBtn');
+    const footerMessage = document.getElementById('footerMessage');
+
+    // Action sheet
     const actionSheetOverlay = document.getElementById('actionSheetOverlay');
     const actionSheetTitle = document.getElementById('actionSheetTitle');
     const actionSheetMessage = document.getElementById('actionSheetMessage');
@@ -540,14 +503,11 @@
     const actionSheetCancel = document.getElementById('actionSheetCancel');
 
     let players = [];
+    let waitingPlayers = [];
     let actionSheetCallback = null;
 
-    // Haptic feedback
-    function vibrate(ms = 10) {
-      if (navigator.vibrate) navigator.vibrate(ms);
-    }
+    function vibrate(ms = 10) { if (navigator.vibrate) navigator.vibrate(ms); }
 
-    // Custom action sheet
     function showActionSheet(title, message, confirmText, onConfirm) {
       actionSheetTitle.textContent = title;
       actionSheetMessage.textContent = message;
@@ -566,7 +526,6 @@
       actionSheetCallback = null;
     });
 
-    // Name autocomplete storage
     const NAMES_STORAGE_KEY = 'smasholic_used_names';
     function getUsedNames() { try { return JSON.parse(localStorage.getItem(NAMES_STORAGE_KEY)) || []; } catch { return []; } }
     function addUsedName(name) {
@@ -577,7 +536,7 @@
       localStorage.setItem(NAMES_STORAGE_KEY, JSON.stringify(names));
     }
 
-    function showAutocomplete(input, idx) {
+    function showAutocomplete(input, idx, isWaiting = false) {
       document.querySelectorAll('.autocomplete-list').forEach(el => el.remove());
       const value = input.value.trim();
       if (!value) return;
@@ -593,59 +552,46 @@
         item.addEventListener('mousedown', (e) => {
           e.preventDefault();
           input.value = name;
-          players[idx].name = name;
-          updateDuplicateStyling();
-          updatePreview();
+          if (isWaiting) {
+            waitingPlayers[idx].name = name;
+            renderWaitingPlayers();
+          } else {
+            players[idx].name = name;
+            updateDuplicateStyling();
+            updatePreview();
+          }
           list.remove();
           addUsedName(name);
           vibrate();
         });
         list.appendChild(item);
       });
-      const row = input.closest('.player-row');
+      const row = input.closest('.player-row, .waiting-row');
       row.style.position = 'relative';
       row.appendChild(list);
     }
 
-    // Drag‑to‑reorder (long press)
-    let longPressTimer = null;
-    let isDragging = false;
-    let dragStartIdx = null;
-    let dragTargetIdx = null;
-
+    let longPressTimer = null, isDragging = false, dragStartIdx = null, dragTargetIdx = null;
     function addDragListeners() {
       document.querySelectorAll('.player-row').forEach((playerRow) => {
         const idx = parseInt(playerRow.dataset.idx);
-
         playerRow.addEventListener('touchstart', (e) => {
           clearTimeout(longPressTimer);
-          longPressTimer = setTimeout(() => {
-            isDragging = true;
-            dragStartIdx = idx;
-            playerRow.classList.add('dragging');
-            vibrate(15);
-          }, 500);
+          longPressTimer = setTimeout(() => { isDragging = true; dragStartIdx = idx; playerRow.classList.add('dragging'); vibrate(15); }, 500);
         }, { passive: true });
-
         playerRow.addEventListener('touchend', () => {
           clearTimeout(longPressTimer);
           if (isDragging) {
-            isDragging = false;
-            playerRow.classList.remove('dragging');
+            isDragging = false; playerRow.classList.remove('dragging');
             if (dragStartIdx !== null && dragTargetIdx !== null && dragStartIdx !== dragTargetIdx) {
               const moved = players.splice(dragStartIdx, 1)[0];
               players.splice(dragTargetIdx, 0, moved);
-              renderPlayers();
-              updatePreview();
-              vibrate(20);
+              renderPlayers(); updatePreview(); vibrate(20);
             }
-            dragStartIdx = null;
-            dragTargetIdx = null;
-            // Clear any borders
+            dragStartIdx = null; dragTargetIdx = null;
             document.querySelectorAll('.player-row').forEach(r => r.style.borderTop = '');
           }
         });
-
         playerRow.addEventListener('touchmove', (e) => {
           if (!isDragging) return;
           e.preventDefault();
@@ -654,7 +600,6 @@
           const row = target?.closest('.player-row');
           if (row && row !== playerRow) {
             dragTargetIdx = parseInt(row.dataset.idx);
-            // Visual feedback
             document.querySelectorAll('.player-row').forEach(r => r.style.borderTop = '');
             row.style.borderTop = '3px solid var(--purple)';
           }
@@ -662,7 +607,6 @@
       });
     }
 
-    // Helpers
     function format12Hour(t) {
       if (!t) return "";
       const [h, m] = t.split(':').map(Number);
@@ -672,38 +616,30 @@
       if (h12 === 0) h12 = 12;
       return `${h12}:${m.toString().padStart(2,'0')} ${ampm}`;
     }
-
     function formatDateDMY(d) {
       if (!d) return "";
       const [y, m, day] = d.split('-');
       return `${parseInt(day)}/${parseInt(m)}/${y}`;
     }
-
     function getDayFromDate(d) {
       if (!d) return "";
       const date = new Date(d + "T00:00:00");
       const days = ["AHAD","ISNIN","SELASA","RABU","KHAMIS","JUMAAT","SABTU"];
       return days[date.getDay()];
     }
-
     function updateTotalHours() {
-      const s = startTime.value;
-      const e = endTime.value;
+      const s = startTime.value, e = endTime.value;
       if (!s || !e) { totalHoursSpan.textContent = '—'; return; }
-      const [sh, sm] = s.split(':').map(Number);
-      const [eh, em] = e.split(':').map(Number);
-      if (isNaN(sh) || isNaN(sm) || isNaN(eh) || isNaN(em)) { totalHoursSpan.textContent = '—'; return; }
-      let startMin = sh * 60 + sm;
-      let endMin = eh * 60 + em;
-      if (endMin <= startMin) endMin += 24 * 60;
-      const diffMin = endMin - startMin;
-      const hours = diffMin / 60;
+      const [sh, sm] = s.split(':').map(Number), [eh, em] = e.split(':').map(Number);
+      if (isNaN(sh)||isNaN(sm)||isNaN(eh)||isNaN(em)) { totalHoursSpan.textContent = '—'; return; }
+      let startMin = sh*60+sm, endMin = eh*60+em;
+      if (endMin <= startMin) endMin += 24*60;
+      const diffMin = endMin - startMin, hours = diffMin/60;
       totalHoursSpan.textContent = (hours % 1 === 0) ? `${hours} hour(s)` : `${hours.toFixed(1)} hours`;
     }
 
     const today = new Date().toISOString().slice(0,10);
-    dateInput.value = today;
-    dayInput.value = getDayFromDate(today);
+    dateInput.value = today; dayInput.value = getDayFromDate(today);
     dateInput.addEventListener('change', () => dayInput.value = getDayFromDate(dateInput.value));
     startTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
     endTime.addEventListener('input', () => { updateTotalHours(); updatePreview(); });
@@ -712,15 +648,12 @@
     const savedAutoCount = localStorage.getItem('smasholic_autoCount');
     if (savedAutoCount) autoAddCount.value = savedAutoCount;
 
-    // Duplicate detection
     function findDuplicates() {
       const names = players.map(p => p.name.trim().toLowerCase()).filter(n => n);
-      const dups = new Set();
-      const seen = new Set();
+      const dups = new Set(), seen = new Set();
       names.forEach(n => { if (seen.has(n)) dups.add(n); else seen.add(n); });
       return dups;
     }
-
     function updateDuplicateStyling() {
       const dups = findDuplicates();
       let hasDup = false;
@@ -741,11 +674,9 @@
       const dups = findDuplicates();
       players.forEach((p, idx) => {
         const row = document.createElement('div');
-        row.className = 'player-row';
-        row.dataset.idx = idx;
+        row.className = 'player-row'; row.dataset.idx = idx;
         const isDup = p.name.trim().toLowerCase() !== '' && dups.has(p.name.trim().toLowerCase());
         if (isDup) row.classList.add('duplicate');
-
         row.innerHTML = `
           <span class="num">${idx+1}.</span>
           <input type="text" class="pname" value="${escapeHtml(p.name)}" placeholder="Name" data-idx="${idx}" autocomplete="off">
@@ -754,56 +685,68 @@
         `;
         playersContainer.appendChild(row);
       });
-
       attachPlayerEvents();
       addDragListeners();
       duplicateWarning.classList.toggle('active', dups.size > 0);
     }
 
     function attachPlayerEvents() {
-      // Name inputs – autocomplete + live update
       document.querySelectorAll('.pname').forEach(inp => {
         const idx = parseInt(inp.dataset.idx);
-        const newInp = inp.cloneNode(true);
-        inp.parentNode.replaceChild(newInp, inp);
+        const newInp = inp.cloneNode(true); inp.parentNode.replaceChild(newInp, inp);
         newInp.addEventListener('input', function(e) {
           const i = parseInt(this.dataset.idx);
           players[i].name = this.value;
-          updateDuplicateStyling();
-          updatePreview();
-          showAutocomplete(this, i);
+          updateDuplicateStyling(); updatePreview();
+          showAutocomplete(this, i, false);
         });
-        newInp.addEventListener('blur', () => {
-          setTimeout(() => {
-            const list = newInp.parentNode.querySelector('.autocomplete-list');
-            if (list) list.remove();
-          }, 150);
-        });
-        newInp.addEventListener('focus', function() {
-          if (this.value.trim()) showAutocomplete(this, parseInt(this.dataset.idx));
-        });
+        newInp.addEventListener('blur', () => setTimeout(() => { const list = newInp.parentNode.querySelector('.autocomplete-list'); if (list) list.remove(); }, 150));
+        newInp.addEventListener('focus', function() { if (this.value.trim()) showAutocomplete(this, parseInt(this.dataset.idx), false); });
       });
-
-      // Paid toggle
       document.querySelectorAll('.paid-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
-          vibrate();
-          const i = parseInt(this.dataset.idx);
+          vibrate(); const i = parseInt(this.dataset.idx);
           players[i].paid = !players[i].paid;
           if (players[i].name.trim()) addUsedName(players[i].name.trim());
-          renderPlayers();
-          updatePreview();
+          renderPlayers(); updatePreview();
         });
       });
-
-      // Delete button (✕)
       document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
-          vibrate();
+          vibrate(); const i = parseInt(this.dataset.idx);
+          players.splice(i, 1); renderPlayers(); updatePreview();
+        });
+      });
+    }
+
+    function renderWaitingPlayers() {
+      waitingContainer.innerHTML = '';
+      waitingPlayers.forEach((wp, idx) => {
+        const row = document.createElement('div');
+        row.className = 'waiting-row';
+        row.innerHTML = `
+          <span class="num">${idx+1}.</span>
+          <input type="text" class="wname" value="${escapeHtml(wp.name)}" placeholder="Name" data-idx="${idx}" autocomplete="off">
+          <button class="remove-btn" data-idx="${idx}">✕</button>
+        `;
+        waitingContainer.appendChild(row);
+      });
+      document.querySelectorAll('.wname').forEach(inp => {
+        const idx = parseInt(inp.dataset.idx);
+        const newInp = inp.cloneNode(true); inp.parentNode.replaceChild(newInp, inp);
+        newInp.addEventListener('input', function(e) {
           const i = parseInt(this.dataset.idx);
-          players.splice(i, 1);
-          renderPlayers();
+          waitingPlayers[i].name = this.value;
           updatePreview();
+          showAutocomplete(this, i, true);
+        });
+        newInp.addEventListener('blur', () => setTimeout(() => { const list = newInp.parentNode.querySelector('.autocomplete-list'); if (list) list.remove(); }, 150));
+        newInp.addEventListener('focus', function() { if (this.value.trim()) showAutocomplete(this, parseInt(this.dataset.idx), true); });
+      });
+      document.querySelectorAll('.waiting-row .remove-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          vibrate(); const i = parseInt(this.dataset.idx);
+          waitingPlayers.splice(i, 1); renderWaitingPlayers(); updatePreview();
         });
       });
     }
@@ -812,38 +755,34 @@
     autoAddBtn.onclick = () => {
       vibrate();
       let n = parseInt(autoAddCount.value);
-      if (isNaN(n) || n<1) { alert("Enter a valid number"); return; }
-      if (n>100) n=100;
+      if (isNaN(n) || n < 1) { alert("Enter a valid total number"); return; }
+      if (n > 100) n = 100;
       localStorage.setItem('smasholic_autoCount', n);
-      for (let i=0; i<n; i++) players.push({name:"",paid:false});
-      renderPlayers(); updatePreview(); autoAddCount.value = '';
+      if (players.length > n) { players = players.slice(0, n); }
+      else if (players.length < n) { const toAdd = n - players.length; for (let i=0; i<toAdd; i++) players.push({name:"",paid:false}); }
+      renderPlayers(); updatePreview(); autoAddCount.value = n;
     };
     clearPlayersBtn.onclick = () => {
-      vibrate();
-      if (players.length) {
-        showActionSheet('Clear Players', 'Remove all players from the list?', 'Clear', () => {
-          players = [];
-          renderPlayers();
-          updatePreview();
-          vibrate(20);
-        });
-      }
+      vibrate(); if (players.length) showActionSheet('Clear Players', 'Remove all players?', 'Clear', () => { players = []; renderPlayers(); updatePreview(); vibrate(20); });
     };
     resetSessionBtn.onclick = () => {
       vibrate();
-      showActionSheet('Reset Session', 'Venue will be kept. Other fields and players will be cleared.', 'Reset', () => {
+      showActionSheet('Reset Session', 'Venue kept. Other fields cleared.', 'Reset', () => {
         const t = new Date().toISOString().slice(0,10);
         dateInput.value = t; dayInput.value = getDayFromDate(t);
         startTime.value = "21:30"; endTime.value = "23:30"; updateTotalHours();
         court.value = ""; price.value = ""; shuttle.value = ""; host.value = "";
-        players = [];
-        renderPlayers();
-        updatePreview();
-        vibrate(20);
+        players = []; waitingPlayers = []; renderPlayers(); renderWaitingPlayers(); updatePreview(); vibrate(20);
       });
     };
 
-    // Preview
+    addWaitingBtn.onclick = () => { vibrate(); waitingPlayers.push({name:""}); renderWaitingPlayers(); updatePreview(); };
+    clearWaitingBtn.onclick = () => {
+      vibrate(); if (waitingPlayers.length) showActionSheet('Clear Waiting', 'Remove all waiting?', 'Clear', () => { waitingPlayers = []; renderWaitingPlayers(); updatePreview(); vibrate(20); });
+    };
+
+    footerMessage.addEventListener('input', updatePreview);
+
     function buildPreviewText() {
       const d = formatDateDMY(dateInput.value) || ".........";
       const day = dayInput.value || ".......";
@@ -865,85 +804,70 @@
       txt += `🏸: Shuttle: ${sh}\n\n`;
       txt += `Done payment sila tick ✅ ‼️\n\n`;
       txt += `Host ${h}\n\n`;
+
       players.forEach((p,i) => {
         const name = p.name.trim() || "(Open)";
         txt += `${i+1}. ${name}${p.paid?'✅️':''}\n`;
       });
+
+      if (waitingPlayers.length > 0) {
+        txt += `\nWaiting List\n`;
+        waitingPlayers.forEach((wp, i) => {
+          txt += `${i+1}. ${wp.name.trim() || ''}\n`;
+        });
+      }
+
+      const footer = footerMessage.value.trim();
+      if (footer) txt += `\n${footer}\n`;
+
       return txt;
     }
 
     function updatePreview() { previewDiv.innerHTML = `<pre>${buildPreviewText()}</pre>`; }
 
     copyBtn.onclick = async () => {
-      vibrate();
-      const txt = buildPreviewText();
+      vibrate(); const txt = buildPreviewText();
       try { await navigator.clipboard.writeText(txt); alert("✅ Copied!"); }
       catch { const ta = document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert("✅ Copied!"); }
     };
 
-    // Import
-    importBtn.onclick = () => {
-      vibrate();
-      importModal.classList.remove('hidden');
-      importTextarea.value = '';
-      importError.style.display = 'none';
-      importTextarea.focus();
-    };
+    importBtn.onclick = () => { vibrate(); importModal.classList.remove('hidden'); importTextarea.value = ''; importError.style.display = 'none'; importTextarea.focus(); };
     importCancelBtn.onclick = () => importModal.classList.add('hidden');
-
     function parseTime12to24(str) {
       const match = str.match(/^(\d{1,2})\.(\d{2})(am|pm)$/i);
       if (!match) return null;
-      let h = parseInt(match[1]);
-      const m = match[2];
-      const period = match[3].toLowerCase();
+      let h = parseInt(match[1]), m = match[2], period = match[3].toLowerCase();
       if (period === 'pm' && h !== 12) h += 12;
       if (period === 'am' && h === 12) h = 0;
       return `${h.toString().padStart(2,'0')}:${m}`;
     }
-
     function parseDMYtoYMD(str) {
       const parts = str.split('/');
       if (parts.length !== 3) return null;
       return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
     }
-
     importParseBtn.onclick = () => {
-      vibrate();
-      const raw = importTextarea.value.trim();
+      vibrate(); const raw = importTextarea.value.trim();
       importError.style.display = 'none';
       if (!raw) { importError.textContent = 'Please paste an announcement.'; importError.style.display = 'block'; return; }
-
       try {
         const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
         let parsedDate='', parsedDay='', parsedStart='', parsedEnd='', parsedVenue='', parsedCourt='', parsedPrice='', parsedShuttle='', parsedHost='';
-        const parsedPlayers = [];
+        const parsedPlayers = [], parsedWaiting = [];
+        let inWaiting = false, footerLines = [];
         for (let i=0; i<lines.length; i++) {
           const line = lines[i];
-          if (line.startsWith('📆')) {
-            const m = line.match(/📆\s*:\s*(.+?)\s*,\s*(.+)/);
-            if (m) { const ymd = parseDMYtoYMD(m[1].trim()); if(ymd) parsedDate=ymd; parsedDay=m[2].trim(); }
-          } else if (line.startsWith('⏰')) {
-            const m = line.match(/⏰\s*:\s*(.+?)\s*-\s*(.+)/);
-            if (m) { const s24=parseTime12to24(m[1].trim()); if(s24) parsedStart=s24; const e24=parseTime12to24(m[2].trim()); if(e24) parsedEnd=e24; }
-          } else if (line.startsWith('🏟️')) {
-            const m = line.match(/🏟️\s*:\s*(.+)/);
-            if (m) parsedVenue=m[1].trim();
-            if (i+1<lines.length && lines[i+1].startsWith('(')) {
-              const cm = lines[i+1].match(/\((.+)\)/);
-              if (cm) parsedCourt=cm[1].trim();
-              i++;
-            }
-          } else if (line.startsWith('💵')) {
-            const m = line.match(/💵\s*:\s*RM([\d.]+)/);
-            if (m) parsedPrice=m[1];
-          } else if (line.startsWith('🏸')) {
-            const m = line.match(/🏸:\s*Shuttle:\s*(.+)/);
-            if (m) parsedShuttle=m[1].trim();
-          } else if (line.startsWith('Host ')) {
-            const m = line.match(/^Host\s+(.+)/);
-            if (m) parsedHost=m[1].trim();
-          } else if (/^\d+\./.test(line)) {
+          if (line.startsWith('📆')) { const m = line.match(/📆\s*:\s*(.+?)\s*,\s*(.+)/); if (m) { const ymd = parseDMYtoYMD(m[1].trim()); if(ymd) parsedDate=ymd; parsedDay=m[2].trim(); } }
+          else if (line.startsWith('⏰')) { const m = line.match(/⏰\s*:\s*(.+?)\s*-\s*(.+)/); if (m) { const s24=parseTime12to24(m[1].trim()); if(s24) parsedStart=s24; const e24=parseTime12to24(m[2].trim()); if(e24) parsedEnd=e24; } }
+          else if (line.startsWith('🏟️')) { const m = line.match(/🏟️\s*:\s*(.+)/); if (m) parsedVenue=m[1].trim(); if (i+1<lines.length && lines[i+1].startsWith('(')) { const cm = lines[i+1].match(/\((.+)\)/); if (cm) parsedCourt=cm[1].trim(); i++; } }
+          else if (line.startsWith('💵')) { const m = line.match(/💵\s*:\s*RM([\d.]+)/); if (m) parsedPrice=m[1]; }
+          else if (line.startsWith('🏸')) { const m = line.match(/🏸:\s*Shuttle:\s*(.+)/); if (m) parsedShuttle=m[1].trim(); }
+          else if (line.startsWith('Host ')) { const m = line.match(/^Host\s+(.+)/); if (m) parsedHost=m[1].trim(); }
+          else if (line === 'Waiting List') { inWaiting = true; continue; }
+          else if (inWaiting && /^\d+\./.test(line)) {
+            const m = line.match(/^(\d+)\.\s*(.+)$/);
+            if (m) { let name = m[2].trim(); parsedWaiting.push({ name }); }
+          } else if (!inWaiting && /^\d+\./.test(line)) {
             const m = line.match(/^(\d+)\.\s*(.+)$/);
             if (m) {
               let name = m[2].trim();
@@ -952,7 +876,8 @@
               if (name === '(Open)') name = '';
               parsedPlayers.push({ name, paid });
             }
-          }
+          } else if (line.startsWith('Done payment') || line.startsWith('⏱️ Total:')) continue;
+          else if (line !== '') footerLines.push(line);
         }
         if (parsedDate) { dateInput.value = parsedDate; dayInput.value = parsedDay || getDayFromDate(parsedDate); }
         if (parsedStart) startTime.value = parsedStart;
@@ -964,16 +889,13 @@
         if (parsedShuttle) shuttle.value = parsedShuttle;
         if (parsedHost) host.value = parsedHost;
         players = parsedPlayers.length ? parsedPlayers : [];
-        renderPlayers();
-        updatePreview();
-        importModal.classList.add('hidden');
-      } catch {
-        importError.textContent = 'Invalid format. Please check the announcement.';
-        importError.style.display = 'block';
-      }
+        waitingPlayers = parsedWaiting.length ? parsedWaiting : [];
+        if (footerLines.length) footerMessage.value = footerLines.join('\n');
+        else footerMessage.value = '📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi\nboleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨';
+        renderPlayers(); renderWaitingPlayers(); updatePreview(); importModal.classList.add('hidden');
+      } catch { importError.textContent = 'Invalid format.'; importError.style.display = 'block'; }
     };
 
-    // Save/Load (localStorage)
     const STORAGE_KEY = 'smasholic_sessions';
     function getSessions() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; } catch { return []; } }
     function saveSessions(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
@@ -985,29 +907,18 @@
       if (!sessions.length) { noBookingsMsg.classList.remove('hidden'); return; }
       noBookingsMsg.classList.add('hidden');
       sessions.forEach((s, idx) => {
-        const div = document.createElement('div');
-        div.className = 'booking-list-item';
+        const div = document.createElement('div'); div.className = 'booking-list-item';
         div.innerHTML = `
           <div style="flex:1;"><strong>📅 ${s.date||''} ${s.day||''}</strong><br><small>${escapeHtml(s.text.split('\n').slice(0,3).join(' | '))}</small></div>
-          <div style="display:flex; gap:6px;">
+          <div style="display:flex;gap:6px;">
             <button class="secondary load-session" data-idx="${idx}" style="padding:8px 12px;">Load</button>
             <button class="danger delete-session" data-idx="${idx}" style="padding:8px 12px;">Del</button>
           </div>
         `;
         savedBookingsList.appendChild(div);
       });
-      document.querySelectorAll('.load-session').forEach(b => b.onclick = () => {
-        vibrate();
-        const s = getSessions()[b.dataset.idx];
-        if (s) loadSession(s);
-      });
-      document.querySelectorAll('.delete-session').forEach(b => b.onclick = () => {
-        vibrate();
-        showActionSheet('Delete Session', 'Are you sure?', 'Delete', () => {
-          deleteSession(b.dataset.idx);
-          vibrate(20);
-        });
-      });
+      document.querySelectorAll('.load-session').forEach(b => b.onclick = () => { vibrate(); const s = getSessions()[b.dataset.idx]; if (s) loadSession(s); });
+      document.querySelectorAll('.delete-session').forEach(b => b.onclick = () => { vibrate(); showActionSheet('Delete Session', 'Are you sure?', 'Delete', () => { deleteSession(b.dataset.idx); vibrate(20); }); });
     }
     function loadSession(s) {
       dateInput.value = s.date || ''; dayInput.value = s.day || '';
@@ -1015,8 +926,9 @@
       venue.value = s.venue || ''; court.value = s.court || ''; price.value = s.price || '';
       shuttle.value = s.shuttle || ''; host.value = s.host || '';
       players = s.players ? JSON.parse(JSON.stringify(s.players)) : [];
-      renderPlayers(); updatePreview(); window.scrollTo({top:0,behavior:'smooth'});
-      vibrate();
+      waitingPlayers = s.waitingPlayers ? JSON.parse(JSON.stringify(s.waitingPlayers)) : [];
+      footerMessage.value = s.footer || '📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi\nboleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨';
+      renderPlayers(); renderWaitingPlayers(); updatePreview(); window.scrollTo({top:0,behavior:'smooth'}); vibrate();
     }
     saveBookingBtn.onclick = () => {
       vibrate();
@@ -1024,23 +936,18 @@
         date: dateInput.value, day: dayInput.value, start: startTime.value, end: endTime.value,
         venue: venue.value, court: court.value, price: price.value, shuttle: shuttle.value,
         host: host.value, players: JSON.parse(JSON.stringify(players)),
+        waitingPlayers: JSON.parse(JSON.stringify(waitingPlayers)),
+        footer: footerMessage.value,
         text: buildPreviewText(), savedAt: new Date().toISOString()
       });
       alert("💾 Session saved!");
     };
-    clearAllBtn.onclick = () => {
-      vibrate();
-      showActionSheet('Clear All Sessions', 'Delete all saved sessions?', 'Clear All', () => {
-        localStorage.removeItem(STORAGE_KEY);
-        renderSaved();
-        vibrate(20);
-      });
-    };
+    clearAllBtn.onclick = () => { vibrate(); showActionSheet('Clear All Sessions', 'Delete all?', 'Clear All', () => { localStorage.removeItem(STORAGE_KEY); renderSaved(); vibrate(20); }); };
 
     function escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-    // Start
     renderPlayers();
+    renderWaitingPlayers();
     updatePreview();
     renderSaved();
   })();
