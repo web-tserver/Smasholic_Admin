@@ -24,7 +24,6 @@
       -webkit-tap-highlight-color:transparent;
     }
 
-    /* Loading Screen – purple bg, yellow text */
     #loadingScreen {
       position: fixed; top:0; left:0; right:0; bottom:0;
       background: var(--purple); z-index: 999;
@@ -172,6 +171,7 @@
       cursor: pointer;
       border-radius: 8px;
     }
+    .court-detail .remove-btn:hover { color: var(--danger); background: #fee2e2; }
     .time-row {
       display: flex;
       align-items: center;
@@ -205,7 +205,6 @@
 </head>
 <body>
 
-<!-- Loading Screen -->
 <div id="loadingScreen">
   <div class="loading-content">
     <div class="loading-icon">🏸</div>
@@ -226,8 +225,8 @@
           <div class="input-group"><label>End</label><input type="time" id="endTime" value="23:30"></div>
           <div class="input-group"><label>Duration</label><div class="readonly-badge" id="totalHours">2.0 Hrs</div></div>
           <div class="input-group"><label>Price (RM)</label><input type="number" id="price" value="17" step="0.5"></div>
-          <div class="input-group full-width"><label>Venue</label><input type="text" id="venue" value="Forum Sba, Setia Alam"></div>
-          <div class="input-group full-width"><label>Main Court</label><input type="text" id="court" value="Rubber Court 14,15,16"></div>
+          <div class="input-group full-width"><label>Venue</label><input type="text" id="venue" value="Forum SBA, Setia Alam"></div>
+          <div class="input-group full-width"><label>Main Court</label><input type="text" id="court" value="14, 15, 16"></div>
           <div class="input-group full-width">
             <div class="location-toggle">
               <label class="toggle-switch"><input type="checkbox" id="locationToggle"><span class="slider"></span></label>
@@ -243,11 +242,11 @@
       <!-- Additional Courts -->
       <div class="card collapsible collapsed" id="additionalCourtsCard">
         <div class="card-header collapsible-header" onclick="toggleCollapse('additionalCourtsCard')">
-          <span class="card-title">🏟️ Additional Courts</span><span class="chevron">▼</span>
+          <span class="card-title">🏟️ Additional Sessions</span><span class="chevron">▼</span>
         </div>
         <div class="collapsible-body" style="max-height:2000px;">
           <div id="additionalCourtsContainer"></div>
-          <button class="btn btn-outline" id="addCourtBtn" style="margin-top:12px;">+ Add Court</button>
+          <button class="btn btn-outline" id="addCourtBtn" style="margin-top:12px;">+ Add Session</button>
         </div>
       </div>
 
@@ -275,16 +274,12 @@
         </div>
       </div>
       <div class="card collapsible collapsed" id="footerCard">
-        <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')">
-          <span class="card-title">📌 Footer Message</span><span class="chevron">▼</span>
-        </div>
+        <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')"><span class="card-title">📌 Footer Message</span><span class="chevron">▼</span></div>
         <div class="collapsible-body" style="max-height:500px;">
-          <textarea id="footerMessage" rows="2">📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea>
-          <!-- New Shareable Link field -->
-          <div class="input-group" style="margin-top:12px;">
-            <label>🔗 Shareable Link (appears below footer)</label>
-            <input type="url" id="shareableLink" value="https://shorturl.at/CAN8U" placeholder="https://...">
-          </div>
+          <textarea id="footerMessage" rows="4">📌 Payment deadline: Friday morning
+📌 Confirm slot via QR payment only
+❌ No cash on court
+⚠️ Slot only confirmed after payment</textarea>
         </div>
       </div>
       <div class="card">
@@ -347,7 +342,6 @@
     locationToggle: document.getElementById('locationToggle'), locationLink: document.getElementById('locationLink'),
     price: document.getElementById('price'), shuttle: document.getElementById('shuttle'),
     host: document.getElementById('host'), footer: document.getElementById('footerMessage'),
-    shareableLink: document.getElementById('shareableLink'),
     preview: document.getElementById('preview'),
     playersContainer: document.getElementById('playersContainer'), waitingContainer: document.getElementById('waitingContainer'),
     playerCount: document.getElementById('playerCountDisplay'), dupWarning: document.getElementById('duplicateWarning'),
@@ -363,7 +357,7 @@
 
   let players = [];
   let waitingPlayers = [];
-  let additionalCourts = [];
+  let additionalCourts = []; // { court, start, end }
   let savedBookings = [];
   let confirmCallback = null;
   let locationEnabled = false;
@@ -407,48 +401,13 @@
     vibrate();
   });
 
-  // Convert time string "HH:MM" to minutes from midnight, handling next day if end ≤ start
-  function toMinutes(t, isEnd = false, refStart = null) {
-    if (!t) return null;
-    const [h, m] = t.split(':').map(Number);
-    let mins = h * 60 + m;
-    if (isEnd && refStart !== null) {
-      let startMins = refStart;
-      if (mins <= startMins) mins += 24 * 60;
-    }
-    return mins;
-  }
-
-  // Compute total span from main + additional courts
-  function calcTotalSpan() {
-    let allStarts = [], allEnds = [];
-    // Main court
-    if (els.start.value && els.end.value) {
-      let s = toMinutes(els.start.value);
-      let e = toMinutes(els.end.value, true, s);
-      allStarts.push(s);
-      allEnds.push(e);
-    }
-    // Additional courts
-    additionalCourts.forEach(c => {
-      if (c.start && c.end) {
-        let s = toMinutes(c.start);
-        let e = toMinutes(c.end, true, s);
-        allStarts.push(s);
-        allEnds.push(e);
-      }
-    });
-    if (allStarts.length === 0) return 0;
-    const minStart = Math.min(...allStarts);
-    const maxEnd = Math.max(...allEnds);
-    return (maxEnd - minStart) / 60;
-  }
-
   function calcDurationSingle(start, end) {
     if (!start || !end) return 0;
-    let s = toMinutes(start);
-    let e = toMinutes(end, true, s);
-    return (e - s) / 60;
+    const [sh, sm] = start.split(':').map(Number);
+    const [eh, em] = end.split(':').map(Number);
+    let sMins = sh * 60 + sm, eMins = eh * 60 + em;
+    if (eMins <= sMins) eMins += 24 * 60;
+    return (eMins - sMins) / 60;
   }
 
   function formatDuration(hrs) {
@@ -472,7 +431,7 @@
       const dur = calcDurationSingle(c.start, c.end);
       row.innerHTML = `
         <div class="court-detail">
-          <input type="text" class="court-name-input" value="${escapeHtml(c.court)}" placeholder="Court detail" data-idx="${idx}">
+          <input type="text" class="court-name-input" value="${escapeHtml(c.court)}" placeholder="e.g. Court 16 only" data-idx="${idx}">
           <button class="remove-btn" data-idx="${idx}">✕</button>
         </div>
         <div class="time-row">
@@ -496,23 +455,16 @@
       inp.addEventListener('input', function(e) {
         const i = parseInt(this.dataset.idx);
         additionalCourts[i].start = this.value;
+        updateDurationBadge(this);
         updatePreview();
-        // update duration badge
-        const row = this.closest('.court-row');
-        const badge = row.querySelector('.duration-badge');
-        const dur = calcDurationSingle(additionalCourts[i].start, additionalCourts[i].end);
-        badge.textContent = formatDuration(dur);
       });
     });
     document.querySelectorAll('.time-end').forEach(inp => {
       inp.addEventListener('input', function(e) {
         const i = parseInt(this.dataset.idx);
         additionalCourts[i].end = this.value;
+        updateDurationBadge(this);
         updatePreview();
-        const row = this.closest('.court-row');
-        const badge = row.querySelector('.duration-badge');
-        const dur = calcDurationSingle(additionalCourts[i].start, additionalCourts[i].end);
-        badge.textContent = formatDuration(dur);
       });
     });
     document.querySelectorAll('.court-row .remove-btn').forEach(btn => {
@@ -526,20 +478,29 @@
     });
   }
 
+  function updateDurationBadge(input) {
+    const row = input.closest('.court-row');
+    const idx = parseInt(row.dataset.idx);
+    const dur = calcDurationSingle(additionalCourts[idx].start, additionalCourts[idx].end);
+    row.querySelector('.duration-badge').textContent = formatDuration(dur);
+  }
+
+  function calcDuration() { return calcDurationSingle(els.start.value, els.end.value); }
+
   const malayDays = ["AHAD","ISNIN","SELASA","RABU","KHAMIS","JUMAAT","SABTU"];
   function updateDateData() {
     if(!els.date.value) return;
     const d = new Date(els.date.value + 'T00:00:00');
     els.day.textContent = malayDays[d.getDay()];
-    const spanHrs = calcTotalSpan();
-    els.duration.textContent = (spanHrs % 1 === 0 ? spanHrs.toFixed(0) : spanHrs.toFixed(1)) + ' Hrs';
+    const hrs = calcDuration();
+    els.duration.textContent = (hrs % 1 === 0 ? hrs.toFixed(0) : hrs.toFixed(1)) + ' Hrs';
     updatePreview();
   }
   els.date.addEventListener('change', updateDateData);
   els.start.addEventListener('input', updateDateData);
   els.end.addEventListener('input', updateDateData);
   updateDateData();
-  [els.venue, els.court, els.price, els.shuttle, els.host, els.footer, els.shareableLink].forEach(e => e.addEventListener('input', updatePreview));
+  [els.venue, els.court, els.price, els.shuttle, els.host, els.footer].forEach(e => e.addEventListener('input', updatePreview));
   els.locationLink.addEventListener('input', updatePreview);
 
   const NAMES_KEY = 'smasholic_names';
@@ -674,10 +635,10 @@
     if(!t) return '';
     let [h,m] = t.split(':');
     h = parseInt(h);
-    const ampm = h >= 12 ? 'pm' : 'am';
+    const ampm = h >= 12 ? 'PM' : 'AM';
     let h12 = h % 12;
     if (h12 === 0) h12 = 12;
-    return `${h12}.${m}${ampm}`;
+    return `${h12}:${m} ${ampm}`;
   }
   function formatDateDMY(dStr) {
     if(!dStr) return '';
@@ -685,47 +646,54 @@
     return `${parseInt(d)}/${parseInt(m)}/${y}`;
   }
 
+  // NEW COPY FORMAT
   function buildPreview() {
     const dateVal = formatDateDMY(els.date.value);
     const dayVal = els.day.textContent;
     const start = formatTime12(els.start.value);
     const end = formatTime12(els.end.value);
-    const totalSpan = calcTotalSpan();
-    const totalText = (totalSpan % 1 === 0 ? totalSpan.toFixed(0) : totalSpan.toFixed(1)) + ' hour(s)';
+    const mainDuration = calcDuration();
     const venueVal = els.venue.value;
     const mainCourt = els.court.value;
-    const locationVal = els.locationLink.value.trim();
     const priceVal = parseFloat(els.price.value || 0).toFixed(2);
     const shuttleVal = els.shuttle.value;
     const hostVal = els.host.value.trim() || '......';
-    const shareableLinkVal = els.shareableLink.value.trim();
+    const locationVal = els.locationLink.value.trim();
 
-    let text = `📆 : ${dateVal} , ${dayVal}\n`;
-    text += `🏟️ : ${venueVal}\n        (${mainCourt})\n`;
-    text += `⏰ : ${start} - ${end}\n`;
+    let text = `🏸 BADMINTON SESSION\n\n`;
+    text += `📍 ${venueVal}\n`;
+    text += `🏟️ Court: ${mainCourt}\n\n`;
+    text += `📅 ${dateVal} (${dayVal})\n\n`;
 
-    // Additional courts
+    // Session 1 (main)
+    text += `⏰ Session 1\n${start} – ${end}\n(${mainCourt})\n\n`;
+
+    // Additional sessions
+    let sessionNum = 2;
     additionalCourts.forEach(c => {
       if (c.court.trim()) {
         const s = formatTime12(c.start);
         const e = formatTime12(c.end);
-        const dur = calcDurationSingle(c.start, c.end);
-        const durStr = dur > 0 ? ` (${formatDuration(dur)})` : '';
-        text += `      : ${s || '?'} - ${e || '?'}${durStr}\n`;
-        text += `       (${c.court.trim()})\n`;
+        text += `⏰ Session ${sessionNum}\n${s || '?'} – ${e || '?'}\n(${c.court.trim()})\n\n`;
+        sessionNum++;
       }
     });
 
+    // Total hours – sum of all session durations
+    let total = mainDuration;
+    additionalCourts.forEach(c => total += calcDurationSingle(c.start, c.end));
+    const totalText = (total % 1 === 0 ? total.toFixed(0) : total.toFixed(1)) + ' hours';
     text += `⏱️ Total: ${totalText}\n`;
-    if (locationEnabled && locationVal) text += `📍 : ${locationVal}\n`;
-    text += `💵 : RM${priceVal} Per player\n\n`;
-    text += `🏸: Shuttle: ${shuttleVal}\n\n`;
-    text += `Done payment sila tick ✅ ‼️\n\n`;
-    text += `Host ${hostVal}\n\n`;
+
+    text += `💵 RM${priceVal} / player\n`;
+    text += `🏸 Shuttle: ${shuttleVal}\n\n`;
+    if (locationEnabled && locationVal) text += `📍 Link: ${locationVal}\n\n`;
+
+    text += `──────────────────\n\n`;
 
     players.forEach((p, i) => {
       const name = p.name.trim() || '(Open)';
-      text += `${i+1}. ${name}${p.paid ? '✅️' : ''}\n`;
+      text += `${i+1}. ${name}${p.paid ? ' ✅' : ''}\n`;
     });
 
     if (waitingPlayers.length) {
@@ -733,9 +701,8 @@
       waitingPlayers.forEach((p, i) => text += `${i+1}. ${p.name.trim() || ''}\n`);
     }
 
-    const footer = els.footer.value.trim();
-    if (footer) text += `\n${footer}\n`;
-    if (shareableLinkVal) text += `\n🔗 ${shareableLinkVal}\n`;
+    text += `\n──────────────────\n\n`;
+    text += `Footer:\n${els.footer.value.trim()}\n`;
 
     return text;
   }
@@ -762,13 +729,13 @@
     }
   };
 
-  // REVERSE IMPORT – updated for total span & shareable link
+  // REVERSE IMPORT – parse new format
   function parseTime12to24(str) {
-    const match = str.match(/^(\d{1,2})\.(\d{2})(am|pm)$/i);
+    const match = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
     if (!match) return null;
-    let h = parseInt(match[1]), m = match[2], period = match[3].toLowerCase();
-    if (period === 'pm' && h !== 12) h += 12;
-    if (period === 'am' && h === 12) h = 0;
+    let h = parseInt(match[1]), m = match[2], period = match[3].toUpperCase();
+    if (period === 'PM' && h !== 12) h += 12;
+    if (period === 'AM' && h === 12) h = 0;
     return `${h.toString().padStart(2,'0')}:${m}`;
   }
   function parseDMYtoYMD(str) {
@@ -788,67 +755,86 @@
       let parsedDate='', parsedDay='', parsedStart='', parsedEnd='', parsedVenue='', parsedCourt='', parsedLocation='', parsedPrice='', parsedShuttle='', parsedHost='';
       let newPlayers=[], newWaiting=[], newAdditionalCourts=[];
       let mode='head', footerLines=[], foundLocation=false;
-      let shareableLink = '';
+      let sessionNum=0, tempStart='', tempEnd='', tempCourt='';
 
       for (let i=0; i<lines.length; i++) {
         const line = lines[i];
-        if (line.startsWith('📆')) {
-          const m = line.match(/📆\s*:\s*([\d\/]+)\s*,\s*(\w+)/);
-          if (m) { const ymd=parseDMYtoYMD(m[1].trim()); if(ymd) parsedDate=ymd; parsedDay=m[2].trim(); }
-        } else if (line.startsWith('🏟️')) {
-          const m = line.match(/🏟️\s*:\s*(.+)/);
-          if (m) parsedVenue=m[1].trim();
-          if (i+1<lines.length && lines[i+1].startsWith('(') && lines[i+1].endsWith(')')) {
-            const cm = lines[i+1].match(/\((.+)\)/);
-            if (cm) parsedCourt = cm[1].trim();
-            i++;
+        if (line.startsWith('🏸 BADMINTON SESSION')) { continue; }
+
+        if (line.startsWith('📍') && !line.startsWith('📍 Link:')) {
+          parsedVenue = line.replace('📍','').trim();
+        } else if (line.startsWith('🏟️ Court:')) {
+          parsedCourt = line.replace('🏟️ Court:','').trim();
+        } else if (line.startsWith('📅')) {
+          const m = line.match(/📅\s+([\d\/]+)\s+\((\w+)\)/);
+          if (m) {
+            const ymd = parseDMYtoYMD(m[1].trim());
+            if (ymd) parsedDate = ymd;
+            parsedDay = m[2].trim().toUpperCase();
           }
-        } else if (line.startsWith('⏰')) {
-          const m = line.match(/⏰\s*:\s*(.+?)\s*-\s*(.+)/);
-          if (m) { const s24=parseTime12to24(m[1].trim()); if(s24) parsedStart=s24; const e24=parseTime12to24(m[2].trim()); if(e24) parsedEnd=e24; }
-          while (i+1 < lines.length && lines[i+1].startsWith('      :') && lines[i+1].includes(' - ')) {
-            i++;
-            const timeLine = lines[i].trim();
-            const tmatch = timeLine.match(/^:\s*(.+?)\s*-\s*(.+?)(?:\s*\(\s*[\d.]+\s*h\s*\))?$/);
-            if (tmatch && i+1 < lines.length && lines[i+1].trim().startsWith('(')) {
-              const start12 = tmatch[1].trim();
-              const end12 = tmatch[2].trim();
-              const start24 = parseTime12to24(start12);
-              const end24 = parseTime12to24(end12);
-              i++;
-              const courtLine = lines[i].trim();
-              const cmatch = courtLine.match(/^\((.+)\)$/);
-              if (cmatch) {
-                newAdditionalCourts.push({ court: cmatch[1].trim(), start: start24 || '', end: end24 || '' });
-              }
+        } else if (line.startsWith('⏰ Session')) {
+          sessionNum = parseInt(line.match(/Session\s+(\d+)/)[1]);
+          tempStart = ''; tempEnd = ''; tempCourt = '';
+          mode = 'session';
+        } else if (mode === 'session') {
+          if (line.includes('–') && tempStart === '') {
+            const parts = line.split('–');
+            tempStart = parts[0].trim();
+            tempEnd = parts[1].trim();
+          } else if (line.startsWith('(')) {
+            tempCourt = line.replace(/[()]/g,'').trim();
+            // save session
+            const start24 = parseTime12to24(tempStart);
+            const end24 = parseTime12to24(tempEnd);
+            if (sessionNum === 1) {
+              if (start24) parsedStart = start24;
+              if (end24) parsedEnd = end24;
+              // main court already captured; we may override with tempCourt if needed? but main court is already from above
+            } else {
+              newAdditionalCourts.push({
+                court: tempCourt,
+                start: start24 || '',
+                end: end24 || ''
+              });
             }
+            mode = 'head';
           }
-        } else if (line.startsWith('📍')) {
-          foundLocation = true;
-          const m = line.match(/📍\s*:\s*(.+)/);
-          if (m) parsedLocation = m[1].trim();
+        } else if (line.startsWith('⏱️ Total:')) {
+          // skip
         } else if (line.startsWith('💵')) {
           const m = line.match(/RM\s*([\d.]+)/);
           if (m) parsedPrice=m[1];
-        } else if (line.startsWith('🏸')) {
-          const m = line.match(/Shuttle:\s*(.+)/);
-          if (m) parsedShuttle=m[1].trim();
-        } else if (line.startsWith('Host ')) {
-          const m = line.match(/^Host\s+(.+)/);
-          if (m) parsedHost=m[1].trim();
-          mode='players';
-        } else if (line.startsWith('🔗')) {  // parse shareable link
-          const m = line.match(/🔗\s*(.+)/);
-          if (m) shareableLink = m[1].trim();
-        } else if (mode==='players' && /^\d+\./.test(line)) {
-          const m = line.match(/^(\d+)\.\s*(.+)$/);
-          if (m) { let name=m[2].trim(), paid=false; if (name.endsWith('✅️')||name.endsWith('✅')) { paid=true; name=name.slice(0,-(name.endsWith('✅️')?2:1)).trim(); } if (name==='(Open)'||name==='...') name=''; newPlayers.push({name,paid}); }
-        } else if (line==='Waiting List') { mode='waiting'; }
-        else if (mode==='waiting' && /^\d+\./.test(line)) {
-          const m = line.match(/^(\d+)\.\s*(.+)$/);
-          if (m) { let name=m[2].trim(); if(name==='...') name=''; newWaiting.push({name}); }
-        } else if (mode==='players'||mode==='waiting') { if(!/^\d+\./.test(line)&&line!=='') { mode='footer'; footerLines.push(line); } }
-        else if (mode==='footer') { footerLines.push(line); }
+        } else if (line.startsWith('🏸 Shuttle:')) {
+          parsedShuttle = line.replace('🏸 Shuttle:','').trim();
+        } else if (line.startsWith('📍 Link:')) {
+          foundLocation = true;
+          parsedLocation = line.replace('📍 Link:','').trim();
+        } else if (line.startsWith('──────────────────')) {
+          if (mode === 'head') mode = 'players';
+          else if (mode === 'players') mode = 'footer';
+        } else if (mode === 'players') {
+          if (/^\d+\./.test(line)) {
+            const m = line.match(/^(\d+)\.\s*(.+)$/);
+            if (m) {
+              let name = m[2].trim();
+              let paid = false;
+              if (name.endsWith(' ✅')) { paid = true; name = name.slice(0, -2).trim(); }
+              if (name === '(Open)' || name === '') name = '';
+              newPlayers.push({name, paid});
+            }
+          } else if (line === 'Waiting List') {
+            mode = 'waiting';
+          }
+        } else if (mode === 'waiting') {
+          if (/^\d+\./.test(line)) {
+            const m = line.match(/^(\d+)\.\s*(.+)$/);
+            if (m) { let name = m[2].trim(); if(name==='') name=''; newWaiting.push({name}); }
+          } else if (line.startsWith('──────────────────')) {
+            mode = 'footer';
+          }
+        } else if (mode === 'footer') {
+          if (line !== 'Footer:' && line !== '') footerLines.push(line);
+        }
       }
 
       if (parsedDate) els.date.value = parsedDate;
@@ -856,7 +842,7 @@
       if (parsedEnd) els.end.value = parsedEnd;
       if (parsedVenue) els.venue.value = parsedVenue;
       if (parsedCourt) els.court.value = parsedCourt;
-      if (foundLocation) {
+      if (foundLocation || parsedLocation) {
         els.locationToggle.checked = true; locationEnabled = true;
         els.locationLink.classList.remove('hidden');
         els.locationLink.value = parsedLocation || 'https://g.co/kgs/UMbmmAz';
@@ -871,22 +857,20 @@
       additionalCourts = newAdditionalCourts;
       renderAdditionalCourts();
       if (footerLines.length) els.footer.value = footerLines.join('\n');
-      else els.footer.value = '📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨';
-      els.shareableLink.value = shareableLink || 'https://shorturl.at/CAN8U';
+      else els.footer.value = '📌 Payment deadline: Friday morning\n📌 Confirm slot via QR payment only\n❌ No cash on court\n⚠️ Slot only confirmed after payment';
       updateDateData(); renderPlayers(); renderWaitingPlayers(); updatePreview();
       els.importModal.classList.remove('active');
       showToast('Imported successfully!');
     } catch (e) { showToast('Import failed – check format', '❌'); }
   };
 
-  // Save/Load includes shareable link
+  // Save/Load (unchanged but includes new fields)
   els.save.onclick = () => { vibrate();
     savedBookings.unshift({
       id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value,
       venue: els.venue.value, court: els.court.value, additionalCourts: JSON.parse(JSON.stringify(additionalCourts)),
       location: els.locationLink.value, locationEnabled: locationEnabled,
       price: els.price.value, shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value,
-      shareableLink: els.shareableLink.value,
       players: JSON.parse(JSON.stringify(players)), waiting: JSON.parse(JSON.stringify(waitingPlayers))
     });
     localStorage.setItem('smasholic_saved_bookings', JSON.stringify(savedBookings));
@@ -910,7 +894,6 @@
       locationEnabled = d.locationEnabled || false; els.locationToggle.checked = locationEnabled;
       if (locationEnabled) { els.locationLink.classList.remove('hidden'); } else { els.locationLink.classList.add('hidden'); }
       els.price.value = d.price; els.shuttle.value = d.shuttle; els.host.value = d.host; els.footer.value = d.footer;
-      els.shareableLink.value = d.shareableLink || 'https://shorturl.at/CAN8U';
       players = JSON.parse(JSON.stringify(d.players)); waitingPlayers = JSON.parse(JSON.stringify(d.waiting));
       updateDateData(); renderPlayers(); renderWaitingPlayers(); updatePreview();
       document.querySelector('.nav-item[data-tab="booking"]').click(); showToast("Loaded!");
@@ -920,11 +903,9 @@
   els.clearSaved.onclick = () => { if(savedBookings.length) showConfirm('Clear All', 'Delete all saved sessions?', () => { savedBookings = []; localStorage.removeItem('smasholic_saved_bookings'); renderSaved(); }); };
   els.reset.onclick = () => showConfirm('Reset Form', 'Clear all fields and players?', () => {
     els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30";
-    els.venue.value = "Forum Sba, Setia Alam"; els.court.value = "Rubber Court 14,15,16";
+    els.venue.value = "Forum SBA, Setia Alam"; els.court.value = "14, 15, 16";
     els.locationLink.value = "https://g.co/kgs/UMbmmAz"; locationEnabled = false; els.locationToggle.checked = false; els.locationLink.classList.add('hidden');
     els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = "";
-    els.footer.value = '📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨';
-    els.shareableLink.value = 'https://shorturl.at/CAN8U';
     players = []; waitingPlayers = []; additionalCourts = [];
     renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updatePreview();
     showToast('Reset complete!');
