@@ -24,7 +24,6 @@
       overscroll-behavior-y:none; -webkit-font-smoothing:antialiased;
       -webkit-tap-highlight-color:transparent;
     }
-
     #loadingScreen {
       position: fixed; top:0; left:0; right:0; bottom:0;
       background: var(--purple); z-index: 999;
@@ -322,11 +321,12 @@
 
 <script>
 (function() {
+  // Loading screen
   setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 1500);
 
+  // Admin
   const ADMIN_PASSWORD = 'smash123';
   let isAdmin = false;
-
   const adminPasswordInput = document.getElementById('adminPasswordInput');
   const adminLoginBtn = document.getElementById('adminLoginBtn');
   const adminLogoutBtn = document.getElementById('adminLogoutBtn');
@@ -382,6 +382,7 @@
     showToast('Admin mode locked', '🔒');
   });
 
+  // DOM elements
   const els = {
     date: document.getElementById('dateInput'), day: document.getElementById('dayInput'),
     start: document.getElementById('startTime'), end: document.getElementById('endTime'), duration: document.getElementById('totalHours'),
@@ -405,7 +406,7 @@
 
   let players = [];
   let waitingPlayers = [];
-  let additionalCourts = [];
+  let additionalCourts = [];  // { court, start, end }
   let savedBookings = [];
   let confirmCallback = null;
   let locationEnabled = false;
@@ -413,6 +414,7 @@
   try { savedBookings = JSON.parse(localStorage.getItem('smasholic_saved_bookings') || '[]'); } catch(e) { savedBookings = []; }
   els.date.value = new Date().toISOString().split('T')[0];
 
+  // Helpers
   function showToast(msg, icon = '✅') {
     els.toast.innerHTML = `<span>${icon}</span> ${msg}`;
     els.toast.classList.add('show');
@@ -421,6 +423,7 @@
   function vibrate(ms = 10) { if(navigator.vibrate) navigator.vibrate(ms); }
   function escapeHtml(str) { return (str||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
   window.toggleCollapse = (id) => document.getElementById(id).classList.toggle('collapsed');
+
   function showConfirm(title, msg, onConfirm) {
     document.getElementById('confirmTitle').textContent = title;
     document.getElementById('confirmMessage').textContent = msg;
@@ -430,6 +433,7 @@
   document.getElementById('confirmCancelBtn').onclick = () => { els.confirmModal.classList.remove('active'); vibrate(); };
   document.getElementById('confirmActionBtn').onclick = () => { els.confirmModal.classList.remove('active'); vibrate(); if(confirmCallback) confirmCallback(); };
 
+  // Tab navigation
   document.querySelectorAll('.nav-item').forEach(nav => {
     nav.addEventListener('click', () => {
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -442,6 +446,7 @@
     });
   });
 
+  // Location toggle
   els.locationToggle.addEventListener('change', () => {
     locationEnabled = els.locationToggle.checked;
     els.locationLink.classList.toggle('hidden', !locationEnabled);
@@ -449,6 +454,7 @@
     vibrate();
   });
 
+  // Time calculations
   function timeToMinutes(t) { if (!t) return 0; const [h,m] = t.split(':').map(Number); return h*60+m; }
   function calcTotalDuration() {
     const intervals = [];
@@ -498,6 +504,7 @@
     return /court/i.test(t) ? t : 'Court ' + t;
   }
 
+  // Additional courts
   els.addCourtBtn.onclick = () => {
     if (!isAdmin) return;
     additionalCourts.push({ court: '', start: '', end: '' });
@@ -505,6 +512,7 @@
     updateDateData();
     vibrate();
   };
+
   function renderAdditionalCourts() {
     els.additionalCourtsContainer.innerHTML = '';
     additionalCourts.forEach((c, idx) => {
@@ -570,11 +578,26 @@
   [els.venue, els.court, els.price, els.shuttle, els.host, els.footer, els.updateListLink].forEach(e => e.addEventListener('input', updatePreview));
   els.locationLink.addEventListener('input', updatePreview);
 
+  // Name autocomplete
   const NAMES_KEY='smasholic_names';
   function getNames(){ try{return JSON.parse(localStorage.getItem(NAMES_KEY))||[];}catch{return[];} }
   function addName(name){ name=name.trim(); if(!name)return; let names=getNames().filter(n=>n.toLowerCase()!==name.toLowerCase()); names.unshift(name); if(names.length>40) names.pop(); localStorage.setItem(NAMES_KEY,JSON.stringify(names)); }
-  function showAutocomplete(input,idx,isWaiting=false){ /* same as before, not changed */ }
+  function showAutocomplete(input,idx,isWaiting=false){
+    document.querySelectorAll('.autocomplete-list').forEach(e=>e.remove());
+    const val=input.value.trim().toLowerCase();
+    if(!val)return;
+    const matches=getNames().filter(n=>n.toLowerCase().includes(val)&&n.toLowerCase()!==val);
+    if(!matches.length)return;
+    const list=document.createElement('div'); list.className='autocomplete-list active';
+    matches.forEach(name=>{
+      const item=document.createElement('div'); item.className='autocomplete-item'; item.textContent=name;
+      item.onmousedown=(e)=>{ e.preventDefault(); input.value=name; if(isWaiting) waitingPlayers[idx].name=name; else { players[idx].name=name; updateDuplicateStyling(); } list.remove(); updatePreview(); addName(name); vibrate(); };
+      list.appendChild(item);
+    });
+    input.closest('.player-row').appendChild(list);
+  }
 
+  // Players
   els.addPlayer.onclick = () => { players.push({name:"",paid:false}); renderPlayers(); updatePreview(); vibrate(); };
   els.stepPlus.onclick = () => { players.push({name:"",paid:false}); renderPlayers(); updatePreview(); vibrate(); };
   els.stepMinus.onclick = () => { if(players.length) { players.pop(); renderPlayers(); updatePreview(); vibrate(); } };
@@ -587,16 +610,134 @@
     } else if (!isNaN(count) && (count < 0 || count > 100)) showToast("Enter a number between 0-100", "⚠️");
   };
 
-  function findDuplicates(){ /* same */ }
-  function updateDuplicateStyling(){ /* same */ }
+  function findDuplicates() {
+    const counts = new Map(), dups = new Set();
+    players.forEach(p => { const n = p.name.trim().toLowerCase(); if(n) { counts.set(n, (counts.get(n)||0)+1); if(counts.get(n)>1) dups.add(n); }});
+    return dups;
+  }
+  function updateDuplicateStyling() {
+    const dups = findDuplicates();
+    document.querySelectorAll('#playersContainer .player-row').forEach((row, idx) => {
+      if(!players[idx]) return;
+      row.classList.toggle('duplicate', dups.has(players[idx].name.trim().toLowerCase()));
+    });
+    els.dupWarning.classList.toggle('active', dups.size > 0);
+  }
+
   let longPressTimer=null, isDragging=false, dragStartIdx=null, dragTargetIdx=null;
-  function addDragListeners(){ /* same */ }
+  function addDragListeners() {
+    document.querySelectorAll('#playersContainer .player-row').forEach((playerRow) => {
+      const idx = parseInt(playerRow.dataset.idx);
+      playerRow.addEventListener('touchstart', (e) => {
+        if(e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+        clearTimeout(longPressTimer);
+        longPressTimer = setTimeout(() => { isDragging = true; dragStartIdx = idx; playerRow.style.opacity = '0.5'; vibrate(15); }, 400);
+      }, { passive: true });
+      playerRow.addEventListener('touchend', () => {
+        clearTimeout(longPressTimer);
+        if (isDragging) {
+          isDragging = false; document.querySelectorAll('#playersContainer .player-row').forEach(r => { r.style.opacity = '1'; r.style.borderTop = ''; });
+          if (dragStartIdx !== null && dragTargetIdx !== null && dragStartIdx !== dragTargetIdx) {
+            const moved = players.splice(dragStartIdx, 1)[0]; players.splice(dragTargetIdx, 0, moved);
+            renderPlayers(); updatePreview(); vibrate(20);
+          }
+          dragStartIdx = null; dragTargetIdx = null;
+        }
+      });
+      playerRow.addEventListener('touchmove', (e) => {
+        if (!isDragging) return; e.preventDefault();
+        const target = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+        const row = target?.closest('#playersContainer .player-row');
+        if (row && row !== playerRow) {
+          dragTargetIdx = parseInt(row.dataset.idx);
+          document.querySelectorAll('#playersContainer .player-row').forEach(r => r.style.borderTop = '');
+          row.style.borderTop = '3px solid var(--primary)';
+        }
+      }, { passive: false });
+    });
+  }
 
-  function renderPlayers(){ /* same */ }
-  function attachPlayerEvents(){ /* same */ }
+  function renderPlayers() {
+    els.playersContainer.innerHTML = '';
+    players.forEach((p, idx) => {
+      const row = document.createElement('div');
+      row.className = 'player-row'; row.dataset.idx = idx;
+      row.innerHTML = `
+        <div class="player-avatar">${idx + 1}</div>
+        <input type="text" class="pname" value="${escapeHtml(p.name)}" placeholder="Enter name..." data-idx="${idx}" autocomplete="off">
+        <button class="action-icon paid-toggle ${p.paid ? 'active' : ''}" data-idx="${idx}">✅</button>
+        <button class="action-icon remove-toggle" data-idx="${idx}">✕</button>
+      `;
+      els.playersContainer.appendChild(row);
+    });
+    attachPlayerEvents();
+    addDragListeners();
+    els.playerCount.textContent = players.length;
+    updateDuplicateStyling();
+  }
+
+  function attachPlayerEvents() {
+    document.querySelectorAll('#playersContainer .pname').forEach(inp => {
+      const idx = parseInt(inp.dataset.idx);
+      const newInp = inp.cloneNode(true);
+      inp.parentNode.replaceChild(newInp, inp);
+      newInp.addEventListener('input', function(e) {
+        const i = parseInt(this.dataset.idx);
+        players[i].name = this.value;
+        updateDuplicateStyling();
+        updatePreview();
+        showAutocomplete(this, i, false);
+      });
+      newInp.addEventListener('focus', function() { this.closest('.player-row').classList.add('focused'); if(this.value.trim()) showAutocomplete(this, idx, false); });
+      newInp.addEventListener('blur', function() { this.closest('.player-row').classList.remove('focused'); setTimeout(() => { const l = this.parentNode.querySelector('.autocomplete-list'); if(l) l.remove(); }, 150); });
+    });
+    document.querySelectorAll('#playersContainer .paid-toggle').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        vibrate();
+        const i = parseInt(this.dataset.idx);
+        players[i].paid = !players[i].paid;
+        if (players[i].paid && players[i].name) addName(players[i].name);
+        renderPlayers();
+        updatePreview();
+      });
+    });
+    document.querySelectorAll('#playersContainer .remove-toggle').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        vibrate();
+        players.splice(parseInt(this.dataset.idx), 1);
+        renderPlayers();
+        updatePreview();
+      });
+    });
+  }
+
+  // Waiting list
   els.addWaiting.onclick = () => { waitingPlayers.push({name:""}); renderWaitingPlayers(); updatePreview(); vibrate(); };
-  function renderWaitingPlayers(){ /* same */ }
+  function renderWaitingPlayers() {
+    els.waitingContainer.innerHTML = '';
+    waitingPlayers.forEach((p, idx) => {
+      const row = document.createElement('div');
+      row.className = 'player-row';
+      row.innerHTML = `
+        <div class="player-avatar" style="background:var(--input-bg);color:var(--text-muted);">${idx + 1}</div>
+        <input type="text" class="wname" value="${escapeHtml(p.name)}" placeholder="Waiting player..." data-idx="${idx}">
+        <button class="action-icon remove-toggle w-remove" data-idx="${idx}">✕</button>
+      `;
+      els.waitingContainer.appendChild(row);
+    });
+    document.querySelectorAll('.wname').forEach(inp => {
+      const idx = parseInt(inp.dataset.idx);
+      const newInp = inp.cloneNode(true); inp.parentNode.replaceChild(newInp, inp);
+      newInp.addEventListener('input', function(e) { waitingPlayers[idx].name = this.value; updatePreview(); showAutocomplete(this, idx, true); });
+      newInp.addEventListener('focus', function() { this.closest('.player-row').classList.add('focused'); if(this.value.trim()) showAutocomplete(this, idx, true); });
+      newInp.addEventListener('blur', function() { this.closest('.player-row').classList.remove('focused'); setTimeout(() => { const l = this.parentNode.querySelector('.autocomplete-list'); if(l) l.remove(); }, 150); });
+    });
+    document.querySelectorAll('.w-remove').forEach(btn => btn.addEventListener('click', function(e) {
+      vibrate(); waitingPlayers.splice(parseInt(this.dataset.idx), 1); renderWaitingPlayers(); updatePreview();
+    }));
+  }
 
+  // Preview and copy/share
   function formatTime12(t){ if(!t)return''; let [h,m]=t.split(':'); h=parseInt(h); const ampm=h>=12?'PM':'AM'; let h12=h%12; if(h12===0)h12=12; return `${h12}:${m} ${ampm}`; }
   function formatDateDMY(dStr){ if(!dStr)return''; const [y,m,d]=dStr.split('-'); return `${parseInt(d)}/${parseInt(m)}/${y}`; }
 
@@ -619,7 +760,6 @@
     text += `📍 ${venueVal}\n`;
     text += `🏟️ Court: ${mainCourt}\n\n`;
     text += `📅 ${dateVal} (${dayVal})\n\n`;
-
     text += `⏰ Session 1\n${start} – ${end}\n(${mainCourt})\n\n`;
 
     let sessionNum = 2;
@@ -636,22 +776,17 @@
     text += `💵 RM${priceVal} / player\n`;
     text += `🏸 Shuttle: ${shuttleVal}\n`;
     text += `👤 Host: ${hostVal}\n\n`;
-
     text += `──────────────────\n\n`;
 
     players.forEach((p,i) => { const name = p.name.trim() || '(Open)'; text += `${i+1}. ${name}${p.paid?' ✅':''}\n`; });
-
     if (waitingPlayers.length) {
       text += `\nWaiting List\n`;
       waitingPlayers.forEach((p,i) => text += `${i+1}. ${p.name.trim()||''}\n`);
     }
-
     text += `\n──────────────────\n\n`;
     text += `Notes:\n${els.footer.value.trim()}\n`;
-
     if (locationEnabled && locationVal) text += `\n📍 Location: ${locationVal}\n`;
     if (updateListVal) text += `\nLink update list\n${updateListVal}\n`;
-
     return text;
   }
 
@@ -674,8 +809,16 @@
     }
   };
 
-  function parseTime12to24(str) { /* same */ }
-  function parseDMYtoYMD(str) { /* same */ }
+  // Import
+  function parseTime12to24(str) {
+    const match = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    if (!match) return null;
+    let h = parseInt(match[1]), m = match[2], period = match[3].toUpperCase();
+    if (period === 'PM' && h !== 12) h += 12;
+    if (period === 'AM' && h === 12) h = 0;
+    return `${h.toString().padStart(2,'0')}:${m}`;
+  }
+  function parseDMYtoYMD(str) { const parts=str.split('/'); if(parts.length!==3) return null; return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`; }
   function stripCourtPrefix(name) { return name.replace(/^Court\s+/i,'').trim(); }
 
   els.importBtn.onclick = () => { vibrate(); document.getElementById('importTextarea').value=''; els.importModal.classList.add('active'); };
@@ -750,6 +893,7 @@
     } catch (e) { showToast('Import failed – check format','❌'); }
   };
 
+  // Save/Load
   els.save.onclick = () => {
     if (!isAdmin) return;
     vibrate();
@@ -801,6 +945,7 @@
     showToast('Reset complete!');
   }); };
 
+  // Initial render
   applyAdminState();
   renderPlayers();
   renderWaitingPlayers();
