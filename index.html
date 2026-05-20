@@ -235,6 +235,11 @@
           </div>
           <div class="input-group"><label>Shuttle</label><input type="text" id="shuttle" value="RSL"></div>
           <div class="input-group"><label>Host Name</label><input type="text" id="host" placeholder="Your name"></div>
+          <!-- New Update List Link -->
+          <div class="input-group full-width">
+            <label>🔗 Update List Link</label>
+            <input type="url" id="updateListLink" value="https://shorturl.at/ahgyU" placeholder="e.g. Google Sheets link">
+          </div>
         </div>
       </div>
 
@@ -341,6 +346,7 @@
     locationToggle: document.getElementById('locationToggle'), locationLink: document.getElementById('locationLink'),
     price: document.getElementById('price'), shuttle: document.getElementById('shuttle'),
     host: document.getElementById('host'), footer: document.getElementById('footerMessage'),
+    updateListLink: document.getElementById('updateListLink'), // new
     preview: document.getElementById('preview'),
     playersContainer: document.getElementById('playersContainer'), waitingContainer: document.getElementById('waitingContainer'),
     playerCount: document.getElementById('playerCountDisplay'), dupWarning: document.getElementById('duplicateWarning'),
@@ -456,18 +462,19 @@
   els.start.addEventListener('input',updateDateData);
   els.end.addEventListener('input',updateDateData);
   updateDateData();
-  [els.venue,els.court,els.price,els.shuttle,els.host,els.footer].forEach(e=>e.addEventListener('input',updatePreview));
+  [els.venue,els.court,els.price,els.shuttle,els.host,els.footer,els.updateListLink].forEach(e=>e.addEventListener('input',updatePreview));
   els.locationLink.addEventListener('input',updatePreview);
 
+  // Name autocomplete (same)
   const NAMES_KEY='smasholic_names';
   function getNames(){ try{return JSON.parse(localStorage.getItem(NAMES_KEY))||[];}catch{return[];} }
   function addName(name){ name=name.trim(); if(!name)return; let names=getNames().filter(n=>n.toLowerCase()!==name.toLowerCase()); names.unshift(name); if(names.length>40) names.pop(); localStorage.setItem(NAMES_KEY,JSON.stringify(names)); }
-  function showAutocomplete(input,idx,isWaiting=false){ /*... same as before ...*/ }
+  function showAutocomplete(input,idx,isWaiting=false){ /*... same ...*/ }
 
   els.addPlayer.onclick = () => { players.push({name:"",paid:false}); renderPlayers(); updatePreview(); vibrate(); };
   els.stepPlus.onclick = () => { players.push({name:"",paid:false}); renderPlayers(); updatePreview(); vibrate(); };
   els.stepMinus.onclick = () => { if(players.length) { players.pop(); renderPlayers(); updatePreview(); vibrate(); } };
-  els.playerCount.onclick = () => { /* same as before */ };
+  els.playerCount.onclick = () => { /* same */ };
 
   function findDuplicates(){ /* same */ }
   function updateDuplicateStyling(){ /* same */ }
@@ -495,73 +502,7 @@
     const shuttleVal = els.shuttle.value;
     const hostVal = els.host.value.trim() || '......';
     const locationVal = els.locationLink.value.trim();
-
-    let text = `🏸 BADMINTON SESSION\n\n`;
-    text += `📍 ${venueVal}\n`;
-    text += `🏟️ Court: ${mainCourt}\n\n`;
-    text += `📅 ${dateVal} (${dayVal})\n\n`;
-
-    // Main session
-    text += `⏰ Session 1\n${start} – ${end}\n(${mainCourt})\n\n`;
-
-    // Additional sessions
-    let sessionNum = 2;
-    additionalCourts.forEach(c => {
-      if (c.court.trim()) {
-        const s = formatTime12(c.start);
-        const e = formatTime12(c.end);
-        text += `⏰ Session ${sessionNum}\n${s||'?'} – ${e||'?'}\n(${formatCourtName(c.court.trim())})\n\n`;
-        sessionNum++;
-      }
-    });
-
-    text += `⏱️ Total: ${totalText}\n`;
-    text += `💵 RM${priceVal} / player\n`;
-    text += `🏸 Shuttle: ${shuttleVal}\n`;
-    text += `👤 Host: ${hostVal}\n\n`;
-
-    if (locationEnabled && locationVal) text += `📍 Link: ${locationVal}\n\n`;
-
-    text += `──────────────────\n\n`;
-
-    players.forEach((p,i) => {
-      const name = p.name.trim() || '(Open)';
-      text += `${i+1}. ${name}${p.paid?' ✅':''}\n`;
-    });
-
-    if (waitingPlayers.length) {
-      text += `\nWaiting List\n`;
-      waitingPlayers.forEach((p,i) => text += `${i+1}. ${p.name.trim()||''}\n`);
-    }
-
-    text += `\n──────────────────\n\n`;
-    text += `Notes:\n${els.footer.value.trim()}\n`;
-
-    // Location link below notes if toggled (already included above, but duplicate? we move it)
-    // Actually we already have location link above, but user wants it below footing detail. Let's adjust: remove the earlier one, and place after Notes.
-    // Let's redo: remove the earlier "📍 Link:" from above, and add it after Notes.
-    // So we modify the build to not include location earlier, and add after notes.
-    // We'll rebuild the function accordingly.
-
-    // Corrected version:
-    // Remove the location line from above and place it after Notes.
-    return text;
-  }
-
-  // Override the above to correct placement
-  function buildPreviewFinal() {
-    const dateVal = formatDateDMY(els.date.value);
-    const dayVal = els.day.textContent;
-    const start = formatTime12(els.start.value);
-    const end = formatTime12(els.end.value);
-    const totalHrs = calcTotalDuration();
-    const totalText = (totalHrs%1===0?totalHrs.toFixed(0):totalHrs.toFixed(1))+' hours';
-    const venueVal = els.venue.value;
-    const mainCourt = els.court.value;
-    const priceVal = parseFloat(els.price.value||0).toFixed(2);
-    const shuttleVal = els.shuttle.value;
-    const hostVal = els.host.value.trim() || '......';
-    const locationVal = els.locationLink.value.trim();
+    const updateListVal = els.updateListLink.value.trim();
 
     let text = `🏸 BADMINTON SESSION\n\n`;
     text += `📍 ${venueVal}\n`;
@@ -603,15 +544,18 @@
     if (locationEnabled && locationVal) {
       text += `\n📍 Location: ${locationVal}\n`;
     }
+    if (updateListVal) {
+      text += `\n🔗 Update List: ${updateListVal}\n`;
+    }
 
     return text;
   }
 
-  function updatePreview() { els.preview.textContent = buildPreviewFinal(); }
+  function updatePreview() { els.preview.textContent = buildPreview(); }
 
   els.copy.onclick = async () => {
     vibrate();
-    const announcement = buildPreviewFinal();
+    const announcement = buildPreview();
     if (navigator.share) {
       try { await navigator.share({ text: announcement }); showToast("Shared!"); return; } catch (err) {}
     }
@@ -629,7 +573,7 @@
     }
   };
 
-  // Import parser – updated to capture host and location
+  // Import parser
   function parseTime12to24(str) {
     const match = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
     if (!match) return null;
@@ -649,7 +593,7 @@
     if (!raw) { showToast('Paste announcement text first','⚠️'); return; }
     try {
       const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l!=='');
-      let parsedDate='',parsedDay='',parsedStart='',parsedEnd='',parsedVenue='',parsedCourt='',parsedLocation='',parsedPrice='',parsedShuttle='',parsedHost='';
+      let parsedDate='',parsedDay='',parsedStart='',parsedEnd='',parsedVenue='',parsedCourt='',parsedLocation='',parsedPrice='',parsedShuttle='',parsedHost='',parsedUpdateList='';
       let newPlayers=[],newWaiting=[],newAdditionalCourts=[];
       let mode='head',footerLines=[],foundLocation=false;
       let sessionNum=0,tempStart='',tempEnd='',tempCourt='';
@@ -697,6 +641,8 @@
         } else if (line.startsWith('📍 Link:') || line.startsWith('📍 Location:')) {
           foundLocation = true;
           parsedLocation = line.replace(/📍 (Link|Location):/,'').trim();
+        } else if (line.startsWith('🔗 Update List:')) {
+          parsedUpdateList = line.replace('🔗 Update List:','').trim();
         } else if (line.startsWith('──────────────────')) {
           if (mode==='head') mode='players';
           else if (mode==='players') mode='footer';
@@ -741,6 +687,8 @@
       if (parsedPrice) els.price.value = parsedPrice;
       if (parsedShuttle) els.shuttle.value = parsedShuttle;
       if (parsedHost) els.host.value = parsedHost;
+      if (parsedUpdateList) els.updateListLink.value = parsedUpdateList;
+      else els.updateListLink.value = 'https://shorturl.at/ahgyU';
       players = newPlayers; waitingPlayers = newWaiting;
       additionalCourts = newAdditionalCourts;
       renderAdditionalCourts();
@@ -752,13 +700,14 @@
     } catch (e) { showToast('Import failed – check format','❌'); }
   };
 
-  // Save/Load – unchanged, but includes host and location
+  // Save/Load
   els.save.onclick = () => { vibrate();
     savedBookings.unshift({
       id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value,
       venue: els.venue.value, court: els.court.value, additionalCourts: JSON.parse(JSON.stringify(additionalCourts)),
       location: els.locationLink.value, locationEnabled: locationEnabled,
       price: els.price.value, shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value,
+      updateListLink: els.updateListLink.value, // new
       players: JSON.parse(JSON.stringify(players)), waiting: JSON.parse(JSON.stringify(waitingPlayers))
     });
     localStorage.setItem('smasholic_saved_bookings', JSON.stringify(savedBookings));
@@ -782,6 +731,7 @@
       locationEnabled = d.locationEnabled || false; els.locationToggle.checked = locationEnabled;
       if (locationEnabled) { els.locationLink.classList.remove('hidden'); } else { els.locationLink.classList.add('hidden'); }
       els.price.value = d.price; els.shuttle.value = d.shuttle; els.host.value = d.host; els.footer.value = d.footer;
+      els.updateListLink.value = d.updateListLink || 'https://shorturl.at/ahgyU'; // new
       players = JSON.parse(JSON.stringify(d.players)); waitingPlayers = JSON.parse(JSON.stringify(d.waiting));
       updateDateData(); renderPlayers(); renderWaitingPlayers(); updatePreview();
       document.querySelector('.nav-item[data-tab="booking"]').click(); showToast("Loaded!");
@@ -794,6 +744,7 @@
     els.venue.value = "Forum SBA, Setia Alam"; els.court.value = "14, 15, 16";
     els.locationLink.value = "https://g.co/kgs/UMbmmAz"; locationEnabled = false; els.locationToggle.checked = false; els.locationLink.classList.add('hidden');
     els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = "";
+    els.updateListLink.value = "https://shorturl.at/ahgyU"; // reset default
     players = []; waitingPlayers = []; additionalCourts = [];
     renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updateDateData();
     showToast('Reset complete!');
