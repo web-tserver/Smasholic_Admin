@@ -276,10 +276,14 @@
       <div class="card collapsible collapsed" id="footerCard">
         <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')"><span class="card-title">📌 Footer Message</span><span class="chevron">▼</span></div>
         <div class="collapsible-body" style="max-height:500px;">
-          <textarea id="footerMessage" rows="4">📌 Payment deadline: Friday morning
+          <textarea id="footerMessage" rows="6">📌 Payment deadline: Friday morning
 📌 Confirm slot via QR payment only
 ❌ No cash on court
-⚠️ Slot only confirmed after payment</textarea>
+⚠️ Slot only confirmed after payment
+
+Link update list
+Copy,import,update and share.
+https://shorturl.at/CAN8U</textarea>
         </div>
       </div>
       <div class="card">
@@ -357,7 +361,7 @@
 
   let players = [];
   let waitingPlayers = [];
-  let additionalCourts = []; // { court, start, end }
+  let additionalCourts = [];
   let savedBookings = [];
   let confirmCallback = null;
   let locationEnabled = false;
@@ -646,7 +650,6 @@
     return `${parseInt(d)}/${parseInt(m)}/${y}`;
   }
 
-  // NEW COPY FORMAT
   function buildPreview() {
     const dateVal = formatDateDMY(els.date.value);
     const dayVal = els.day.textContent;
@@ -665,10 +668,8 @@
     text += `🏟️ Court: ${mainCourt}\n\n`;
     text += `📅 ${dateVal} (${dayVal})\n\n`;
 
-    // Session 1 (main)
     text += `⏰ Session 1\n${start} – ${end}\n(${mainCourt})\n\n`;
 
-    // Additional sessions
     let sessionNum = 2;
     additionalCourts.forEach(c => {
       if (c.court.trim()) {
@@ -679,12 +680,10 @@
       }
     });
 
-    // Total hours – sum of all session durations
     let total = mainDuration;
     additionalCourts.forEach(c => total += calcDurationSingle(c.start, c.end));
     const totalText = (total % 1 === 0 ? total.toFixed(0) : total.toFixed(1)) + ' hours';
     text += `⏱️ Total: ${totalText}\n`;
-
     text += `💵 RM${priceVal} / player\n`;
     text += `🏸 Shuttle: ${shuttleVal}\n\n`;
     if (locationEnabled && locationVal) text += `📍 Link: ${locationVal}\n\n`;
@@ -729,7 +728,7 @@
     }
   };
 
-  // REVERSE IMPORT – parse new format
+  // REVERSE IMPORT
   function parseTime12to24(str) {
     const match = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
     if (!match) return null;
@@ -759,7 +758,7 @@
 
       for (let i=0; i<lines.length; i++) {
         const line = lines[i];
-        if (line.startsWith('🏸 BADMINTON SESSION')) { continue; }
+        if (line.startsWith('🏸 BADMINTON SESSION')) continue;
 
         if (line.startsWith('📍') && !line.startsWith('📍 Link:')) {
           parsedVenue = line.replace('📍','').trim();
@@ -783,13 +782,11 @@
             tempEnd = parts[1].trim();
           } else if (line.startsWith('(')) {
             tempCourt = line.replace(/[()]/g,'').trim();
-            // save session
             const start24 = parseTime12to24(tempStart);
             const end24 = parseTime12to24(tempEnd);
             if (sessionNum === 1) {
               if (start24) parsedStart = start24;
               if (end24) parsedEnd = end24;
-              // main court already captured; we may override with tempCourt if needed? but main court is already from above
             } else {
               newAdditionalCourts.push({
                 court: tempCourt,
@@ -857,14 +854,14 @@
       additionalCourts = newAdditionalCourts;
       renderAdditionalCourts();
       if (footerLines.length) els.footer.value = footerLines.join('\n');
-      else els.footer.value = '📌 Payment deadline: Friday morning\n📌 Confirm slot via QR payment only\n❌ No cash on court\n⚠️ Slot only confirmed after payment';
+      else els.footer.value = '📌 Payment deadline: Friday morning\n📌 Confirm slot via QR payment only\n❌ No cash on court\n⚠️ Slot only confirmed after payment\n\nLink update list\nCopy,import,update and share.\nhttps://shorturl.at/CAN8U';
       updateDateData(); renderPlayers(); renderWaitingPlayers(); updatePreview();
       els.importModal.classList.remove('active');
       showToast('Imported successfully!');
     } catch (e) { showToast('Import failed – check format', '❌'); }
   };
 
-  // Save/Load (unchanged but includes new fields)
+  // Save/Load
   els.save.onclick = () => { vibrate();
     savedBookings.unshift({
       id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value,
