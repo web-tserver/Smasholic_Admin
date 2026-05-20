@@ -23,6 +23,19 @@
       overscroll-behavior-y:none; -webkit-font-smoothing:antialiased;
       -webkit-tap-highlight-color:transparent;
     }
+    #loadingScreen {
+      position: fixed; top:0; left:0; right:0; bottom:0;
+      background: var(--bg); z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.4s ease; opacity: 1;
+    }
+    #loadingScreen.hidden { opacity: 0; pointer-events: none; }
+    .loading-content { text-align: center; }
+    .loading-icon { font-size: 4rem; animation: pulse 1.2s infinite ease-in-out; }
+    @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
+    .loading-title { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin-top: 12px; }
+    .loading-subtitle { font-size: 0.9rem; color: var(--text-muted); margin-top: 8px; }
+
     .app-container { width:100%; max-width:480px; background:var(--bg); min-height:100vh; display:flex; flex-direction:column; position:relative; padding-bottom:80px; }
     .header {
       position:sticky; top:0; z-index:50;
@@ -114,7 +127,6 @@
     .autocomplete-item:last-child { border-bottom:none; }
     .autocomplete-item:active { background:var(--input-bg); }
 
-    /* Toggle switch */
     .location-toggle { display:flex; align-items:center; gap:8px; margin-top:4px; }
     .location-toggle .toggle-label { font-size:0.75rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; user-select:none; }
     .toggle-switch { position:relative; display:inline-block; width:44px; height:24px; }
@@ -123,9 +135,86 @@
     .slider:before { position:absolute; content:""; height:18px; width:18px; left:3px; bottom:3px; background-color:white; transition:0.2s; border-radius:50%; }
     input:checked + .slider { background-color:var(--primary); }
     input:checked + .slider:before { transform:translateX(20px); }
+
+    /* Additional court rows – clean, no overlap */
+    .court-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .court-detail {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .court-detail input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      background: var(--input-bg);
+    }
+    .court-detail .remove-btn {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    .court-detail .remove-btn:hover { color: var(--danger); background: #fee2e2; }
+    .time-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .time-row input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 6px;
+      font-size: 0.85rem;
+      background: var(--input-bg);
+      text-align: center;
+    }
+    .time-row .time-sep {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .time-row .duration-badge {
+      font-size: 0.8rem;
+      color: var(--primary);
+      font-weight: 600;
+      min-width: 40px;
+      text-align: center;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
+
+<div id="loadingScreen">
+  <div class="loading-content">
+    <div class="loading-icon">🏸</div>
+    <div class="loading-title">Smasholic</div>
+    <div class="loading-subtitle">Loading your booking...</div>
+  </div>
+</div>
+
 <div class="app-container">
   <div class="header"><h1><span class="icon">🏸</span> Smasholic</h1></div>
   <div class="content" id="mainContent">
@@ -139,9 +228,7 @@
           <div class="input-group"><label>Duration</label><div class="readonly-badge" id="totalHours">2.0 Hrs</div></div>
           <div class="input-group"><label>Price (RM)</label><input type="number" id="price" value="17" step="0.5"></div>
           <div class="input-group full-width"><label>Venue</label><input type="text" id="venue" value="Forum Sba, Setia Alam"></div>
-          <div class="input-group full-width"><label>Court</label><input type="text" id="court" value="Rubber Court 6 & 7"></div>
-
-          <!-- Location toggle -->
+          <div class="input-group full-width"><label>Main Court</label><input type="text" id="court" value="Rubber Court 14,15 & 16"></div>
           <div class="input-group full-width">
             <div class="location-toggle">
               <label class="toggle-switch"><input type="checkbox" id="locationToggle"><span class="slider"></span></label>
@@ -149,11 +236,22 @@
             </div>
             <input type="url" id="locationLink" value="https://g.co/kgs/UMbmmAz" placeholder="Google Maps link" class="hidden">
           </div>
-
           <div class="input-group"><label>Shuttle</label><input type="text" id="shuttle" value="RSL"></div>
           <div class="input-group"><label>Host Name</label><input type="text" id="host" placeholder="Your name"></div>
         </div>
       </div>
+
+      <!-- Additional Courts Card -->
+      <div class="card collapsible collapsed" id="additionalCourtsCard">
+        <div class="card-header collapsible-header" onclick="toggleCollapse('additionalCourtsCard')">
+          <span class="card-title">🏟️ Additional Courts</span><span class="chevron">▼</span>
+        </div>
+        <div class="collapsible-body" style="max-height:2000px;">
+          <div id="additionalCourtsContainer"></div>
+          <button class="btn btn-outline" id="addCourtBtn" style="margin-top:12px;">+ Add Court</button>
+        </div>
+      </div>
+
       <div class="card collapsible" id="playersCard">
         <div class="card-header collapsible-header" onclick="toggleCollapse('playersCard')"><span class="card-title">👥 Roster</span><span class="chevron">▼</span></div>
         <div class="collapsible-body" style="max-height:2000px;">
@@ -180,8 +278,7 @@
       <div class="card collapsible collapsed" id="footerCard">
         <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')"><span class="card-title">📌 Footer Message</span><span class="chevron">▼</span></div>
         <div class="collapsible-body" style="max-height:500px;">
-          <textarea id="footerMessage" rows="4">📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi 
-boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea>
+          <textarea id="footerMessage" rows="3">📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea>
         </div>
       </div>
       <div class="card">
@@ -209,6 +306,7 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
     <div class="nav-item" data-tab="saved"><span class="nav-icon">📂</span><span>Saved</span></div>
   </nav>
 </div>
+
 <div id="toast" class="toast"></div>
 <div class="modal-overlay" id="importModal">
   <div class="modal-content">
@@ -231,29 +329,34 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
     </div>
   </div>
 </div>
+
 <script>
 (function() {
+  setTimeout(() => document.getElementById('loadingScreen').classList.add('hidden'), 1500);
+
   const els = {
     date: document.getElementById('dateInput'), day: document.getElementById('dayInput'),
     start: document.getElementById('startTime'), end: document.getElementById('endTime'), duration: document.getElementById('totalHours'),
     venue: document.getElementById('venue'), court: document.getElementById('court'),
-    locationToggle: document.getElementById('locationToggle'),
-    locationLink: document.getElementById('locationLink'),
+    locationToggle: document.getElementById('locationToggle'), locationLink: document.getElementById('locationLink'),
     price: document.getElementById('price'), shuttle: document.getElementById('shuttle'),
     host: document.getElementById('host'), footer: document.getElementById('footerMessage'),
-    preview: document.getElementById('preview'), playersContainer: document.getElementById('playersContainer'),
-    waitingContainer: document.getElementById('waitingContainer'),
+    preview: document.getElementById('preview'),
+    playersContainer: document.getElementById('playersContainer'), waitingContainer: document.getElementById('waitingContainer'),
     playerCount: document.getElementById('playerCountDisplay'), dupWarning: document.getElementById('duplicateWarning'),
     addPlayer: document.getElementById('addPlayerBtn'), addWaiting: document.getElementById('addWaitingBtn'),
     stepMinus: document.getElementById('stepperMinus'), stepPlus: document.getElementById('stepperPlus'),
     copy: document.getElementById('copyBtn'), save: document.getElementById('saveBookingBtn'), importBtn: document.getElementById('importBtn'),
     reset: document.getElementById('resetSessionBtn'), clearSaved: document.getElementById('clearAllBtn'),
     toast: document.getElementById('toast'), importModal: document.getElementById('importModal'),
-    confirmModal: document.getElementById('confirmModal')
+    confirmModal: document.getElementById('confirmModal'),
+    additionalCourtsContainer: document.getElementById('additionalCourtsContainer'),
+    addCourtBtn: document.getElementById('addCourtBtn')
   };
 
   let players = [];
   let waitingPlayers = [];
+  let additionalCourts = []; // { court, start, end }
   let savedBookings = [];
   let confirmCallback = null;
   let locationEnabled = false;
@@ -292,23 +395,96 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
 
   els.locationToggle.addEventListener('change', () => {
     locationEnabled = els.locationToggle.checked;
-    if (locationEnabled) {
-      els.locationLink.classList.remove('hidden');
-    } else {
-      els.locationLink.classList.add('hidden');
-    }
+    els.locationLink.classList.toggle('hidden', !locationEnabled);
     updatePreview();
     vibrate();
   });
 
-  function calcDuration() {
-    if(!els.start.value || !els.end.value) return 0;
-    const [sh, sm] = els.start.value.split(':').map(Number);
-    const [eh, em] = els.end.value.split(':').map(Number);
+  function calcDurationSingle(start, end) {
+    if (!start || !end) return 0;
+    const [sh, sm] = start.split(':').map(Number);
+    const [eh, em] = end.split(':').map(Number);
     let sMins = sh * 60 + sm, eMins = eh * 60 + em;
     if (eMins <= sMins) eMins += 24 * 60;
     return (eMins - sMins) / 60;
   }
+
+  function formatDuration(hrs) {
+    if (hrs === 0) return '—';
+    return (hrs % 1 === 0 ? hrs.toFixed(0) : hrs.toFixed(1)) + 'h';
+  }
+
+  els.addCourtBtn.onclick = () => {
+    additionalCourts.push({ court: '', start: '', end: '' });
+    renderAdditionalCourts();
+    updatePreview();
+    vibrate();
+  };
+
+  function renderAdditionalCourts() {
+    els.additionalCourtsContainer.innerHTML = '';
+    additionalCourts.forEach((c, idx) => {
+      const row = document.createElement('div');
+      row.className = 'court-row';
+      row.dataset.idx = idx;
+      const dur = calcDurationSingle(c.start, c.end);
+      row.innerHTML = `
+        <div class="court-detail">
+          <input type="text" class="court-name-input" value="${escapeHtml(c.court)}" placeholder="Court detail" data-idx="${idx}">
+          <button class="remove-btn" data-idx="${idx}">✕</button>
+        </div>
+        <div class="time-row">
+          <input type="time" class="time-start" value="${c.start || ''}" data-idx="${idx}">
+          <span class="time-sep">|</span>
+          <input type="time" class="time-end" value="${c.end || ''}" data-idx="${idx}">
+          <span class="duration-badge">${formatDuration(dur)}</span>
+        </div>
+      `;
+      els.additionalCourtsContainer.appendChild(row);
+    });
+
+    document.querySelectorAll('.court-name-input').forEach(inp => {
+      inp.addEventListener('input', function(e) {
+        const i = parseInt(this.dataset.idx);
+        additionalCourts[i].court = this.value;
+        updatePreview();
+      });
+    });
+    document.querySelectorAll('.time-start').forEach(inp => {
+      inp.addEventListener('input', function(e) {
+        const i = parseInt(this.dataset.idx);
+        additionalCourts[i].start = this.value;
+        const row = this.closest('.court-row');
+        const badge = row.querySelector('.duration-badge');
+        const dur = calcDurationSingle(additionalCourts[i].start, additionalCourts[i].end);
+        badge.textContent = formatDuration(dur);
+        updatePreview();
+      });
+    });
+    document.querySelectorAll('.time-end').forEach(inp => {
+      inp.addEventListener('input', function(e) {
+        const i = parseInt(this.dataset.idx);
+        additionalCourts[i].end = this.value;
+        const row = this.closest('.court-row');
+        const badge = row.querySelector('.duration-badge');
+        const dur = calcDurationSingle(additionalCourts[i].start, additionalCourts[i].end);
+        badge.textContent = formatDuration(dur);
+        updatePreview();
+      });
+    });
+    document.querySelectorAll('.court-row .remove-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const i = parseInt(this.dataset.idx);
+        additionalCourts.splice(i, 1);
+        renderAdditionalCourts();
+        updatePreview();
+        vibrate();
+      });
+    });
+  }
+
+  function calcDuration() { return calcDurationSingle(els.start.value, els.end.value); }
+
   const malayDays = ["AHAD","ISNIN","SELASA","RABU","KHAMIS","JUMAAT","SABTU"];
   function updateDateData() {
     if(!els.date.value) return;
@@ -473,19 +649,34 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
     const dayVal = els.day.textContent;
     const start = formatTime12(els.start.value);
     const end = formatTime12(els.end.value);
-    const durationHrs = calcDuration();
-    const durationText = (durationHrs % 1 === 0 ? durationHrs.toFixed(0) : durationHrs.toFixed(1)) + ' hour(s)';
+    const mainDuration = calcDuration();
     const venueVal = els.venue.value;
-    const courtVal = els.court.value;
+    const mainCourt = els.court.value;
     const locationVal = els.locationLink.value.trim();
     const priceVal = parseFloat(els.price.value || 0).toFixed(2);
     const shuttleVal = els.shuttle.value;
     const hostVal = els.host.value.trim() || '......';
 
     let text = `📆 : ${dateVal} , ${dayVal}\n`;
+    text += `🏟️ : ${venueVal}\n        (${mainCourt})\n`;
     text += `⏰ : ${start} - ${end}\n`;
-    text += `⏱️ Total: ${durationText}\n`;
-    text += `🏟️ : ${venueVal}\n        (${courtVal})\n`;
+
+    // Additional courts
+    let combinedDuration = mainDuration;
+    additionalCourts.forEach(c => {
+      if (c.court.trim()) {
+        const s = formatTime12(c.start);
+        const e = formatTime12(c.end);
+        const dur = calcDurationSingle(c.start, c.end);
+        combinedDuration += dur;
+        const durStr = dur > 0 ? ` (${formatDuration(dur)})` : '';
+        text += `        ${c.court.trim()} : ${s || '?'} - ${e || '?'}${durStr}\n`;
+      }
+    });
+
+    const combinedText = combinedDuration % 1 === 0 ? combinedDuration.toFixed(0) : combinedDuration.toFixed(1);
+    text += `⏱️ Total: ${combinedText} hour(s)\n`;
+
     if (locationEnabled && locationVal) text += `📍 : ${locationVal}\n`;
     text += `💵 : RM${priceVal} Per player\n\n`;
     text += `🏸: Shuttle: ${shuttleVal}\n\n`;
@@ -502,16 +693,13 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
       waitingPlayers.forEach((p, i) => text += `${i+1}. ${p.name.trim() || ''}\n`);
     }
 
-    // Footer – preserve line breaks as-is from textarea
     const footer = els.footer.value.trim();
     if (footer) text += `\n${footer}\n`;
-
     return text;
   }
 
   function updatePreview() { els.preview.textContent = buildPreview(); }
 
-  // COPY / SHARE
   els.copy.onclick = async () => {
     vibrate();
     const announcement = buildPreview();
@@ -532,7 +720,7 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
     }
   };
 
-  // REVERSE IMPORT
+  // Import parsing (updated to handle new copy format)
   function parseTime12to24(str) {
     const match = str.match(/^(\d{1,2})\.(\d{2})(am|pm)$/i);
     if (!match) return null;
@@ -556,7 +744,7 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
     try {
       const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== '');
       let parsedDate='', parsedDay='', parsedStart='', parsedEnd='', parsedVenue='', parsedCourt='', parsedLocation='', parsedPrice='', parsedShuttle='', parsedHost='';
-      let newPlayers=[], newWaiting=[];
+      let newPlayers=[], newWaiting=[], newAdditionalCourts=[];
       let mode='head', footerLines=[], foundLocation=false;
 
       for (let i=0; i<lines.length; i++) {
@@ -564,13 +752,31 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
         if (line.startsWith('📆')) {
           const m = line.match(/📆\s*:\s*([\d\/]+)\s*,\s*(\w+)/);
           if (m) { const ymd=parseDMYtoYMD(m[1].trim()); if(ymd) parsedDate=ymd; parsedDay=m[2].trim(); }
-        } else if (line.startsWith('⏰')) {
-          const m = line.match(/⏰\s*:\s*(.+?)\s*-\s*(.+)/);
-          if (m) { const s24=parseTime12to24(m[1].trim()); if(s24) parsedStart=s24; const e24=parseTime12to24(m[2].trim()); if(e24) parsedEnd=e24; }
         } else if (line.startsWith('🏟️')) {
           const m = line.match(/🏟️\s*:\s*(.+)/);
           if (m) parsedVenue=m[1].trim();
-          if (i+1<lines.length && lines[i+1].startsWith('(') && lines[i+1].endsWith(')')) { const cm=lines[i+1].match(/\((.+)\)/); if(cm) parsedCourt=cm[1].trim(); i++; }
+          if (i+1<lines.length && lines[i+1].startsWith('(') && lines[i+1].endsWith(')')) {
+            const cm = lines[i+1].match(/\((.+)\)/);
+            if (cm) parsedCourt = cm[1].trim();
+            i++;
+          }
+        } else if (line.startsWith('⏰')) {
+          const m = line.match(/⏰\s*:\s*(.+?)\s*-\s*(.+)/);
+          if (m) { const s24=parseTime12to24(m[1].trim()); if(s24) parsedStart=s24; const e24=parseTime12to24(m[2].trim()); if(e24) parsedEnd=e24; }
+          // After time line, check for additional court lines (indented, not starting with ⏱️)
+          while (i+1 < lines.length && lines[i+1].startsWith('        ') && !lines[i+1].startsWith('⏱️') && !lines[i+1].startsWith('💵') && !lines[i+1].startsWith('🏸') && !lines[i+1].startsWith('Host') && !lines[i+1].startsWith('Done')) {
+            i++;
+            const courtLine = lines[i].trim();
+            const cmatch = courtLine.match(/^(.+?)\s*:\s*(.+?)\s*-\s*(.+?)(?:\s*\(\s*[\d.]+\s*h\s*\))?$/);
+            if (cmatch) {
+              const courtName = cmatch[1].trim();
+              const start12 = cmatch[2].trim();
+              const end12 = cmatch[3].trim();
+              const start24 = parseTime12to24(start12);
+              const end24 = parseTime12to24(end12);
+              newAdditionalCourts.push({ court: courtName, start: start24 || '', end: end24 || '' });
+            }
+          }
         } else if (line.startsWith('📍')) {
           foundLocation = true;
           const m = line.match(/📍\s*:\s*(.+)/);
@@ -602,32 +808,33 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
       if (parsedVenue) els.venue.value = parsedVenue;
       if (parsedCourt) els.court.value = parsedCourt;
       if (foundLocation) {
-        els.locationToggle.checked = true;
-        locationEnabled = true;
+        els.locationToggle.checked = true; locationEnabled = true;
         els.locationLink.classList.remove('hidden');
         els.locationLink.value = parsedLocation || 'https://g.co/kgs/UMbmmAz';
       } else {
-        els.locationToggle.checked = false;
-        locationEnabled = false;
+        els.locationToggle.checked = false; locationEnabled = false;
         els.locationLink.classList.add('hidden');
       }
       if (parsedPrice) els.price.value = parsedPrice;
       if (parsedShuttle) els.shuttle.value = parsedShuttle;
       if (parsedHost) els.host.value = parsedHost;
       players = newPlayers; waitingPlayers = newWaiting;
+      additionalCourts = newAdditionalCourts;
+      renderAdditionalCourts();
       if (footerLines.length) els.footer.value = footerLines.join('\n');
-      else els.footer.value = '📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi \nboleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨';
+      else els.footer.value = '📌 Sebarang pembayaran utk confirm slot last pada JUMAAT pagi boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨';
       updateDateData(); renderPlayers(); renderWaitingPlayers(); updatePreview();
       els.importModal.classList.remove('active');
       showToast('Imported successfully!');
     } catch (e) { showToast('Import failed – check format', '❌'); }
   };
 
-  // Save/Load
+  // Save/Load (unchanged)
   els.save.onclick = () => { vibrate();
     savedBookings.unshift({
       id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value,
-      venue: els.venue.value, court: els.court.value, location: els.locationLink.value, locationEnabled: locationEnabled,
+      venue: els.venue.value, court: els.court.value, additionalCourts: JSON.parse(JSON.stringify(additionalCourts)),
+      location: els.locationLink.value, locationEnabled: locationEnabled,
       price: els.price.value, shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value,
       players: JSON.parse(JSON.stringify(players)), waiting: JSON.parse(JSON.stringify(waitingPlayers))
     });
@@ -644,13 +851,32 @@ boleh dibuat melalui QR sahaja. No cash on court please. Thank you ✨</textarea
         <div style="display:flex;gap:8px;"><button class="btn btn-secondary load-btn" data-idx="${idx}" style="padding:8px 12px;">Load</button><button class="btn btn-danger del-btn" data-idx="${idx}" style="padding:8px 12px;">✕</button></div>`;
       list.appendChild(item);
     });
-    document.querySelectorAll('.load-btn').forEach(b => b.onclick = function() { vibrate(); const d = savedBookings[this.dataset.idx]; els.date.value = d.date; els.start.value = d.start; els.end.value = d.end; els.venue.value = d.venue; els.court.value = d.court; els.locationLink.value = d.location || 'https://g.co/kgs/UMbmmAz'; locationEnabled = d.locationEnabled || false; els.locationToggle.checked = locationEnabled; if (locationEnabled) { els.locationLink.classList.remove('hidden'); } else { els.locationLink.classList.add('hidden'); } els.price.value = d.price; els.shuttle.value = d.shuttle; els.host.value = d.host; els.footer.value = d.footer; players = JSON.parse(JSON.stringify(d.players)); waitingPlayers = JSON.parse(JSON.stringify(d.waiting)); updateDateData(); renderPlayers(); renderWaitingPlayers(); document.querySelector('.nav-item[data-tab="booking"]').click(); showToast("Loaded!"); });
+    document.querySelectorAll('.load-btn').forEach(b => b.onclick = function() { vibrate(); const d = savedBookings[this.dataset.idx];
+      els.date.value = d.date; els.start.value = d.start; els.end.value = d.end; els.venue.value = d.venue; els.court.value = d.court;
+      additionalCourts = d.additionalCourts ? JSON.parse(JSON.stringify(d.additionalCourts)) : [];
+      renderAdditionalCourts();
+      els.locationLink.value = d.location || 'https://g.co/kgs/UMbmmAz';
+      locationEnabled = d.locationEnabled || false; els.locationToggle.checked = locationEnabled;
+      if (locationEnabled) { els.locationLink.classList.remove('hidden'); } else { els.locationLink.classList.add('hidden'); }
+      els.price.value = d.price; els.shuttle.value = d.shuttle; els.host.value = d.host; els.footer.value = d.footer;
+      players = JSON.parse(JSON.stringify(d.players)); waitingPlayers = JSON.parse(JSON.stringify(d.waiting));
+      updateDateData(); renderPlayers(); renderWaitingPlayers(); updatePreview();
+      document.querySelector('.nav-item[data-tab="booking"]').click(); showToast("Loaded!");
+    });
     document.querySelectorAll('.del-btn').forEach(b => b.onclick = function() { vibrate(); const idx = this.dataset.idx; showConfirm('Delete Session', 'Remove this saved booking permanently?', () => { savedBookings.splice(idx, 1); localStorage.setItem('smasholic_saved_bookings', JSON.stringify(savedBookings)); renderSaved(); }); });
   }
   els.clearSaved.onclick = () => { if(savedBookings.length) showConfirm('Clear All', 'Delete all saved sessions?', () => { savedBookings = []; localStorage.removeItem('smasholic_saved_bookings'); renderSaved(); }); };
-  els.reset.onclick = () => showConfirm('Reset Form', 'Clear all fields and players?', () => { els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30"; els.venue.value = "Forum Sba, Setia Alam"; els.court.value = "Rubber Court 6 & 7"; els.locationLink.value = "https://g.co/kgs/UMbmmAz"; locationEnabled = false; els.locationToggle.checked = false; els.locationLink.classList.add('hidden'); els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = ""; players = []; waitingPlayers = []; updateDateData(); renderPlayers(); renderWaitingPlayers(); showToast('Reset complete!'); });
+  els.reset.onclick = () => showConfirm('Reset Form', 'Clear all fields and players?', () => {
+    els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30";
+    els.venue.value = "Forum Sba, Setia Alam"; els.court.value = "Rubber Court 14,15 & 16";
+    els.locationLink.value = "https://g.co/kgs/UMbmmAz"; locationEnabled = false; els.locationToggle.checked = false; els.locationLink.classList.add('hidden');
+    els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = "";
+    players = []; waitingPlayers = []; additionalCourts = [];
+    renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updatePreview();
+    showToast('Reset complete!');
+  });
 
-  renderPlayers(); renderWaitingPlayers(); updatePreview();
+  renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updatePreview();
 })();
 </script>
 </body>
