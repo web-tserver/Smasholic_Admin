@@ -134,7 +134,6 @@
     input:checked + .slider { background-color:var(--primary); }
     input:checked + .slider:before { transform:translateX(20px); }
 
-    /* Additional court rows */
     .court-row {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -274,16 +273,12 @@
         </div>
       </div>
       <div class="card collapsible collapsed" id="footerCard">
-        <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')"><span class="card-title">📌 Footer Message</span><span class="chevron">▼</span></div>
+        <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')"><span class="card-title">📌 Notes</span><span class="chevron">▼</span></div>
         <div class="collapsible-body" style="max-height:500px;">
-          <textarea id="footerMessage" rows="6">📌 Payment deadline: Friday morning
+          <textarea id="footerMessage" rows="4">📌 Payment deadline: Friday morning
 📌 Confirm slot via QR payment only
 ❌ No cash on court
-⚠️ Slot only confirmed after payment
-
-Link update list
-Copy,import,update and share.
-https://shorturl.at/CAN8U</textarea>
+⚠️ Slot only confirmed after payment</textarea>
         </div>
       </div>
       <div class="card">
@@ -405,6 +400,65 @@ https://shorturl.at/CAN8U</textarea>
     vibrate();
   });
 
+  // --- TIME CALCULATION HELPERS ---
+
+  function timeToMinutes(t) {
+    if (!t) return 0;
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  // Calculate total non-overlapping duration across all courts
+  function calcTotalDuration() {
+    const intervals = [];
+
+    // Main court
+    if (els.start.value && els.end.value) {
+      let s = timeToMinutes(els.start.value);
+      let e = timeToMinutes(els.end.value);
+      if (e <= s) e += 24 * 60; // overnight
+      intervals.push({ start: s, end: e });
+    }
+
+    // Additional courts
+    additionalCourts.forEach(c => {
+      if (c.start && c.end) {
+        let s = timeToMinutes(c.start);
+        let e = timeToMinutes(c.end);
+        if (e <= s) e += 24 * 60;
+        intervals.push({ start: s, end: e });
+      }
+    });
+
+    if (intervals.length === 0) return 0;
+
+    // Sort by start time
+    intervals.sort((a, b) => a.start - b.start);
+
+    // Merge overlapping/touching intervals
+    const merged = [];
+    let current = { start: intervals[0].start, end: intervals[0].end };
+    for (let i = 1; i < intervals.length; i++) {
+      if (intervals[i].start <= current.end) {
+        // Overlap or touch – extend current
+        current.end = Math.max(current.end, intervals[i].end);
+      } else {
+        // No overlap – push current and start new
+        merged.push(current);
+        current = { start: intervals[i].start, end: intervals[i].end };
+      }
+    }
+    merged.push(current);
+
+    // Sum durations
+    let totalMin = 0;
+    merged.forEach(m => {
+      totalMin += (m.end - m.start);
+    });
+
+    return totalMin / 60; // hours
+  }
+
   function calcDurationSingle(start, end) {
     if (!start || !end) return 0;
     const [sh, sm] = start.split(':').map(Number);
@@ -419,10 +473,20 @@ https://shorturl.at/CAN8U</textarea>
     return (hrs % 1 === 0 ? hrs.toFixed(0) : hrs.toFixed(1)) + 'h';
   }
 
+  // Format court name – always prefix with "Court " if not already containing "court"
+  function formatCourtName(name) {
+    if (!name || name.trim() === '') return name;
+    const trimmed = name.trim();
+    if (/court/i.test(trimmed)) return trimmed;
+    return 'Court ' + trimmed;
+  }
+
+  // --- ADDITIONAL COURTS UI ---
+
   els.addCourtBtn.onclick = () => {
     additionalCourts.push({ court: '', start: '', end: '' });
     renderAdditionalCourts();
-    updatePreview();
+    updateDateData();
     vibrate();
   };
 
@@ -460,7 +524,7 @@ https://shorturl.at/CAN8U</textarea>
         const i = parseInt(this.dataset.idx);
         additionalCourts[i].start = this.value;
         updateDurationBadge(this);
-        updatePreview();
+        updateDateData();
       });
     });
     document.querySelectorAll('.time-end').forEach(inp => {
@@ -468,7 +532,7 @@ https://shorturl.at/CAN8U</textarea>
         const i = parseInt(this.dataset.idx);
         additionalCourts[i].end = this.value;
         updateDurationBadge(this);
-        updatePreview();
+        updateDateData();
       });
     });
     document.querySelectorAll('.court-row .remove-btn').forEach(btn => {
@@ -476,7 +540,7 @@ https://shorturl.at/CAN8U</textarea>
         const i = parseInt(this.dataset.idx);
         additionalCourts.splice(i, 1);
         renderAdditionalCourts();
-        updatePreview();
+        updateDateData();
         vibrate();
       });
     });
@@ -489,15 +553,15 @@ https://shorturl.at/CAN8U</textarea>
     row.querySelector('.duration-badge').textContent = formatDuration(dur);
   }
 
-  function calcDuration() { return calcDurationSingle(els.start.value, els.end.value); }
+  // --- DATE / TIME UPDATE ---
 
   const malayDays = ["AHAD","ISNIN","SELASA","RABU","KHAMIS","JUMAAT","SABTU"];
   function updateDateData() {
     if(!els.date.value) return;
     const d = new Date(els.date.value + 'T00:00:00');
     els.day.textContent = malayDays[d.getDay()];
-    const hrs = calcDuration();
-    els.duration.textContent = (hrs % 1 === 0 ? hrs.toFixed(0) : hrs.toFixed(1)) + ' Hrs';
+    const totalHrs = calcTotalDuration();
+    els.duration.textContent = (totalHrs % 1 === 0 ? totalHrs.toFixed(0) : totalHrs.toFixed(1)) + ' Hrs';
     updatePreview();
   }
   els.date.addEventListener('change', updateDateData);
@@ -506,6 +570,8 @@ https://shorturl.at/CAN8U</textarea>
   updateDateData();
   [els.venue, els.court, els.price, els.shuttle, els.host, els.footer].forEach(e => e.addEventListener('input', updatePreview));
   els.locationLink.addEventListener('input', updatePreview);
+
+  // --- NAME AUTOCOMPLETE ---
 
   const NAMES_KEY = 'smasholic_names';
   function getNames() { try { return JSON.parse(localStorage.getItem(NAMES_KEY)) || []; } catch { return []; } }
@@ -530,6 +596,8 @@ https://shorturl.at/CAN8U</textarea>
     });
     input.closest('.player-row').appendChild(list);
   }
+
+  // --- PLAYER MANAGEMENT ---
 
   els.addPlayer.onclick = () => { players.push({name:"", paid:false}); renderPlayers(); updatePreview(); vibrate(); };
   els.stepPlus.onclick = () => { players.push({name:"", paid:false}); renderPlayers(); updatePreview(); vibrate(); };
@@ -635,6 +703,8 @@ https://shorturl.at/CAN8U</textarea>
     document.querySelectorAll('.w-remove').forEach(btn => btn.onclick = function() { vibrate(); waitingPlayers.splice(this.dataset.idx, 1); renderWaitingPlayers(); updatePreview(); });
   }
 
+  // --- FORMAT HELPERS ---
+
   function formatTime12(t) {
     if(!t) return '';
     let [h,m] = t.split(':');
@@ -650,17 +720,19 @@ https://shorturl.at/CAN8U</textarea>
     return `${parseInt(d)}/${parseInt(m)}/${y}`;
   }
 
+  // --- BUILD PREVIEW (COPY/SHARE) ---
+
   function buildPreview() {
     const dateVal = formatDateDMY(els.date.value);
     const dayVal = els.day.textContent;
     const start = formatTime12(els.start.value);
     const end = formatTime12(els.end.value);
-    const mainDuration = calcDuration();
+    const totalHrs = calcTotalDuration();
+    const totalText = (totalHrs % 1 === 0 ? totalHrs.toFixed(0) : totalHrs.toFixed(1)) + ' hours';
     const venueVal = els.venue.value;
     const mainCourt = els.court.value;
     const priceVal = parseFloat(els.price.value || 0).toFixed(2);
     const shuttleVal = els.shuttle.value;
-    const hostVal = els.host.value.trim() || '......';
     const locationVal = els.locationLink.value.trim();
 
     let text = `🏸 BADMINTON SESSION\n\n`;
@@ -668,21 +740,20 @@ https://shorturl.at/CAN8U</textarea>
     text += `🏟️ Court: ${mainCourt}\n\n`;
     text += `📅 ${dateVal} (${dayVal})\n\n`;
 
+    // Session 1 (main)
     text += `⏰ Session 1\n${start} – ${end}\n(${mainCourt})\n\n`;
 
+    // Additional sessions
     let sessionNum = 2;
     additionalCourts.forEach(c => {
       if (c.court.trim()) {
         const s = formatTime12(c.start);
         const e = formatTime12(c.end);
-        text += `⏰ Session ${sessionNum}\n${s || '?'} – ${e || '?'}\n(${c.court.trim()})\n\n`;
+        text += `⏰ Session ${sessionNum}\n${s || '?'} – ${e || '?'}\n(${formatCourtName(c.court.trim())})\n\n`;
         sessionNum++;
       }
     });
 
-    let total = mainDuration;
-    additionalCourts.forEach(c => total += calcDurationSingle(c.start, c.end));
-    const totalText = (total % 1 === 0 ? total.toFixed(0) : total.toFixed(1)) + ' hours';
     text += `⏱️ Total: ${totalText}\n`;
     text += `💵 RM${priceVal} / player\n`;
     text += `🏸 Shuttle: ${shuttleVal}\n\n`;
@@ -701,12 +772,14 @@ https://shorturl.at/CAN8U</textarea>
     }
 
     text += `\n──────────────────\n\n`;
-    text += `Footer:\n${els.footer.value.trim()}\n`;
+    text += `Notes:\n${els.footer.value.trim()}\n`;
 
     return text;
   }
 
   function updatePreview() { els.preview.textContent = buildPreview(); }
+
+  // --- COPY / SHARE ---
 
   els.copy.onclick = async () => {
     vibrate();
@@ -728,7 +801,8 @@ https://shorturl.at/CAN8U</textarea>
     }
   };
 
-  // REVERSE IMPORT
+  // --- REVERSE IMPORT ---
+
   function parseTime12to24(str) {
     const match = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
     if (!match) return null;
@@ -741,6 +815,11 @@ https://shorturl.at/CAN8U</textarea>
     const parts = str.split('/');
     if (parts.length !== 3) return null;
     return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+  }
+  function stripCourtPrefix(name) {
+    if (!name) return '';
+    // Remove leading "Court " if present (case-insensitive)
+    return name.replace(/^Court\s+/i, '').trim();
   }
 
   els.importBtn.onclick = () => { vibrate(); document.getElementById('importTextarea').value = ''; els.importModal.classList.add('active'); };
@@ -758,7 +837,7 @@ https://shorturl.at/CAN8U</textarea>
 
       for (let i=0; i<lines.length; i++) {
         const line = lines[i];
-        if (line.startsWith('🏸 BADMINTON SESSION')) continue;
+        if (line.startsWith('🏸 BADMINTON SESSION')) { continue; }
 
         if (line.startsWith('📍') && !line.startsWith('📍 Link:')) {
           parsedVenue = line.replace('📍','').trim();
@@ -789,7 +868,7 @@ https://shorturl.at/CAN8U</textarea>
               if (end24) parsedEnd = end24;
             } else {
               newAdditionalCourts.push({
-                court: tempCourt,
+                court: stripCourtPrefix(tempCourt),
                 start: start24 || '',
                 end: end24 || ''
               });
@@ -830,7 +909,7 @@ https://shorturl.at/CAN8U</textarea>
             mode = 'footer';
           }
         } else if (mode === 'footer') {
-          if (line !== 'Footer:' && line !== '') footerLines.push(line);
+          if (line !== 'Notes:' && line !== 'Footer:' && line !== '') footerLines.push(line);
         }
       }
 
@@ -854,14 +933,15 @@ https://shorturl.at/CAN8U</textarea>
       additionalCourts = newAdditionalCourts;
       renderAdditionalCourts();
       if (footerLines.length) els.footer.value = footerLines.join('\n');
-      else els.footer.value = '📌 Payment deadline: Friday morning\n📌 Confirm slot via QR payment only\n❌ No cash on court\n⚠️ Slot only confirmed after payment\n\nLink update list\nCopy,import,update and share.\nhttps://shorturl.at/CAN8U';
+      else els.footer.value = '📌 Payment deadline: Friday morning\n📌 Confirm slot via QR payment only\n❌ No cash on court\n⚠️ Slot only confirmed after payment';
       updateDateData(); renderPlayers(); renderWaitingPlayers(); updatePreview();
       els.importModal.classList.remove('active');
       showToast('Imported successfully!');
     } catch (e) { showToast('Import failed – check format', '❌'); }
   };
 
-  // Save/Load
+  // --- SAVE / LOAD ---
+
   els.save.onclick = () => { vibrate();
     savedBookings.unshift({
       id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value,
@@ -904,11 +984,11 @@ https://shorturl.at/CAN8U</textarea>
     els.locationLink.value = "https://g.co/kgs/UMbmmAz"; locationEnabled = false; els.locationToggle.checked = false; els.locationLink.classList.add('hidden');
     els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = "";
     players = []; waitingPlayers = []; additionalCourts = [];
-    renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updatePreview();
+    renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updateDateData();
     showToast('Reset complete!');
   });
 
-  renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updatePreview();
+  renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updateDateData();
 })();
 </script>
 </body>
