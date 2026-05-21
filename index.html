@@ -122,8 +122,19 @@
       max-height:380px; overflow-y:auto;
     }
     .action-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
-    .admin-bottom-row { display:flex; gap:10px; margin-top:12px; }
-    .admin-bottom-row .btn { flex:1; }
+
+    /* Admin Toolbar – always visible for admin */
+    .admin-toolbar {
+      margin-top: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .admin-toolbar .toolbar-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
 
     .bottom-nav {
       position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,0.9);
@@ -281,14 +292,19 @@
         <pre class="preview-box" id="preview" style="margin-bottom:12px;"></pre>
         <div class="action-row">
           <button class="btn" id="copyBtn" style="grid-column:span 2; background:var(--success); height:50px; font-size:1rem;">📋 Copy / Share Update</button>
-          <button class="btn btn-secondary hidden" id="saveBookingBtn">💾 Save Session</button>
         </div>
-        <!-- Admin bottom row -->
-        <div class="admin-bottom-row hidden" id="adminBottomRow">
-          <button class="btn btn-danger" id="clearPlayersAdminBtn">🗑️ Clear All</button>
-          <button class="btn btn-secondary" id="adminLogoutBtn2">🔓 Logout</button>
+
+        <!-- Admin Toolbar (visible only to admin) -->
+        <div class="admin-toolbar" id="adminToolbar">
+          <div class="toolbar-row">
+            <button class="btn btn-secondary" id="saveBookingBtn">💾 Save</button>
+            <button class="btn btn-danger" id="resetSessionBtn">🔄 Reset</button>
+          </div>
+          <div class="toolbar-row">
+            <button class="btn btn-danger" id="clearPlayersAdminBtn">🗑️ Clear All Players</button>
+            <button class="btn btn-secondary" id="adminLogoutBtn2">🔓 Logout</button>
+          </div>
         </div>
-        <button class="btn btn-danger hidden" id="resetSessionBtn" style="margin-top:12px;">Reset All Fields</button>
       </div>
     </div>
 
@@ -388,7 +404,7 @@
     copy: document.getElementById('copyBtn'), save: document.getElementById('saveBookingBtn'), importBtn: document.getElementById('importBtn'),
     reset: document.getElementById('resetSessionBtn'), clearSaved: document.getElementById('clearAllBtn'),
     clearPlayersAdminBtn: document.getElementById('clearPlayersAdminBtn'),
-    adminBottomRow: document.getElementById('adminBottomRow'),
+    adminToolbar: document.getElementById('adminToolbar'),
     adminLogoutBtn2: document.getElementById('adminLogoutBtn2'),
     toast: document.getElementById('toast'), importModal: document.getElementById('importModal'), confirmModal: document.getElementById('confirmModal'),
     additionalCourtsContainer: document.getElementById('additionalCourtsContainer'), addCourtBtn: document.getElementById('addCourtBtn'),
@@ -427,7 +443,7 @@
   document.getElementById('tutorialBtn').onclick = () => { document.getElementById('tutorialModal').classList.add('active'); vibrate(); };
   document.getElementById('tutorialCloseBtn').onclick = () => { document.getElementById('tutorialModal').classList.remove('active'); vibrate(); };
 
-  // ────────────────────────────── ADMIN LOGIN / LOGOUT ──────────────────────────────
+  // Admin login/logout
   const adminLoginModal = document.getElementById('adminLoginModal');
   const adminPasswordInput = document.getElementById('adminPasswordInput');
   const adminLoginBtn = document.getElementById('adminLoginBtn');
@@ -436,20 +452,22 @@
   const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 
   function applyRoleUIState() {
-    // Explicitly show/hide every admin-only element
-    const adminOnly = [
+    // Show/hide admin cards
+    const adminCards = [
       els.adminConfigCard,
       els.additionalCourtsCard,
       els.footerCard,
-      els.addCourtBtn,
-      els.saveBookingBtn,
-      els.reset,
-      els.clearSaved,
-      els.adminBottomRow
+      els.addCourtBtn
     ];
-    adminOnly.forEach(el => el.classList.toggle('hidden', !isAdmin));
+    adminCards.forEach(el => el.classList.toggle('hidden', !isAdmin));
 
-    // Footer textarea disabled state
+    // Admin Toolbar
+    els.adminToolbar.style.display = isAdmin ? 'flex' : 'none';
+
+    // Saved tab clear all button
+    els.clearSaved.classList.toggle('hidden', !isAdmin);
+
+    // Footer disabled state
     els.footer.disabled = !isAdmin;
 
     // Header buttons
@@ -708,7 +726,35 @@
     }
   };
 
-  // Admin clear all players
+  // Admin buttons (toolbar)
+  els.save.onclick = () => {
+    if (!isAdmin) return;
+    vibrate();
+    savedBookings.unshift({
+      id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value,
+      venue: els.venue.value, court: els.court.value, additionalCourts: JSON.parse(JSON.stringify(additionalCourts)),
+      location: els.locationLink.value, locationEnabled: locationEnabled,
+      price: els.price.value, shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value,
+      updateListLink: els.updateListLink.value,
+      players: JSON.parse(JSON.stringify(players)), waiting: JSON.parse(JSON.stringify(waitingPlayers))
+    });
+    localStorage.setItem('smasholic_saved_bookings', JSON.stringify(savedBookings));
+    showToast("Session Saved!","💾");
+  };
+
+  els.reset.onclick = () => {
+    if (!isAdmin) return;
+    showConfirm('Reset Form', 'Clear all fields and players?', () => {
+      els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30";
+      els.venue.value = "Forum SBA, Setia Alam"; els.court.value = "14, 15, 16";
+      els.locationLink.value = "https://g.co/kgs/UMbmmAz"; locationEnabled = false; els.locationToggle.checked = false; els.locationLink.classList.add('hidden');
+      els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = "";
+      players.length = 0; waitingPlayers.length = 0; additionalCourts.length = 0;
+      renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updateDateData();
+      showToast('Reset complete!');
+    });
+  };
+
   els.clearPlayersAdminBtn.onclick = () => {
     if (!isAdmin) return;
     if (players.length === 0) return;
@@ -891,21 +937,7 @@
     } catch (e) { showToast('Import parsing error','❌'); }
   };
 
-  // Save / Load
-  els.save.onclick = () => {
-    if (!isAdmin) return;
-    vibrate();
-    savedBookings.unshift({
-      id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value,
-      venue: els.venue.value, court: els.court.value, additionalCourts: JSON.parse(JSON.stringify(additionalCourts)),
-      location: els.locationLink.value, locationEnabled: locationEnabled,
-      price: els.price.value, shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value,
-      updateListLink: els.updateListLink.value,
-      players: JSON.parse(JSON.stringify(players)), waiting: JSON.parse(JSON.stringify(waitingPlayers))
-    });
-    localStorage.setItem('smasholic_saved_bookings', JSON.stringify(savedBookings));
-    showToast("Session Saved!","💾");
-  };
+  // Saved bookings
   function renderSaved() {
     const list = document.getElementById('savedBookingsList');
     list.innerHTML = '';
@@ -940,15 +972,6 @@
     }
   });
   els.clearSaved.onclick = () => { if (!isAdmin) return; if(savedBookings.length) showConfirm('Clear All', 'Delete all saved sessions?', () => { savedBookings = []; localStorage.removeItem('smasholic_saved_bookings'); renderSaved(); }); };
-  els.reset.onclick = () => { if (!isAdmin) return; showConfirm('Reset Form', 'Clear all fields and players?', () => {
-    els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30";
-    els.venue.value = "Forum SBA, Setia Alam"; els.court.value = "14, 15, 16";
-    els.locationLink.value = "https://g.co/kgs/UMbmmAz"; locationEnabled = false; els.locationToggle.checked = false; els.locationLink.classList.add('hidden');
-    els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = "";
-    players.length = 0; waitingPlayers.length = 0; additionalCourts.length = 0;
-    renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updateDateData();
-    showToast('Reset complete!');
-  }); };
 
   applyRoleUIState();
   renderPlayers();
