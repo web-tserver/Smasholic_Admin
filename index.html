@@ -13,25 +13,17 @@
             --primary-dark: #4f46e5;
             --primary-light: #e0e7ff;
             --primary-glow: rgba(99, 102, 241, 0.3);
-            --accent: #f59e0b;
-            --accent-light: #fef3c7;
             --bg: #f0f2f8;
-            --bg-orb-1: #e8eaf6;
-            --bg-orb-2: #fce4ec;
             --surface: rgba(255, 255, 255, 0.72);
             --surface-solid: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --text-subtle: #94a3b8;
             --border: rgba(226, 232, 240, 0.7);
             --border-glass: rgba(255, 255, 255, 0.5);
             --input-bg: #f1f5f9;
             --danger: #ef4444;
             --danger-light: #fef2f2;
             --success: #10b981;
-            --success-light: #d1fae5;
-            --purple: #7c3aed;
-            --purple-light: #ede9fe;
             --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
             --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
             --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -39,8 +31,6 @@
             --radius-sm: 10px;
             --radius: 14px;
             --radius-lg: 20px;
-            --radius-xl: 24px;
-            --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
             --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -68,22 +58,21 @@
             position: fixed;
             border-radius: 50%;
             filter: blur(130px);
-            opacity: 0.48;
+            opacity: 0.45;
             z-index: 0;
             pointer-events: none;
-            transition: opacity 0.6s var(--ease-smooth);
         }
         body::before {
             width: 340px;
             height: 340px;
-            background: var(--bg-orb-1);
+            background: #e8eaf6;
             top: -90px;
             right: -70px;
         }
         body::after {
             width: 300px;
             height: 300px;
-            background: var(--bg-orb-2);
+            background: #fce4ec;
             bottom: -70px;
             left: -90px;
         }
@@ -102,15 +91,24 @@
             opacity: 0;
             pointer-events: none;
         }
-        .loading-content { text-align: center; }
+        .loading-content {
+            text-align: center;
+        }
         .loading-icon {
             font-size: 3.6rem;
             animation: pulseLoad 1.2s infinite ease-in-out;
             display: block;
         }
         @keyframes pulseLoad {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.14); opacity: 1; }
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.14);
+                opacity: 1;
+            }
         }
         .loading-title {
             font-size: 1.7rem;
@@ -123,7 +121,6 @@
             font-size: 0.82rem;
             color: rgba(255, 255, 255, 0.7);
             margin-top: 6px;
-            font-weight: 400;
         }
         .app-container {
             width: 100%;
@@ -133,7 +130,6 @@
             flex-direction: column;
             position: relative;
             z-index: 1;
-            background: transparent;
         }
         .header {
             position: sticky;
@@ -158,8 +154,10 @@
             gap: 8px;
             letter-spacing: -0.3px;
         }
-        .header h1 .icon { font-size: 1.5rem; }
-        .header-actions { display: flex; align-items: center; gap: 6px; }
+        .header-actions {
+            display: flex;
+            gap: 6px;
+        }
         .pill-btn {
             display: inline-flex;
             align-items: center;
@@ -173,7 +171,6 @@
             font-size: 0.73rem;
             cursor: pointer;
             transition: all 0.2s var(--ease-smooth);
-            white-space: nowrap;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             font-family: inherit;
@@ -183,8 +180,6 @@
             color: var(--text-main);
             box-shadow: var(--shadow-sm);
         }
-        .pill-btn:active { transform: scale(0.96); }
-        .pill-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
         .content {
             flex: 1;
             padding: 14px 16px;
@@ -201,9 +196,8 @@
             padding: 18px;
             border: 1px solid var(--border-glass);
             box-shadow: var(--shadow-md);
-            transition: box-shadow 0.3s var(--ease-smooth), transform 0.2s var(--ease-smooth);
+            transition: box-shadow 0.3s var(--ease-smooth);
         }
-        .card:hover { box-shadow: var(--shadow-lg); }
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -217,7 +211,6 @@
             align-items: center;
             gap: 8px;
             color: var(--text-main);
-            letter-spacing: -0.2px;
         }
         .session-summary-badge {
             background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #4f46e5 100%);
@@ -231,17 +224,6 @@
             position: relative;
             overflow: hidden;
         }
-        .session-summary-badge::after {
-            content: '';
-            position: absolute;
-            top: -45px;
-            right: -45px;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.055);
-            pointer-events: none;
-        }
         .summary-row {
             display: flex;
             justify-content: space-between;
@@ -251,7 +233,10 @@
             position: relative;
             z-index: 1;
         }
-        .summary-row:last-child { border: none; padding-bottom: 0; }
+        .summary-row:last-child {
+            border: none;
+            padding-bottom: 0;
+        }
         .summary-label {
             font-size: 0.7rem;
             text-transform: uppercase;
@@ -266,9 +251,19 @@
             max-width: 62%;
             line-height: 1.35;
         }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .full-width { grid-column: span 2; }
-        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .full-width {
+            grid-column: span 2;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
         .input-group label {
             font-size: 0.7rem;
             font-weight: 600;
@@ -276,7 +271,8 @@
             text-transform: uppercase;
             letter-spacing: 0.6px;
         }
-        input, textarea {
+        input,
+        textarea {
             width: 100%;
             background: var(--input-bg);
             border: 2px solid transparent;
@@ -288,7 +284,8 @@
             outline: none;
             font-family: inherit;
         }
-        input:focus, textarea:focus {
+        input:focus,
+        textarea:focus {
             background: var(--surface-solid);
             border-color: var(--primary);
             box-shadow: var(--shadow-glow);
@@ -320,7 +317,6 @@
             width: 100%;
             position: relative;
             overflow: hidden;
-            letter-spacing: -0.2px;
             font-family: inherit;
         }
         .btn:hover {
@@ -328,29 +324,65 @@
             box-shadow: 0 4px 16px rgba(99, 102, 241, 0.32);
             transform: translateY(-1px);
         }
-        .btn:active { transform: scale(0.97); transition: transform 0.1s var(--ease-smooth); }
-        .btn:focus-visible { outline: 2px solid var(--primary-dark); outline-offset: 3px; }
-        .btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
+        .btn:active {
+            transform: scale(0.97);
         }
-        .btn:active::after { opacity: 1; transition: opacity 0s; }
-        .btn-secondary { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border); }
-        .btn-secondary:hover { background: var(--surface-solid); box-shadow: var(--shadow-md); color: var(--text-main); }
-        .btn-danger { background: var(--danger-light); color: var(--danger); border: 1px solid #fecaca; }
-        .btn-danger:hover { background: #fee2e2; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.22); }
-        .btn-outline { background: transparent; border: 2px dashed var(--border); color: var(--text-muted); }
-        .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
-        .btn-success { background: var(--success); }
-        .btn-success:hover { background: #059669; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.32); }
-        .btn-import { background: var(--primary-light); color: var(--primary-dark); font-weight: 700; border: 1px solid #c7d2fe; }
-        .btn-import:hover { background: #c7d2fe; box-shadow: var(--shadow-md); }
-        .player-list { display: flex; flex-direction: column; gap: 6px; }
+        .btn-secondary {
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            background: var(--surface-solid);
+            box-shadow: var(--shadow-md);
+            color: var(--text-main);
+        }
+        .btn-danger {
+            background: var(--danger-light);
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+        .btn-danger:hover {
+            background: #fee2e2;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px dashed var(--border);
+            color: var(--text-muted);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .btn-success {
+            background: var(--success);
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        /* ── Fixed import button hover ── */
+        .btn-import {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 700;
+            border: 1px solid #c7d2fe;
+            transition: all 0.2s var(--ease-smooth);
+        }
+        .btn-import:hover {
+            background: #c7d2fe;
+            color: #3730a3;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+            transform: translateY(-1px);
+        }
+        .btn-import:active {
+            transform: scale(0.97);
+        }
+        .player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
         .player-row {
             display: flex;
             align-items: center;
@@ -362,19 +394,18 @@
             padding: 8px 10px;
             border-radius: var(--radius);
             transition: all 0.2s var(--ease-smooth);
-            position: relative;
-            animation: rowFadeIn 0.3s var(--ease-out) both;
+            animation: rowFadeIn 0.3s ease both;
         }
         @keyframes rowFadeIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .player-row:nth-child(1) { animation-delay: 0s; }
-        .player-row:nth-child(2) { animation-delay: 0.03s; }
-        .player-row:nth-child(3) { animation-delay: 0.06s; }
-        .player-row:nth-child(4) { animation-delay: 0.09s; }
-        .player-row:nth-child(5) { animation-delay: 0.12s; }
-        .player-row:nth-child(n+6) { animation-delay: 0.15s; }
         .player-row.focused {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-glow);
@@ -383,12 +414,19 @@
         .player-row.duplicate {
             border-color: #fca5a5;
             background: rgba(254, 242, 242, 0.82);
-            animation: shake 0.45s var(--ease-smooth);
+            animation: shake 0.45s ease;
         }
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            75% { transform: translateX(3px); }
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-3px);
+            }
+            75% {
+                transform: translateX(3px);
+            }
         }
         .player-avatar {
             width: 32px;
@@ -402,7 +440,6 @@
             font-weight: 700;
             font-size: 0.78rem;
             flex-shrink: 0;
-            letter-spacing: -0.3px;
             user-select: none;
         }
         .player-row input {
@@ -415,7 +452,6 @@
             font-weight: 500;
             min-width: 0;
         }
-        .player-row input:focus { box-shadow: none; border: none; background: transparent; }
         .action-icon {
             width: 34px;
             height: 34px;
@@ -431,7 +467,10 @@
             background: transparent;
             font-family: inherit;
         }
-        .paid-toggle { background: var(--input-bg); color: #94a3b8; }
+        .paid-toggle {
+            background: var(--input-bg);
+            color: #94a3b8;
+        }
         .paid-toggle.active {
             background: var(--success);
             color: white;
@@ -439,12 +478,24 @@
             animation: popIn 0.3s var(--ease-spring);
         }
         @keyframes popIn {
-            0% { transform: scale(0.8); }
-            60% { transform: scale(1.15); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(0.8);
+            }
+            60% {
+                transform: scale(1.15);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
-        .remove-toggle { background: transparent; color: #cbd5e1; }
-        .remove-toggle:hover { color: var(--danger); background: var(--danger-light); border-radius: 10px; }
+        .remove-toggle {
+            background: transparent;
+            color: #cbd5e1;
+        }
+        .remove-toggle:hover {
+            color: var(--danger);
+            background: var(--danger-light);
+        }
         .duplicate-warning {
             color: var(--danger);
             font-size: 0.78rem;
@@ -457,8 +508,15 @@
             align-items: center;
             gap: 6px;
         }
-        .duplicate-warning.active { display: flex; animation: rowFadeIn 0.3s var(--ease-out); }
-        .stepper-container { display: flex; flex-direction: column; align-items: center; margin-top: 12px; }
+        .duplicate-warning.active {
+            display: flex;
+        }
+        .stepper-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 12px;
+        }
         .stepper {
             display: flex;
             align-items: center;
@@ -466,7 +524,6 @@
             gap: 14px;
             background: rgba(241, 245, 249, 0.6);
             backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
             padding: 6px 10px;
             border-radius: 100px;
             border: 1px solid var(--border);
@@ -478,17 +535,13 @@
             background: var(--surface-solid);
             border: 1px solid var(--border);
             font-size: 1.1rem;
-            color: var(--text-main);
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s var(--ease-smooth);
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: inherit;
         }
-        .stepper-btn:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary-dark); }
-        .stepper-btn:active { transform: scale(0.9); }
         .stepper-count {
             font-weight: 700;
             font-size: 1.15rem;
@@ -496,21 +549,32 @@
             text-align: center;
             color: var(--primary-dark);
             cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 6px;
-            transition: all 0.2s var(--ease-smooth);
-            text-decoration: underline;
-            text-underline-offset: 5px;
-            text-decoration-color: var(--primary-light);
             user-select: none;
         }
-        .stepper-count:hover { background: var(--primary-light); text-decoration-color: var(--primary); }
-        .stepper-hint { font-size: 0.68rem; color: var(--text-subtle); margin-top: 5px; }
-        .collapsible-header { cursor: pointer; width: 100%; user-select: none; -webkit-user-select: none; }
-        .collapsible-header .chevron { transition: transform 0.25s var(--ease-smooth); color: var(--text-muted); font-size: 0.75rem; display: inline-block; }
-        .collapsed .collapsible-header .chevron { transform: rotate(-90deg); }
-        .collapsible-body { transition: max-height 0.35s var(--ease-smooth), opacity 0.25s var(--ease-smooth); overflow: hidden; opacity: 1; }
-        .collapsed .collapsible-body { max-height: 0 !important; opacity: 0; margin-top: 0; }
+        .collapsible-header {
+            cursor: pointer;
+            width: 100%;
+            user-select: none;
+        }
+        .collapsible-header .chevron {
+            transition: transform 0.25s;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+        .collapsed .collapsible-header .chevron {
+            transform: rotate(-90deg);
+        }
+        .collapsible-body {
+            transition: max-height 0.35s, opacity 0.25s;
+            overflow: hidden;
+            opacity: 1;
+        }
+        .collapsed .collapsible-body {
+            max-height: 0 !important;
+            opacity: 0;
+            margin-top: 0;
+        }
         .preview-box {
             background: #1e293b;
             color: #f1f5f9;
@@ -523,14 +587,26 @@
             max-height: 360px;
             overflow-y: auto;
             border: 1px solid #334155;
-            scrollbar-width: thin;
-            scrollbar-color: #475569 transparent;
         }
-        .preview-box::-webkit-scrollbar { width: 4px; }
-        .preview-box::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-        .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
-        .admin-toolbar { margin-top: 10px; display: none; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
-        .admin-toolbar .toolbar-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .admin-toolbar {
+            margin-top: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .admin-toolbar .toolbar-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -546,7 +622,6 @@
             justify-content: space-around;
             padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
             z-index: 50;
-            box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.035);
         }
         .nav-item {
             display: flex;
@@ -557,50 +632,49 @@
             font-size: 0.7rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s var(--ease-smooth);
             padding: 4px 16px;
             border-radius: 100px;
             border: none;
             background: transparent;
             font-family: inherit;
         }
-        .nav-item.active { color: var(--primary-dark); background: var(--primary-light); }
-        .nav-item:hover { color: var(--primary); }
-        .nav-icon { font-size: 1.2rem; transition: transform 0.2s var(--ease-spring); }
-        .nav-item.active .nav-icon { transform: scale(1.1); }
+        .nav-item.active {
+            color: var(--primary-dark);
+            background: var(--primary-light);
+        }
         .modal-overlay {
             position: fixed;
             inset: 0;
             background: rgba(15, 23, 42, 0.5);
             backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 100;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.25s var(--ease-smooth);
+            transition: opacity 0.25s;
             padding: 16px;
         }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
         .modal-content {
             background: var(--surface-solid);
-            border-radius: var(--radius-xl);
+            border-radius: 24px;
             padding: 22px;
             width: 100%;
             max-width: 400px;
             transform: translateY(20px) scale(0.96);
             transition: transform 0.3s var(--ease-spring);
-            overflow-y: auto;
             max-height: 85vh;
+            overflow-y: auto;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-            border: 1px solid var(--border-glass);
         }
-        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
-        .tutorial-text { font-size: 0.82rem; line-height: 1.6; color: var(--text-main); }
-        .tutorial-text h3 { margin-bottom: 6px; font-size: 0.9rem; font-weight: 600; }
-        .tutorial-text ol, .tutorial-text ul { padding-left: 18px; margin-bottom: 10px; }
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
         .toast {
             position: fixed;
             top: 20px;
@@ -611,7 +685,6 @@
             padding: 10px 20px;
             border-radius: 100px;
             font-size: 0.82rem;
-            font-weight: 500;
             z-index: 200;
             opacity: 0;
             transition: all 0.3s var(--ease-spring);
@@ -619,17 +692,18 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
             white-space: nowrap;
             max-width: 90vw;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
         .saved-item {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 14px;
@@ -637,32 +711,73 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.2s var(--ease-smooth);
             flex-wrap: wrap;
             gap: 8px;
         }
-        .saved-item:hover { box-shadow: var(--shadow-md); background: rgba(255, 255, 255, 0.85); }
-        .autocomplete-list {
-            position: absolute;
-            top: 100%;
-            left: 40px;
-            right: 40px;
-            background: var(--surface-solid);
+        .court-row {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+        .court-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .court-detail input {
+            flex: 1;
+            min-width: 0;
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
-            z-index: 50;
-            max-height: 140px;
-            overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            animation: rowFadeIn 0.2s var(--ease-out);
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            background: var(--input-bg);
         }
-        .autocomplete-item { padding: 10px 14px; font-size: 0.85rem; cursor: pointer; border-bottom: 1px solid var(--input-bg); transition: background 0.15s; }
-        .autocomplete-item:hover, .autocomplete-item:focus { background: var(--primary-light); outline: none; }
-        .autocomplete-item:last-child { border-bottom: none; }
-        .location-toggle { display: flex; align-items: center; gap: 8px; }
-        .toggle-switch { position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-        .toggle-switch input:focus-visible+.slider { outline: 2px solid var(--primary); outline-offset: 3px; }
+        .time-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .time-row input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 4px;
+            font-size: 0.82rem;
+            background: var(--input-bg);
+            text-align: center;
+        }
+        .duration-badge {
+            font-size: 0.75rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+            min-width: 38px;
+            text-align: center;
+            background: var(--primary-light);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .location-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 42px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
         .slider {
             position: absolute;
             cursor: pointer;
@@ -671,7 +786,7 @@
             right: 0;
             bottom: 0;
             background-color: #cbd5e1;
-            transition: 0.25s var(--ease-smooth);
+            transition: 0.25s;
             border-radius: 24px;
         }
         .slider:before {
@@ -684,51 +799,60 @@
             background-color: white;
             transition: 0.25s var(--ease-spring);
             border-radius: 50%;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
         }
-        input:checked+.slider { background-color: var(--primary); }
-        input:checked+.slider:before { transform: translateX(18px); }
-        .court-row { background: rgba(255, 255, 255, 0.5); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-bottom: 8px; transition: all 0.2s var(--ease-smooth); }
-        .court-detail { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-        .court-detail input { flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 0.85rem; background: var(--input-bg); }
-        .court-detail .remove-btn { flex-shrink: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; color: #cbd5e1; font-size: 1rem; cursor: pointer; border-radius: 8px; transition: all 0.2s; font-family: inherit; }
-        .court-detail .remove-btn:hover { color: var(--danger); background: var(--danger-light); }
-        .time-row { display: flex; align-items: center; gap: 8px; }
-        .time-row input { flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 4px; font-size: 0.82rem; background: var(--input-bg); text-align: center; }
-        .time-row .time-sep { color: var(--text-muted); font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
-        .time-row .duration-badge { font-size: 0.75rem; color: var(--primary-dark); font-weight: 600; min-width: 38px; text-align: center; background: var(--primary-light); padding: 4px 8px; border-radius: 6px; flex-shrink: 0; }
-        .empty-state { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.82rem; font-style: italic; }
-        .hidden { display: none !important; }
+        input:checked+.slider {
+            background-color: var(--primary);
+        }
+        input:checked+.slider:before {
+            transform: translateX(18px);
+        }
+        .hidden {
+            display: none !important;
+        }
         @media (max-width: 380px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
-            .action-row { grid-template-columns: 1fr; }
-            .admin-toolbar .toolbar-row { grid-template-columns: 1fr; }
-            .header h1 { font-size: 1.1rem; }
-            .pill-btn { padding: 6px 10px; font-size: 0.7rem; }
-            .toast { font-size: 0.72rem; padding: 8px 14px; }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: span 1;
+            }
+            .action-row {
+                grid-template-columns: 1fr;
+            }
+            .admin-toolbar .toolbar-row {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.1rem;
+            }
+            .pill-btn {
+                padding: 6px 10px;
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="loadingScreen" role="status" aria-label="Loading application">
+    <div id="loadingScreen" role="status" aria-label="Loading">
         <div class="loading-content">
             <span class="loading-icon" aria-hidden="true">🏸</span>
             <div class="loading-title">Smasholic</div>
             <div class="loading-subtitle">Badminton Session Manager</div>
         </div>
     </div>
+
     <div class="app-container" id="appContainer">
-        <header class="header" role="banner">
-            <h1><span class="icon" aria-hidden="true">🏸</span> Smasholic</h1>
+        <header class="header">
+            <h1><span aria-hidden="true">🏸</span> Smasholic</h1>
             <div class="header-actions">
-                <button class="pill-btn" id="tutorialBtn" aria-label="Open tutorial">📘 Tutorial</button>
-                <button class="pill-btn" id="adminLoginBtn" aria-label="Admin login">🔒 Admin</button>
-                <button class="pill-btn hidden" id="adminLogoutBtn" aria-label="Admin logout">🔓 Logout</button>
+                <button class="pill-btn" id="tutorialBtn">📘 Tutorial</button>
+                <button class="pill-btn" id="adminLoginBtn">🔒 Admin</button>
+                <button class="pill-btn hidden" id="adminLogoutBtn">🔓 Logout</button>
             </div>
         </header>
+
         <main class="content" id="mainContent">
-            <div id="bookingTab" style="display:flex; flex-direction:column; gap:14px;">
+            <div id="bookingTab" style="display:flex;flex-direction:column;gap:14px;">
                 <div class="session-summary-badge" id="playerDashboard" aria-live="polite">
                     <div class="summary-row"><span class="summary-label">📍 Venue & Court</span><span class="summary-value" id="dashVenue">—</span></div>
                     <div class="summary-row"><span class="summary-label">📅 Date & Day</span><span class="summary-value" id="dashDate">—</span></div>
@@ -736,22 +860,21 @@
                     <div class="summary-row" id="dashExtraSessionsRow"><span class="summary-label">🏟️ Extra Slots</span><span class="summary-value" id="dashExtra">None</span></div>
                     <div class="summary-row"><span class="summary-label">💵 Fee / Shuttle</span><span class="summary-value" id="dashPrice">—</span></div>
                 </div>
-                <div class="card hidden" id="adminConfigCard" aria-label="Admin session settings">
+
+                <div class="card hidden" id="adminConfigCard">
                     <div class="card-header"><span class="card-title">⚙️ Admin Session Settings</span></div>
                     <div class="form-grid">
                         <div class="input-group"><label for="dateInput">Date</label><input type="date" id="dateInput"></div>
-                        <div class="input-group"><label for="dayInput">Day</label><div class="readonly-badge" id="dayInput" role="status">AHAD</div></div>
+                        <div class="input-group"><label for="dayInput">Day</label><div class="readonly-badge" id="dayInput">AHAD</div></div>
                         <div class="input-group"><label for="startTime">Start</label><input type="time" id="startTime" value="21:30"></div>
                         <div class="input-group"><label for="endTime">End</label><input type="time" id="endTime" value="23:30"></div>
-                        <div class="input-group"><label for="totalHours">Duration</label><div class="readonly-badge" id="totalHours" role="status">2.0 Hrs</div></div>
+                        <div class="input-group"><label for="totalHours">Duration</label><div class="readonly-badge" id="totalHours">2.0 Hrs</div></div>
                         <div class="input-group"><label for="price">Price (RM)</label><input type="number" id="price" value="17" step="0.5" min="0"></div>
                         <div class="input-group full-width"><label for="venue">Venue</label><input type="text" id="venue" value="Forum SBA, Setia Alam"></div>
                         <div class="input-group full-width"><label for="court">Main Court</label><input type="text" id="court" value="14, 15, 16"></div>
                         <div class="input-group full-width">
                             <div class="location-toggle">
-                                <label class="toggle-switch" aria-label="Toggle location link">
-                                    <input type="checkbox" id="locationToggle"><span class="slider"></span>
-                                </label>
+                                <label class="toggle-switch"><input type="checkbox" id="locationToggle"><span class="slider"></span></label>
                                 <span style="font-size:0.72rem;font-weight:600;color:var(--text-muted);">📍 Location Link</span>
                             </div>
                             <input type="url" id="locationLink" value="https://g.co/kgs/UMbmmAz" placeholder="Google Maps link" class="hidden">
@@ -761,48 +884,53 @@
                         <div class="input-group full-width"><label for="updateListLink">🔗 Link update list</label><input type="url" id="updateListLink" value="https://shorturl.at/ahgyU"></div>
                     </div>
                 </div>
-                <div class="card collapsible collapsed hidden" id="additionalCourtsCard" aria-label="Additional sessions">
-                    <div class="card-header collapsible-header" onclick="toggleCollapse('additionalCourtsCard')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleCollapse('additionalCourtsCard'); }">
-                        <span class="card-title">🏟️ Additional Sessions</span><span class="chevron" aria-hidden="true">▼</span>
+
+                <div class="card collapsible collapsed hidden" id="additionalCourtsCard">
+                    <div class="card-header collapsible-header" onclick="toggleCollapse('additionalCourtsCard')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleCollapse('additionalCourtsCard');}">
+                        <span class="card-title">🏟️ Additional Sessions</span><span class="chevron">▼</span>
                     </div>
                     <div class="collapsible-body" style="max-height:2000px;">
-                        <div id="additionalCourtsContainer"><p class="empty-state" id="noCourtsMsg">No additional sessions yet. Click below to add one.</p></div>
+                        <div id="additionalCourtsContainer"><p class="empty-state" id="noCourtsMsg">No additional sessions yet.</p></div>
                         <button class="btn btn-outline hidden" id="addCourtBtn" style="margin-top:12px;">+ Add Session</button>
                     </div>
                 </div>
+
                 <div class="card" id="importActionCard">
-                    <button class="btn btn-import" id="importBtn" style="grid-column:span 2;">📥 Import WhatsApp List</button>
+                    <button class="btn btn-import" id="importBtn">📥 Import WhatsApp List</button>
                 </div>
-                <div class="card collapsible" id="playersCard" aria-label="Player roster">
-                    <div class="card-header collapsible-header" onclick="toggleCollapse('playersCard')" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleCollapse('playersCard'); }">
-                        <span class="card-title">👥 Roster Senarai Nama</span><span class="chevron" aria-hidden="true">▼</span>
+
+                <div class="card collapsible" id="playersCard">
+                    <div class="card-header collapsible-header" onclick="toggleCollapse('playersCard')" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleCollapse('playersCard');}">
+                        <span class="card-title">👥 Roster Senarai Nama</span><span class="chevron">▼</span>
                     </div>
                     <div class="collapsible-body" style="max-height:2000px;">
-                        <div class="player-list" id="playersContainer" role="list" aria-label="Player list"></div>
+                        <div class="player-list" id="playersContainer" role="list"></div>
                         <button class="btn btn-outline" id="addPlayerBtn" style="margin-top:12px;">+ Add Player</button>
-                        <div class="duplicate-warning" id="duplicateWarning" role="alert"><span aria-hidden="true">⚠️</span> Duplicate name detected!</div>
+                        <div class="duplicate-warning" id="duplicateWarning" role="alert"><span>⚠️</span> Duplicate name detected!</div>
                         <div class="stepper-container">
                             <div class="stepper">
-                                <button class="stepper-btn" id="stepperMinus" aria-label="Remove one player">–</button>
-                                <span class="stepper-count" id="playerCountDisplay" role="button" tabindex="0" aria-label="Set total player count. Current: 0" title="Tap to set total players">0</span>
-                                <button class="stepper-btn" id="stepperPlus" aria-label="Add one player">+</button>
+                                <button class="stepper-btn" id="stepperMinus">–</button>
+                                <span class="stepper-count" id="playerCountDisplay" role="button" tabindex="0" title="Tap to set total players">0</span>
+                                <button class="stepper-btn" id="stepperPlus">+</button>
                             </div>
-                            <span class="stepper-hint">Tap number to instantly set total players</span>
+                            <span class="stepper-hint" style="font-size:0.68rem;color:var(--text-muted);">Tap number to set total players</span>
                         </div>
                     </div>
                 </div>
-                <div class="card collapsible collapsed" id="waitingCard" aria-label="Waiting list">
-                    <div class="card-header collapsible-header" onclick="toggleCollapse('waitingCard')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleCollapse('waitingCard'); }">
-                        <span class="card-title">📋 Waiting List</span><span class="chevron" aria-hidden="true">▼</span>
+
+                <div class="card collapsible collapsed" id="waitingCard">
+                    <div class="card-header collapsible-header" onclick="toggleCollapse('waitingCard')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleCollapse('waitingCard');}">
+                        <span class="card-title">📋 Waiting List</span><span class="chevron">▼</span>
                     </div>
                     <div class="collapsible-body" style="max-height:2000px;">
-                        <div class="player-list" id="waitingContainer" role="list" aria-label="Waiting list"></div>
+                        <div class="player-list" id="waitingContainer" role="list"></div>
                         <button class="btn btn-outline" id="addWaitingBtn" style="margin-top:12px;">+ Add to Waiting List</button>
                     </div>
                 </div>
-                <div class="card collapsible collapsed hidden" id="footerCard" aria-label="Session notes">
-                    <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleCollapse('footerCard'); }">
-                        <span class="card-title">📌 Notes</span><span class="chevron" aria-hidden="true">▼</span>
+
+                <div class="card collapsible collapsed hidden" id="footerCard">
+                    <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleCollapse('footerCard');}">
+                        <span class="card-title">📌 Notes</span><span class="chevron">▼</span>
                     </div>
                     <div class="collapsible-body" style="max-height:500px;">
                         <textarea id="footerMessage" rows="4" aria-label="Session notes">📌 Payment deadline: Friday morning
@@ -811,9 +939,10 @@
 ⚠️ Slot only confirmed after payment</textarea>
                     </div>
                 </div>
-                <div class="card" id="sharingCard" aria-label="Preview and share">
+
+                <div class="card" id="sharingCard">
                     <pre class="preview-box" id="preview" role="region" aria-label="Announcement preview" style="margin-bottom:12px;"></pre>
-                    <button class="btn btn-success" id="copyBtn" style="grid-column:span 2; height:50px; font-size:1rem;">📋 Copy / Share Update</button>
+                    <button class="btn btn-success" id="copyBtn" style="height:50px;font-size:1rem;">📋 Copy / Share Update</button>
                     <div class="admin-toolbar" id="adminToolbar">
                         <div class="toolbar-row">
                             <button class="btn btn-secondary" id="saveBookingBtn">💾 Save</button>
@@ -826,7 +955,8 @@
                     </div>
                 </div>
             </div>
-            <div id="savedTab" class="hidden" aria-label="Saved sessions">
+
+            <div id="savedTab" class="hidden">
                 <div class="card">
                     <div class="card-header"><span class="card-title">📂 Saved Sessions</span></div>
                     <div id="savedBookingsList" role="list"></div>
@@ -835,17 +965,20 @@
                 </div>
             </div>
         </main>
-        <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
-            <button class="nav-item active" data-tab="booking" aria-current="page"><span class="nav-icon" aria-hidden="true">📅</span><span>Booking</span></button>
-            <button class="nav-item" data-tab="saved"><span class="nav-icon" aria-hidden="true">📂</span><span>Saved</span></button>
+
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-tab="booking" aria-current="page"><span class="nav-icon">📅</span><span>Booking</span></button>
+            <button class="nav-item" data-tab="saved"><span class="nav-icon">📂</span><span>Saved</span></button>
         </nav>
     </div>
+
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
     <div class="modal-overlay" id="adminLoginModal" role="dialog" aria-modal="true" aria-label="Admin login">
         <div class="modal-content">
             <h3 style="margin-bottom:12px;font-weight:600;">🔒 Admin Access</h3>
             <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px;">Enter password to unlock session controls.</p>
-            <input type="password" id="adminPasswordInput" placeholder="Enter admin password..." aria-label="Admin password" autocomplete="off">
+            <input type="password" id="adminPasswordInput" placeholder="Enter admin password..." autocomplete="off">
             <div style="font-size:0.75rem;color:var(--text-muted);margin-top:10px;line-height:1.5;background:var(--input-bg);padding:10px 12px;border-radius:var(--radius-sm);">
                 <strong style="color:var(--text-main);">🔑 Admin Features:</strong><br>
                 • Edit date, venue, courts & pricing<br>
@@ -860,17 +993,19 @@
             </div>
         </div>
     </div>
+
     <div class="modal-overlay" id="importModal" role="dialog" aria-modal="true" aria-label="Import session">
         <div class="modal-content">
             <h3 style="margin-bottom:12px;font-weight:600;">📥 Import Session</h3>
             <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px;">Paste the exact copied announcement text below to automatically reverse-fill the form.</p>
-            <textarea id="importTextarea" rows="10" placeholder="Paste announcement here..." aria-label="Paste announcement text"></textarea>
+            <textarea id="importTextarea" rows="10" placeholder="Paste announcement here..."></textarea>
             <div class="action-row" style="margin-top:14px;">
                 <button class="btn btn-secondary" id="importCancelBtn">Cancel</button>
                 <button class="btn" id="importParseBtn">Parse & Fill</button>
             </div>
         </div>
     </div>
+
     <div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true" aria-label="Confirm action">
         <div class="modal-content">
             <h3 id="confirmTitle" style="margin-bottom:12px;font-weight:600;">Confirm</h3>
@@ -881,33 +1016,31 @@
             </div>
         </div>
     </div>
+
     <div class="modal-overlay" id="tutorialModal" role="dialog" aria-modal="true" aria-label="Tutorial">
         <div class="modal-content">
             <h3 style="margin-bottom:12px;font-weight:600;">📘 Cara Guna Sistem</h3>
-            <div class="tutorial-text">
+            <div style="font-size:0.82rem;line-height:1.6;">
                 <p><strong>📌 Cara guna "Import" list (WhatsApp → Update System)</strong></p>
-                <ol>
+                <ol style="padding-left:18px;">
                     <li>Copy mesej penuh player list dari WhatsApp group.</li>
-                    <li>Klik butang <strong>Import WhatsApp List</strong> di atas dan paste teks tadi.</li>
+                    <li>Klik butang <strong>Import WhatsApp List</strong> dan paste teks tadi.</li>
                     <li>Edit nama slot anda pada senarai Roster jika perlu.</li>
-                    <li>Tandakan tanda ✅ hijau pada butang nama anda selepas bayaran selesai.</li>
-                    <li>Tekan butang <strong>Copy / Share Update</strong> semula.</li>
-                    <li>Paste balik kemaskini terbaru tadi ke dalam WhatsApp group anda.</li>
+                    <li>Tandakan ✅ hijau selepas bayaran selesai.</li>
+                    <li>Tekan <strong>Copy / Share Update</strong>.</li>
+                    <li>Paste balik ke WhatsApp group.</li>
                 </ol>
-                <p style="margin-top:8px;"><strong>⚠️ Peringatan Penting:</strong></p>
-                <ul>
-                    <li>Dilarang sama sekali memadam nama player lain tanpa izin.</li>
-                    <li>Tanda hijau hanya dibenarkan selepas transaksi selesai dilakukan.</li>
-                </ul>
+                <p style="margin-top:8px;"><strong>⚠️ Peringatan:</strong> Dilarang padam nama player lain. Tanda hijau hanya selepas bayaran.</p>
             </div>
             <button class="btn btn-secondary" id="tutorialCloseBtn" style="margin-top:14px;">Tutup</button>
         </div>
     </div>
+
     <script>
         (function() {
             const ADMIN_PASSWORD = 'smash123';
-            const NAMES_KEY = 'smasholic_names_v2';
-            const SAVED_KEY = 'smasholic_saved_bookings_v2';
+            const NAMES_KEY = 'smasholic_names_v4';
+            const SAVED_KEY = 'smasholic_saved_bookings_v4';
             const malayDays = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
 
             const state = {
@@ -985,58 +1118,56 @@
                 dashPrice: $('dashPrice'),
             };
 
-            const escapeHtml = (str) => {
-                const div = document.createElement('div');
-                div.textContent = str || '';
-                return div.innerHTML;
-            };
-            const vibrate = (ms = 12) => { if (navigator.vibrate) { try { navigator.vibrate(ms); } catch (_) {} } };
+            const escapeHtml = (str) => { const d = document.createElement('div');
+                d.textContent = str || ''; return d.innerHTML; };
+            const vibrate = (ms = 12) => { if (navigator.vibrate) try { navigator.vibrate(ms); } catch (_) {} };
 
-            // ── Tick sound using Web Audio API ──
             function playTickSound() {
                 try {
-                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioCtx.createOscillator();
-                    const gainNode = audioCtx.createGain();
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-                    oscillator.type = 'sine';
-                    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
-                    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                    oscillator.start();
-                    oscillator.stop(audioCtx.currentTime + 0.1);
-                } catch (e) { /* ignore */ }
+                    const ctx = new(window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.1);
+                } catch (e) {}
             }
 
             function showToast(msg, icon = '✅') {
-                els.toast.innerHTML = `<span aria-hidden="true">${icon}</span> ${escapeHtml(msg)}`;
+                els.toast.innerHTML = `<span>${icon}</span> ${escapeHtml(msg)}`;
                 els.toast.classList.add('show');
                 clearTimeout(els.toast._timeout);
                 els.toast._timeout = setTimeout(() => els.toast.classList.remove('show'), 2200);
             }
 
-            function timeToMinutes(t) {
-                if (!t) return 0;
-                const [h, m] = t.split(':').map(Number);
-                return isNaN(h) || isNaN(m) ? 0 : h * 60 + m;
-            }
+            function timeToMinutes(t) { if (!t) return 0;
+                const [h, m] = t.split(':').map(Number); return isNaN(h) || isNaN(m) ? 0 : h * 60 + m; }
+
             function calcDurationSingle(start, end) {
                 if (!start || !end) return 0;
-                let s = timeToMinutes(start), e = timeToMinutes(end);
+                let s = timeToMinutes(start),
+                    e = timeToMinutes(end);
                 if (e <= s) e += 1440;
                 return Math.max(0, (e - s) / 60);
             }
+
             function calcTotalDuration() {
                 const intervals = [];
                 if (els.start.value && els.end.value) {
-                    let s = timeToMinutes(els.start.value), e = timeToMinutes(els.end.value);
+                    let s = timeToMinutes(els.start.value),
+                        e = timeToMinutes(els.end.value);
                     if (e <= s) e += 1440;
                     intervals.push({ start: s, end: e });
                 }
                 state.additionalCourts.forEach(c => {
                     if (c.start && c.end) {
-                        let s = timeToMinutes(c.start), e = timeToMinutes(c.end);
+                        let s = timeToMinutes(c.start),
+                            e = timeToMinutes(c.end);
                         if (e <= s) e += 1440;
                         intervals.push({ start: s, end: e });
                     }
@@ -1047,15 +1178,18 @@
                 let cur = { ...intervals[0] };
                 for (let i = 1; i < intervals.length; i++) {
                     if (intervals[i].start <= cur.end) cur.end = Math.max(cur.end, intervals[i].end);
-                    else { merged.push(cur); cur = { ...intervals[i] }; }
+                    else { merged.push(cur);
+                        cur = { ...intervals[i] }; }
                 }
                 merged.push(cur);
                 let totalMin = 0;
                 merged.forEach(m => totalMin += (m.end - m.start));
                 return totalMin / 60;
             }
-            function formatDuration(hrs) { return (hrs === 0 || isNaN(hrs)) ? '—' : (hrs % 1 === 0 ? hrs.toFixed(0) : hrs.toFixed(1)) + 'h'; }
-            function formatCourtName(name) { if (!name || name.trim() === '') return name; const t = name.trim(); return /^court\s/i.test(t) ? t : 'Court ' + t; }
+
+            function formatDuration(hrs) { return (hrs === 0 || isNaN(hrs)) ? '—' : (hrs % 1 === 0 ? hrs.toFixed(0) : hrs
+                    .toFixed(1)) + 'h'; }
+
             function formatTime12(t) {
                 if (!t) return '';
                 let [h, m] = t.split(':');
@@ -1065,25 +1199,47 @@
                 let h12 = h % 12 || 12;
                 return `${h12}:${m} ${ampm}`;
             }
+
             function formatDateDMY(dStr) { if (!dStr) return ''; const [y, m, d] = dStr.split('-'); return `${parseInt(d)}/${parseInt(m)}/${y}`; }
-            function cleanName(str) { return (str || '').replace(/[\u200B\u200C\u200D\u200E\u200F\uFEFF\u2060-\u2069\u202A-\u202E]/g, '').trim(); }
 
-            function getNames() { try { return JSON.parse(localStorage.getItem(NAMES_KEY)) || []; } catch { return []; } }
-            function addName(name) {
-                name = cleanName(name);
-                if (!name) return;
-                let names = getNames().filter(n => n.toLowerCase() !== name.toLowerCase());
-                names.unshift(name);
-                if (names.length > 50) names.pop();
-                localStorage.setItem(NAMES_KEY, JSON.stringify(names));
+            function cleanName(str) { return (str || '').replace(/[\u200B\u200C\u200D\u200E\u200F\uFEFF\u2060-\u2069\u202A-\u202E]/g,
+                    '').trim(); }
+
+            /* ── Collect all unique court numbers from main + additional ── */
+            function getAllUniqueCourts() {
+                const courts = new Set();
+                // Parse main court field
+                const mainRaw = els.court.value || '';
+                mainRaw.split(/[,&]+/).forEach(part => {
+                    const trimmed = part.trim();
+                    if (trimmed) courts.add(trimmed);
+                });
+                // Parse additional courts
+                state.additionalCourts.forEach(c => {
+                    const raw = c.court || '';
+                    raw.split(/[,&]+/).forEach(part => {
+                        const trimmed = part.trim();
+                        if (trimmed) courts.add(trimmed);
+                    });
+                });
+                return Array.from(courts);
             }
-            function loadSavedBookings() { try { state.savedBookings = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch { state.savedBookings = []; } }
-            function persistSavedBookings() { localStorage.setItem(SAVED_KEY, JSON.stringify(state.savedBookings)); }
 
+            function formatCourtList() {
+                const courts = getAllUniqueCourts();
+                if (!courts.length) return '—';
+                if (courts.length === 1) return courts[0];
+                if (courts.length === 2) return courts.join(' & ');
+                const allButLast = courts.slice(0, -1).join(', ');
+                return `${allButLast} & ${courts[courts.length - 1]}`;
+            }
+
+            /* ── Preview: court header shows ALL unique courts ── */
             function buildPreview() {
                 const dateVal = formatDateDMY(els.date.value);
                 const dayVal = els.day.textContent;
                 const venueVal = els.venue.value;
+                const allCourts = formatCourtList();
                 const mainCourt = els.court.value;
                 const priceVal = parseFloat(els.price.value || 0).toFixed(2);
                 const shuttleVal = els.shuttle.value;
@@ -1095,12 +1251,18 @@
 
                 let text = `🏸 BADMINTON SESSION\n\n`;
                 text += `📍 ${venueVal}\n`;
-                text += `🏟️ Court: ${mainCourt}\n\n`;
+                text += `🏟️ Court: ${allCourts}\n\n`;
                 text += `📅 ${dateVal} (${dayVal})\n\n`;
-                text += `⏰ SESSIONS & COURTS\n────────────────────────────────\n Time                | Courts\n────────────────────────────────\n`;
-                text += ` ${formatTime12(els.start.value)} – ${formatTime12(els.end.value)}  | ${mainCourt}\n`;
+                text +=
+                    `⏰ SESSIONS & COURTS\n────────────────────────────────\n Time                | Courts\n────────────────────────────────\n`;
+                text +=
+                ` ${formatTime12(els.start.value)} – ${formatTime12(els.end.value)}  | ${mainCourt}\n`;
                 state.additionalCourts.forEach(c => {
-                    if (c.court.trim()) text += ` ${formatTime12(c.start) || '?'} – ${formatTime12(c.end) || '?'}  | ${formatCourtName(c.court.trim())}\n`;
+                    if (c.court.trim()) {
+                        const s = formatTime12(c.start) || '?';
+                        const e = formatTime12(c.end) || '?';
+                        text += ` ${s} – ${e}  | ${c.court.trim()}\n`;
+                    }
                 });
                 text += `────────────────────────────────\n ⏱️ Total: ${totalText}\n\n`;
                 text += `💵 RM${priceVal} / player\n🏸 Shuttle: ${shuttleVal}\n👤 Host: ${hostVal}\n\n`;
@@ -1108,7 +1270,8 @@
                 const totalPlayers = state.players.length;
                 const paidCount = state.players.filter(p => p.paid).length;
                 const pendingCount = totalPlayers - paidCount;
-                text += `──────────────────\n👥 ${totalPlayers} Players  |  ✅ ${paidCount} Paid  |  ⏳ ${pendingCount} Pending\n──────────────────\n\n`;
+                text +=
+                    `──────────────────\n👥 ${totalPlayers} Players  |  ✅ ${paidCount} Paid  |  ⏳ ${pendingCount} Pending\n──────────────────\n\n`;
 
                 state.players.forEach((p, i) => {
                     const name = cleanName(p.name) || '(Open)';
@@ -1116,7 +1279,8 @@
                 });
                 if (state.waitingPlayers.length) {
                     text += `\nWaiting List\n`;
-                    state.waitingPlayers.forEach((p, i) => text += `${i + 1}. ${cleanName(p.name) || '(Open)'}\n`);
+                    state.waitingPlayers.forEach((p, i) => text +=
+                        `${i + 1}. ${cleanName(p.name) || '(Open)'}\n`);
                 }
                 text += `\n──────────────────\n\nNotes:\n${els.footer.value.trim()}\n`;
                 if (state.locationEnabled && locationVal) text += `\n📍 Location: ${locationVal}\n`;
@@ -1124,31 +1288,40 @@
                 return text;
             }
 
-            function updatePreview() { state.previewDirty = true; schedulePreviewRender(); }
+            function updatePreview() { state.previewDirty = true;
+                schedulePreviewRender(); }
+
             function schedulePreviewRender() {
                 if (state.renderScheduled) return;
                 state.renderScheduled = true;
                 requestAnimationFrame(() => {
-                    if (state.previewDirty) { els.preview.textContent = buildPreview(); state.previewDirty = false; }
+                    if (state.previewDirty) { els.preview.textContent = buildPreview();
+                        state.previewDirty = false; }
                     state.renderScheduled = false;
                     updateLiveDashboard();
                 });
             }
+
             function updateLiveDashboard() {
-                els.dashVenue.textContent = `${els.venue.value || '—'} (${formatCourtName(els.court.value) || '—'})`;
-                els.dashDate.textContent = `${formatDateDMY(els.date.value) || '—'} (${els.day.textContent || '—'})`;
-                els.dashTime.textContent = `${formatTime12(els.start.value) || '—'} - ${formatTime12(els.end.value) || '—'} (${els.duration.textContent || '—'})`;
-                els.dashPrice.textContent = `RM ${parseFloat(els.price.value || 0).toFixed(2)} • Shuttle: ${els.shuttle.value || '—'}`;
+                const allCourts = formatCourtList();
+                els.dashVenue.textContent = `${els.venue.value || '—'} (${allCourts})`;
+                els.dashDate.textContent =
+                    `${formatDateDMY(els.date.value) || '—'} (${els.day.textContent || '—'})`;
+                els.dashTime.textContent =
+                    `${formatTime12(els.start.value) || '—'} - ${formatTime12(els.end.value) || '—'} (${els.duration.textContent || '—'})`;
+                els.dashPrice.textContent =
+                    `RM ${parseFloat(els.price.value || 0).toFixed(2)} • Shuttle: ${els.shuttle.value || '—'}`;
                 const validExtras = state.additionalCourts.filter(c => c.court.trim());
                 els.dashExtraSessionsRow.classList.toggle('hidden', validExtras.length === 0);
-                els.dashExtra.textContent = validExtras.length ? `${validExtras.length} Session(s) configured` : 'None';
+                els.dashExtra.textContent = validExtras.length ? `${validExtras.length} Session(s) configured` :
+                    'None';
             }
 
             function updateDuplicateStyling() {
                 const counts = new Map();
-                state.players.forEach(p => { const n = cleanName(p.name).toLowerCase(); if (n) counts.set(n, (counts.get(n) || 0) + 1); });
-                const rows = els.playersContainer.querySelectorAll('.player-row');
-                rows.forEach((row, idx) => {
+                state.players.forEach(p => { const n = cleanName(p.name).toLowerCase(); if (n) counts.set(n, (counts
+                        .get(n) || 0) + 1); });
+                els.playersContainer.querySelectorAll('.player-row').forEach((row, idx) => {
                     const n = cleanName(state.players[idx]?.name || '').toLowerCase();
                     row.classList.toggle('duplicate', !!(n && counts.get(n) > 1));
                 });
@@ -1162,10 +1335,10 @@
                     row.className = 'player-row';
                     row.setAttribute('role', 'listitem');
                     row.dataset.idx = idx;
-                    row.innerHTML = `<div class="player-avatar" aria-hidden="true">${idx + 1}</div>
-                        <input type="text" class="pname" value="${escapeHtml(cleanName(p.name))}" placeholder="Enter name..." data-idx="${idx}" autocomplete="off" aria-label="Player ${idx + 1} name">
-                        <button class="action-icon paid-toggle ${p.paid ? 'active' : ''}" data-idx="${idx}" aria-label="${p.paid ? 'Mark unpaid' : 'Mark paid'} for player ${idx + 1}">✅</button>
-                        <button class="action-icon remove-toggle" data-idx="${idx}" aria-label="Remove player ${idx + 1}">✕</button>`;
+                    row.innerHTML = `<div class="player-avatar">${idx + 1}</div>
+                        <input type="text" class="pname" value="${escapeHtml(cleanName(p.name))}" placeholder="Enter name..." data-idx="${idx}" autocomplete="off">
+                        <button class="action-icon paid-toggle ${p.paid ? 'active' : ''}" data-idx="${idx}">✅</button>
+                        <button class="action-icon remove-toggle" data-idx="${idx}">✕</button>`;
                     frag.appendChild(row);
                 });
                 els.playersContainer.innerHTML = '';
@@ -1173,6 +1346,7 @@
                 els.playerCount.textContent = state.players.length;
                 updateDuplicateStyling();
             }
+
             function renderWaitingPlayers() {
                 const frag = document.createDocumentFragment();
                 state.waitingPlayers.forEach((p, idx) => {
@@ -1180,14 +1354,15 @@
                     row.className = 'player-row';
                     row.setAttribute('role', 'listitem');
                     row.dataset.idx = idx;
-                    row.innerHTML = `<div class="player-avatar" style="background:var(--input-bg);color:var(--text-muted);" aria-hidden="true">${idx + 1}</div>
-                        <input type="text" class="wname" value="${escapeHtml(cleanName(p.name))}" placeholder="Waiting player..." data-idx="${idx}" autocomplete="off" aria-label="Waiting player ${idx + 1} name">
-                        <button class="action-icon remove-toggle" data-idx="${idx}" aria-label="Remove waiting player ${idx + 1}">✕</button>`;
+                    row.innerHTML = `<div class="player-avatar" style="background:var(--input-bg);color:var(--text-muted);">${idx + 1}</div>
+                        <input type="text" class="wname" value="${escapeHtml(cleanName(p.name))}" placeholder="Waiting player..." data-idx="${idx}" autocomplete="off">
+                        <button class="action-icon remove-toggle" data-idx="${idx}">✕</button>`;
                     frag.appendChild(row);
                 });
                 els.waitingContainer.innerHTML = '';
                 els.waitingContainer.appendChild(frag);
             }
+
             function renderAdditionalCourts() {
                 const frag = document.createDocumentFragment();
                 const hasCourts = state.additionalCourts.length > 0;
@@ -1197,16 +1372,20 @@
                     row.className = 'court-row';
                     row.dataset.idx = idx;
                     const dur = calcDurationSingle(c.start, c.end);
-                    row.innerHTML = `<div class="court-detail"><input type="text" class="court-name-input" value="${escapeHtml(c.court)}" placeholder="e.g. Court 16 only" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
-                        ${state.isAdmin ? `<button class="remove-btn" data-idx="${idx}" aria-label="Remove additional session ${idx + 1}">✕</button>` : ''}</div>
-                        <div class="time-row"><input type="time" class="time-start" value="${c.start || ''}" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
-                        <span class="time-sep">|</span><input type="time" class="time-end" value="${c.end || ''}" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
+                    row.innerHTML = `<div class="court-detail">
+                        <input type="text" class="court-name-input" value="${escapeHtml(c.court)}" placeholder="e.g. 16" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
+                        ${state.isAdmin ? `<button class="remove-btn" data-idx="${idx}" style="cursor:pointer;background:none;border:none;color:#cbd5e1;font-size:1rem;">✕</button>` : ''}</div>
+                        <div class="time-row">
+                        <input type="time" class="time-start" value="${c.start || ''}" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
+                        <span>|</span>
+                        <input type="time" class="time-end" value="${c.end || ''}" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
                         <span class="duration-badge">${formatDuration(dur)}</span></div>`;
                     frag.appendChild(row);
                 });
                 els.additionalCourtsContainer.innerHTML = '';
                 els.additionalCourtsContainer.appendChild(frag);
             }
+
             function renderSaved() {
                 const frag = document.createDocumentFragment();
                 els.noBookingsMsg.style.display = state.savedBookings.length ? 'none' : 'block';
@@ -1214,7 +1393,8 @@
                 state.savedBookings.forEach((b, idx) => {
                     const item = document.createElement('div');
                     item.className = 'saved-item';
-                    item.innerHTML = `<div><strong style="color:var(--primary-dark);">${escapeHtml(b.day)}, ${formatDateDMY(b.date)}</strong><p style="font-size:0.78rem;color:var(--text-muted);">${escapeHtml(b.venue)} • ${b.players?.length || 0} Players</p></div>
+                    item.innerHTML = `<div><strong style="color:var(--primary-dark);">${escapeHtml(b.day)}, ${formatDateDMY(b.date)}</strong>
+                        <p style="font-size:0.78rem;color:var(--text-muted);">${escapeHtml(b.venue)} • ${b.players?.length || 0} Players</p></div>
                         <div style="display:flex;gap:6px;"><button class="btn btn-secondary load-btn" data-idx="${idx}" style="padding:6px 12px;font-size:0.78rem;">Load</button>
                         ${state.isAdmin ? `<button class="btn btn-danger del-btn" data-idx="${idx}" style="padding:6px 12px;font-size:0.78rem;">✕</button>` : ''}</div>`;
                     frag.appendChild(item);
@@ -1223,15 +1403,19 @@
                 els.savedBookingsList.appendChild(frag);
             }
 
-            function dismissAllAutocomplete() { document.querySelectorAll('.autocomplete-list').forEach(e => e.remove()); }
-            document.addEventListener('click', (e) => { if (!e.target.closest('.autocomplete-list') && !e.target.closest('.player-row input')) dismissAllAutocomplete(); });
-            document.addEventListener('focusout', (e) => { if (e.target.closest('.player-row input')) setTimeout(() => { if (!document.querySelector('.autocomplete-list:hover')) dismissAllAutocomplete(); }, 150); });
+            function dismissAllAutocomplete() { document.querySelectorAll('.autocomplete-list').forEach(e => e
+            .remove()); }
+            document.addEventListener('click', (e) => { if (!e.target.closest('.autocomplete-list') && !e.target.closest(
+                    '.player-row input')) dismissAllAutocomplete(); });
+            document.addEventListener('focusout', (e) => { if (e.target.closest('.player-row input')) setTimeout(() => { if (
+                        !document.querySelector('.autocomplete-list:hover')) dismissAllAutocomplete(); }, 150); });
 
             function showAutocomplete(input, idx, isWaiting = false) {
                 dismissAllAutocomplete();
                 const val = cleanName(input.value).toLowerCase();
                 if (!val) return;
-                const matches = getNames().filter(n => cleanName(n).toLowerCase().includes(val) && cleanName(n).toLowerCase() !== val).slice(0, 8);
+                const matches = getNames().filter(n => cleanName(n).toLowerCase().includes(val) && cleanName(n)
+                    .toLowerCase() !== val).slice(0, 8);
                 if (!matches.length) return;
                 const list = document.createElement('div');
                 list.className = 'autocomplete-list';
@@ -1247,84 +1431,97 @@
                 list.addEventListener('mousedown', (e) => {
                     if (e.target.classList.contains('autocomplete-item')) {
                         e.preventDefault();
-                        const selectedName = cleanName(e.target.textContent);
-                        input.value = selectedName;
-                        if (isWaiting) state.waitingPlayers[idx].name = selectedName;
-                        else { state.players[idx].name = selectedName; updateDuplicateStyling(); }
+                        const n = cleanName(e.target.textContent);
+                        input.value = n;
+                        if (isWaiting) state.waitingPlayers[idx].name = n;
+                        else { state.players[idx].name = n;
+                            updateDuplicateStyling(); }
                         dismissAllAutocomplete();
                         updatePreview();
-                        addName(selectedName);
+                        addName(n);
                         vibrate();
                     }
                 });
-                list.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.classList.contains('autocomplete-item')) { e.preventDefault();
-                        e.target.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })); } if (e.key === 'Escape') { dismissAllAutocomplete();
-                        input.focus(); } });
                 input.closest('.player-row').appendChild(list);
             }
 
-            function setupPlayerContainerDelegation(container, arrayRef, isWaiting = false) {
+            function setupPlayerDelegation(container, arr, isWaiting) {
                 container.addEventListener('input', (e) => {
-                    const target = e.target;
-                    if (target.classList.contains('pname') || target.classList.contains('wname')) {
-                        const idx = parseInt(target.dataset.idx);
-                        if (!isNaN(idx) && arrayRef[idx]) { arrayRef[idx].name = target.value; if (!isWaiting) updateDuplicateStyling();
+                    const t = e.target;
+                    if (t.classList.contains('pname') || t.classList.contains('wname')) {
+                        const idx = parseInt(t.dataset.idx);
+                        if (!isNaN(idx) && arr[idx]) { arr[idx].name = t.value; if (!isWaiting)
+                                updateDuplicateStyling();
                             updatePreview();
-                            showAutocomplete(target, idx, isWaiting); }
+                            showAutocomplete(t, idx, isWaiting); }
                     }
                 });
                 container.addEventListener('click', (e) => {
-                    const targetBtn = e.target.closest('.action-icon');
-                    if (!targetBtn) return;
-                    const idx = parseInt(targetBtn.dataset.idx);
-                    if (isNaN(idx) || !arrayRef[idx]) return;
-                    if (targetBtn.classList.contains('paid-toggle')) {
-                        arrayRef[idx].paid = !arrayRef[idx].paid;
-                        targetBtn.classList.toggle('active', arrayRef[idx].paid);
-                        if (arrayRef[idx].paid && arrayRef[idx].name) addName(cleanName(arrayRef[idx].name));
+                    const btn = e.target.closest('.action-icon');
+                    if (!btn) return;
+                    const idx = parseInt(btn.dataset.idx);
+                    if (isNaN(idx) || !arr[idx]) return;
+                    if (btn.classList.contains('paid-toggle')) {
+                        arr[idx].paid = !arr[idx].paid;
+                        btn.classList.toggle('active', arr[idx].paid);
+                        if (arr[idx].paid && arr[idx].name) addName(cleanName(arr[idx].name));
                         updatePreview();
                         vibrate();
-                        playTickSound(); // ✨ tick sound on paid toggle
-                    } else if (targetBtn.classList.contains('remove-toggle')) {
-                        arrayRef.splice(idx, 1);
+                        playTickSound();
+                    } else if (btn.classList.contains('remove-toggle')) {
+                        arr.splice(idx, 1);
                         isWaiting ? renderWaitingPlayers() : renderPlayers();
                         updatePreview();
                         vibrate();
                     }
                 });
-                container.addEventListener('focusin', (e) => { const row = e.target.closest('.player-row'); if (row) row.classList.add('focused'); });
-                container.addEventListener('focusout', (e) => { const row = e.target.closest('.player-row'); if (row) row.classList.remove('focused'); });
+                container.addEventListener('focusin', (e) => { const r = e.target.closest('.player-row'); if (r) r
+                        .classList.add('focused'); });
+                container.addEventListener('focusout', (e) => { const r = e.target.closest('.player-row'); if (r) r
+                        .classList.remove('focused'); });
             }
-            setupPlayerContainerDelegation(els.playersContainer, state.players, false);
-            setupPlayerContainerDelegation(els.waitingContainer, state.waitingPlayers, true);
+            setupPlayerDelegation(els.playersContainer, state.players, false);
+            setupPlayerDelegation(els.waitingContainer, state.waitingPlayers, true);
 
-            // Additional courts delegation
             els.additionalCourtsContainer.addEventListener('input', (e) => {
                 const idx = parseInt(e.target.dataset.idx);
                 if (isNaN(idx) || !state.additionalCourts[idx]) return;
-                if (e.target.classList.contains('court-name-input')) state.additionalCourts[idx].court = e.target.value;
-                else if (e.target.classList.contains('time-start')) { state.additionalCourts[idx].start = e.target.value;
-                    updateCourtRowDuration(e.target, idx); } else if (e.target.classList.contains('time-end')) { state.additionalCourts[idx]
-                        .end = e.target.value;
-                    updateCourtRowDuration(e.target, idx); }
+                if (e.target.classList.contains('court-name-input')) state.additionalCourts[idx].court = e.target
+                    .value;
+                else if (e.target.classList.contains('time-start')) { state.additionalCourts[idx].start = e.target
+                        .value;
+                    updateRowDuration(e.target, idx); } else if (e.target.classList.contains('time-end')) { state
+                        .additionalCourts[idx].end = e.target.value;
+                    updateRowDuration(e.target, idx); }
                 updateDateData();
             });
-            els.additionalCourtsContainer.addEventListener('click', (e) => { if (e.target.classList.contains('remove-btn')) { const idx = parseInt(e.target.dataset.idx); if (!isNaN(idx) && state.additionalCourts[idx]) { state.additionalCourts.splice(idx, 1);
+            els.additionalCourtsContainer.addEventListener('click', (e) => { if (e.target.classList.contains(
+                    'remove-btn')) { const idx = parseInt(e.target.dataset.idx); if (!isNaN(idx) && state
+                        .additionalCourts[idx]) { state.additionalCourts.splice(idx, 1);
                         renderAdditionalCourts();
                         updateDateData();
                         vibrate(); } } });
-            function updateCourtRowDuration(target, idx) { const row = target.closest('.court-row'); if (!row || !state.additionalCourts[idx]) return;
+
+            function updateRowDuration(target, idx) {
+                const row = target.closest('.court-row');
+                if (!row || !state.additionalCourts[idx]) return;
                 const dur = calcDurationSingle(state.additionalCourts[idx].start, state.additionalCourts[idx].end);
-                const badge = row.querySelector('.duration-badge'); if (badge) badge.textContent = formatDuration(dur); }
+                const badge = row.querySelector('.duration-badge');
+                if (badge) badge.textContent = formatDuration(dur);
+            }
 
-            window.toggleCollapse = function(id) { const el = document.getElementById(id); if (!el) return;
-                const wasCollapsed = el.classList.contains('collapsed');
+            window.toggleCollapse = function(id) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const was = el.classList.contains('collapsed');
                 el.classList.toggle('collapsed');
-                const header = el.querySelector('.collapsible-header'); if (header) header.setAttribute('aria-expanded', wasCollapsed ? 'true' : 'false'); };
+                const h = el.querySelector('.collapsible-header');
+                if (h) h.setAttribute('aria-expanded', was ? 'true' : 'false');
+            };
 
-            function showConfirm(title, msg, onConfirm) { els.confirmTitle.textContent = title;
+            function showConfirm(title, msg, cb) { els.confirmTitle.textContent = title;
                 els.confirmMessage.textContent = msg;
-                state.confirmCallback = onConfirm;
+                state.confirmCallback = cb;
                 els.confirmModal.classList.add('active');
                 $('confirmActionBtn').focus(); }
             $('confirmCancelBtn').addEventListener('click', () => { els.confirmModal.classList.remove('active');
@@ -1335,17 +1532,23 @@
                     state.confirmCallback = null;
                     cb(); } });
 
-            function updateDateData() { if (els.date.value) { const d = new Date(els.date.value + 'T00:00:00'); if (!isNaN(d.getTime())) els.day.textContent = malayDays[d.getDay()]; }
-                const totalHrs = calcTotalDuration();
-                els.duration.textContent = (totalHrs % 1 === 0 ? totalHrs.toFixed(0) : totalHrs.toFixed(1)) + ' Hrs';
-                updatePreview(); }
-            [els.date, els.start, els.end, els.venue, els.court, els.price, els.shuttle, els.host, els.footer, els.updateListLink, els.locationLink].forEach(el => { if (el) el.addEventListener('input', updateDateData); });
+            function updateDateData() {
+                if (els.date.value) { const d = new Date(els.date.value + 'T00:00:00'); if (!isNaN(d.getTime())) els
+                        .day.textContent = malayDays[d.getDay()]; }
+                const t = calcTotalDuration();
+                els.duration.textContent = (t % 1 === 0 ? t.toFixed(0) : t.toFixed(1)) + ' Hrs';
+                updatePreview();
+            }
+            [els.date, els.start, els.end, els.venue, els.court, els.price, els.shuttle, els.host, els.footer, els
+                .updateListLink, els.locationLink
+            ].forEach(el => el && el.addEventListener('input', updateDateData));
             if (els.date) els.date.addEventListener('change', updateDateData);
 
             function applyRoleUIState() {
-                [els.adminConfigCard, els.additionalCourtsCard, els.footerCard, els.addCourtBtn].forEach(el => el && el.classList.toggle('hidden', !state.isAdmin));
+                [els.adminConfigCard, els.additionalCourtsCard, els.footerCard, els.addCourtBtn].forEach(el => el &&
+                    el.classList.toggle('hidden', !state.isAdmin));
                 els.adminToolbar.style.display = state.isAdmin ? 'flex' : 'none';
-                els.clearSaved.classList.toggle('hidden', !state.isAdmin || state.savedBookings.length === 0);
+                els.clearSaved.classList.toggle('hidden', !state.isAdmin || !state.savedBookings.length);
                 if (els.footer) els.footer.disabled = !state.isAdmin;
                 els.adminLoginBtn.classList.toggle('hidden', state.isAdmin);
                 els.adminLogoutBtn.classList.toggle('hidden', !state.isAdmin);
@@ -1360,28 +1563,33 @@
                 setTimeout(() => els.adminPasswordInput.focus(), 100); });
             $('loginCancelBtn').addEventListener('click', () => { vibrate();
                 els.adminLoginModal.classList.remove('active'); });
-            $('loginSubmitBtn').addEventListener('click', () => { vibrate(); if (els.adminPasswordInput.value === ADMIN_PASSWORD) { state.isAdmin = true;
+            $('loginSubmitBtn').addEventListener('click', () => { vibrate(); if (els.adminPasswordInput.value ===
+                    ADMIN_PASSWORD) { state.isAdmin = true;
                     els.adminLoginModal.classList.remove('active');
                     applyRoleUIState();
                     showToast('Admin mode enabled', '🔓'); } else { showToast('Invalid access key', '❌');
                     els.adminPasswordInput.value = '';
                     els.adminPasswordInput.focus(); } });
-            els.adminPasswordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('loginSubmitBtn').click(); });
+            els.adminPasswordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('loginSubmitBtn')
+                .click(); });
             els.adminLogoutBtn.addEventListener('click', () => { state.isAdmin = false;
                 applyRoleUIState();
-                showToast('Signed out of admin session', '🔒'); });
+                showToast('Signed out', '🔒'); });
             els.adminLogoutBtn2.addEventListener('click', () => { state.isAdmin = false;
                 applyRoleUIState();
-                showToast('Signed out of admin session', '🔒'); });
+                showToast('Signed out', '🔒'); });
 
-            document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { document.querySelectorAll('.nav-item').forEach(n => { n.classList.remove('active');
-                        n.removeAttribute('aria-current'); });
-                    nav.classList.add('active');
-                    nav.setAttribute('aria-current', 'page');
-                    const isBooking = nav.dataset.tab === 'booking';
-                    els.bookingTab.classList.toggle('hidden', !isBooking);
-                    els.savedTab.classList.toggle('hidden', isBooking); if (!isBooking) renderSaved();
-                    vibrate(); }); });
+            document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(x => { x.classList.remove('active');
+                    x.removeAttribute('aria-current'); });
+                n.classList.add('active');
+                n.setAttribute('aria-current', 'page');
+                const isB = n.dataset.tab === 'booking';
+                els.bookingTab.classList.toggle('hidden', !isB);
+                els.savedTab.classList.toggle('hidden', isB);
+                if (!isB) renderSaved();
+                vibrate();
+            }));
 
             els.locationToggle.addEventListener('change', () => { state.locationEnabled = els.locationToggle.checked;
                 els.locationLink.classList.toggle('hidden', !state.locationEnabled);
@@ -1404,10 +1612,14 @@
                     renderPlayers();
                     updatePreview();
                     vibrate(); } });
-            els.playerCount.addEventListener('click', () => { const count = parseInt(prompt("Total players:", state.players.length)); if (!isNaN(count) && count >= 0 && count <= 100) { while (state.players.length < count) state.players.push({ name: "", paid: false }); while (state.players.length > count) state.players.pop();
+            els.playerCount.addEventListener('click', () => { const n = parseInt(prompt("Total players:", state
+                    .players.length)); if (!isNaN(n) && n >= 0 && n <= 100) { while (state.players.length < n) state
+                        .players.push({ name: "", paid: false }); while (state.players.length > n) state.players
+                        .pop();
                     renderPlayers();
                     updatePreview(); } });
-            els.playerCount.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
+            els.playerCount.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e
+                    .preventDefault();
                     els.playerCount.click(); } });
             els.addCourtBtn.addEventListener('click', () => { if (!state.isAdmin) return;
                 state.additionalCourts.push({ court: '', start: '', end: '' });
@@ -1417,11 +1629,19 @@
 
             els.save.addEventListener('click', () => { if (!state.isAdmin) return;
                 vibrate();
-                state.savedBookings.unshift({ id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value, venue: els.venue.value, court: els.court.value, additionalCourts: JSON.parse(JSON.stringify(state.additionalCourts)), location: els.locationLink.value, locationEnabled: state.locationEnabled, price: els.price.value, shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value, updateListLink: els.updateListLink.value, players: JSON.parse(JSON.stringify(state.players)), waiting: JSON.parse(JSON.stringify(state.waitingPlayers)) }); if (state.savedBookings.length > 20) state.savedBookings.length = 20;
+                state.savedBookings.unshift({ id: Date.now(), date: els.date.value, day: els.day.textContent,
+                    start: els.start.value, end: els.end.value, venue: els.venue.value, court: els.court.value,
+                    additionalCourts: JSON.parse(JSON.stringify(state.additionalCourts)), location: els
+                    .locationLink.value, locationEnabled: state.locationEnabled, price: els.price.value,
+                    shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value,
+                    updateListLink: els.updateListLink.value, players: JSON.parse(JSON.stringify(state
+                        .players)), waiting: JSON.parse(JSON.stringify(state.waitingPlayers)) });
+                if (state.savedBookings.length > 20) state.savedBookings.length = 20;
                 persistSavedBookings();
                 showToast("Session Saved!", "💾"); });
             els.reset.addEventListener('click', () => { if (!state.isAdmin) return;
-                showConfirm('Reset Form', 'Clear all fields and players?', () => { els.date.value = new Date().toISOString().split('T')[0];
+                showConfirm('Reset Form', 'Clear all fields and players?', () => { els.date.value = new Date()
+                        .toISOString().split('T')[0];
                     els.start.value = "21:30";
                     els.end.value = "23:30";
                     els.venue.value = "Forum SBA, Setia Alam";
@@ -1433,36 +1653,48 @@
                     els.price.value = "17";
                     els.shuttle.value = "RSL";
                     els.host.value = "";
-                    state.players.length = 0;
-                    state.waitingPlayers.length = 0;
-                    state.additionalCourts.length = 0;
+                    state.players = [];
+                    state.waitingPlayers = [];
+                    state.additionalCourts = [];
                     renderPlayers();
                     renderWaitingPlayers();
                     renderAdditionalCourts();
                     updateDateData();
                     showToast('Reset complete!', '🔄'); }); });
-            els.clearPlayersAdminBtn.addEventListener('click', () => { if (!state.isAdmin || !state.players.length) return;
-                showConfirm('Clear Players', `Remove all ${state.players.length} players?`, () => { state.players.length = 0;
+            els.clearPlayersAdminBtn.addEventListener('click', () => { if (!state.isAdmin || !state.players.length)
+                    return;
+                showConfirm('Clear Players', `Remove all ${state.players.length} players?`, () => { state.players =
+                        [];
                     renderPlayers();
                     updatePreview();
                     showToast('Players cleared', '🗑️'); }); });
 
             els.copy.addEventListener('click', async () => { vibrate();
-                const announcement = buildPreview(); if (navigator.share && navigator.canShare && navigator.canShare({ text: announcement })) { try { await navigator.share({ text: announcement });
-                        showToast("Shared!", "📤"); return; } catch (err) { if (err.name === 'AbortError') return; } } if (navigator.clipboard && navigator.clipboard.writeText) { try { await navigator.clipboard.writeText(announcement);
+                const msg = buildPreview(); if (navigator.share && navigator.canShare && navigator.canShare({ text: msg })) { try { await navigator
+                            .share({ text: msg });
+                        showToast("Shared!", "📤"); return; } catch (e) { if (e.name === 'AbortError') return; } } if (
+                    navigator.clipboard && navigator.clipboard.writeText) { try { await navigator.clipboard.writeText(
+                            msg);
                         showToast("Copied!", "📋"); return; } catch (e) {} } const ta = document.createElement('textarea');
-                ta.value = announcement;
+                ta.value = msg;
                 ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
                 document.body.appendChild(ta);
                 ta.focus();
                 ta.select(); try { const ok = document.execCommand('copy');
-                    showToast(ok ? "Copied!" : "Copy failed — select text", ok ? "📋" : "⚠️"); } catch (e) { showToast("Copy failed", "⚠️"); } document.body.removeChild(ta); });
+                    showToast(ok ? "Copied!" : "Copy failed", ok ? "📋" : "⚠️"); } catch (e) { showToast("Copy failed",
+                    "⚠️"); } document.body.removeChild(ta); });
 
-            // Import parser (handles old & new formats)
+            /* ── Import parser (handles old & new formats) ── */
             function parseTime12to24(str) { const m = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i); if (!m) return null;
-                let h = parseInt(m[1]), min = m[2], p = m[3].toUpperCase(); if (isNaN(h)) return null; if (p === 'PM' && h !== 12) h += 12; if (p === 'AM' && h === 12) h = 0; return `${h.toString().padStart(2, '0')}:${min}`; }
+                let h = parseInt(m[1]),
+                    min = m[2],
+                    p = m[3].toUpperCase(); if (isNaN(h)) return null; if (p === 'PM' && h !== 12) h += 12; if (p ===
+                    'AM' && h === 12) h = 0; return `${h.toString().padStart(2, '0')}:${min}`; }
+
             function parseDMYtoYMD(str) { const p = str.split('/'); if (p.length !== 3) return null;
-                const d = parseInt(p[0]), m = parseInt(p[1]), y = parseInt(p[2]); if (isNaN(d) || isNaN(m) || isNaN(y)) return null; return `${y}-${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`; }
+                const d = parseInt(p[0]),
+                    m = parseInt(p[1]),
+                    y = parseInt(p[2]); if (isNaN(d) || isNaN(m) || isNaN(y)) return null; return `${y}-${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`; }
 
             els.importBtn.addEventListener('click', () => { vibrate();
                 els.importTextarea.value = '';
@@ -1471,7 +1703,8 @@
             $('importCancelBtn').addEventListener('click', () => { vibrate();
                 els.importModal.classList.remove('active'); });
             $('importParseBtn').addEventListener('click', () => { vibrate();
-                const raw = els.importTextarea.value.trim(); if (!raw) { showToast('Textarea is empty', '⚠️'); return; } try { const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== ''); let pDate = '',
+                const raw = els.importTextarea.value.trim(); if (!raw) { showToast('Textarea empty', '⚠️'); return; } try { const lines = raw
+                        .split('\n').map(l => l.trim()).filter(l => l !== ''); let pDate = '',
                         pStart = '',
                         pEnd = '',
                         pVenue = '',
@@ -1485,37 +1718,85 @@
                         newCourts = []; let mode = 'head',
                         footerLines = [],
                         foundLoc = false,
-                        tableMode = false; let sessionNum = 0,
+                        tableMode = false,
+                        sessionNum = 0,
                         tStart = '',
                         tEnd = '',
-                        tCourt = ''; for (let i = 0; i < lines.length; i++) { const line = lines[i]; if (line.startsWith('🏸 BADMINTON SESSION') || line.startsWith('BADMINTON SESSION')) continue; if ((line.startsWith('📍') || line.startsWith('Location:')) && !line.includes('Link') && !line.includes('Location:')) pVenue = line.replace(/^📍\s*/, '').replace(/^Location:\s*/i, '').trim(); else if (line.startsWith('🏟️ Court:') || line.startsWith('Court:')) pCourt = line.replace(/^🏟️\s*Court:\s*/i, '').replace(/^Court:\s*/i, '').trim(); else if (line.startsWith('📅')) { const m = line.match(/📅\s+([\d\/]+)/); if (m) { const ymd = parseDMYtoYMD(m[1].trim()); if (ymd) pDate = ymd; } } else if (line === '⏰ SESSIONS & COURTS') { tableMode = true;
-                        mode = 'table-header'; } else if (mode === 'table-header' && line.includes('Time') && line.includes('Courts')) mode = 'table-divider'; else if (mode === 'table-divider' && line.startsWith('──')) mode = 'table-rows'; else if (mode === 'table-rows') { if (line.startsWith('──')) { mode = 'head';
-                            tableMode = false; } else { const parts = line.split('|'); if (parts.length >= 2) { const timePart = parts[0].trim(),
-                                    courtPart = parts[1].trim(); const tm = timePart.match(/(\d{1,2}:\d{2}\s*(?:AM|PM)?)\s*[–\-]\s*(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i); if (tm) { const s24 = parseTime12to24(tm[1]) || tm[1],
-                                        e24 = parseTime12to24(tm[2]) || tm[2]; const cleanC = courtPart.replace(/^Court\s+/i, '').trim(); if (sessionNum === 0 || (newCourts.length === 0 && !pStart)) { pStart = s24;
-                                        pEnd = e24;
-                                        sessionNum = 1; } else newCourts.push({ court: cleanC, start: s24, end: e24 }); } } } } else if (/^⏰\s*Session\s+\d+/i.test(line) && !tableMode) { sessionNum = parseInt(line.match(/Session\s+(\d+)/i)[1]);
-                            tStart = '';
-                            tEnd = '';
-                            tCourt = '';
-                            mode = 'session'; } else if (mode === 'session' && !tableMode) { if (line.includes('–') || line.includes('-')) { const parts = line.split(/[–\-]/);
-                                tStart = parts[0].trim();
-                                tEnd = parts[1].trim(); } else if (line.startsWith('(') && line.endsWith(')')) { tCourt = line.replace(/[()]/g, '').trim();
-                                const s24 = parseTime12to24(tStart),
-                                    e24 = parseTime12to24(tEnd); if (sessionNum === 1) { if (s24) pStart = s24; if (e24) pEnd = e24; } else newCourts.push({ court: tCourt.replace(/^Court\s+/i, '').trim(), start: s24 || '', end: e24 || '' });
-                                mode = 'head'; } } else if (line.startsWith('💵') || line.startsWith('RM')) { const m = line.match(/RM\s*([\d.]+)/); if (m) pPrice = m[1]; } else if (line.startsWith('🏸 Shuttle:') || line.startsWith('Shuttle:')) pShuttle = line.replace(/^🏸\s*Shuttle:\s*/i, '').replace(/^Shuttle:\s*/i, '').trim(); else if (line.startsWith('👤 Host:') || line.startsWith('Host:')) pHost = line.replace(/^👤\s*Host:\s*/i, '').replace(/^Host:\s*/i, '').trim(); else if (line.startsWith('📍 Link:') || line.startsWith('📍 Location:') || line.startsWith('Link:') || line.startsWith('Location:')) { foundLoc = true;
-                            pLoc = line.replace(/^📍\s*(Link|Location):\s*/i, '').replace(/^(Link|Location):\s*/i, '').trim(); } else if (line === 'Link update list' || line === '🔗 Link update list') { if (i + 1 < lines.length) { pUpdate = lines[i + 1].trim();
-                                i++; } } else if (line.startsWith('👥') && line.includes('Players')) continue; else if (line.startsWith('──────────────────') || line.startsWith('───')) { if (mode === 'head' || mode === 'table-rows') mode = 'players'; else if (mode === 'players') mode = 'footer'; } else if (mode === 'players') { if (/^\d+\./.test(line)) { const m = line.match(/^(\d+)\.\s*(.+)$/); if (m) { let name = m[2].trim(),
-                                        paid = false; if (name.endsWith('✅') || name.endsWith('✅️')) { paid = true;
-                                        name = name.replace(/✅️?$/, '').trim(); }
-                                    name = cleanName(name); if (name === '(Open)' || name === '') name = '';
-                                    newPlayers.push({ name, paid }); } } else if (line.toLowerCase() === 'waiting list' || line === '📋 Waiting List') mode = 'waiting'; } else if (mode === 'waiting') { if (/^\d+\./.test(line)) { const m = line.match(/^(\d+)\.\s*(.+)$/); if (m) { let name = cleanName(m[2].trim()); if (name === '') name = '';
-                                    newWait.push({ name }); } } else if (line.startsWith('──────────────────') || line.startsWith('───')) mode = 'footer'; } else if (mode === 'footer') { if (line !== 'Notes:' && line !== '') footerLines.push(line); } } if (pDate) els.date.value = pDate; if (pStart) els.start.value = pStart; if (pEnd) els.end.value = pEnd; if (pVenue) els.venue.value = pVenue; if (pCourt) els.court.value = pCourt; if (foundLoc || pLoc) { els.locationToggle.checked = true;
+                        tCourt = ''; for (let i = 0; i < lines.length; i++) { const line = lines[i]; if (line
+                            .startsWith('🏸 BADMINTON SESSION') || line.startsWith('BADMINTON SESSION')) continue; if ((
+                                line.startsWith('📍') || line.startsWith('Location:')) && !line.includes('Link') && !line
+                            .includes('Location:')) pVenue = line.replace(/^📍\s*/, '').replace(/^Location:\s*/i, '')
+                            .trim(); else if (line.startsWith('🏟️ Court:') || line.startsWith('Court:')) pCourt = line
+                            .replace(/^🏟️\s*Court:\s*/i, '').replace(/^Court:\s*/i, '').trim(); else if (line
+                            .startsWith('📅')) { const m = line.match(/📅\s+([\d\/]+)/); if (m) { const ymd =
+                                    parseDMYtoYMD(m[1].trim()); if (ymd) pDate = ymd; } } else if (line ===
+                            '⏰ SESSIONS & COURTS') { tableMode = true;
+                            mode = 'table-header'; } else if (mode === 'table-header' && line.includes('Time') && line
+                            .includes('Courts')) mode = 'table-divider'; else if (mode === 'table-divider' && line
+                            .startsWith('──')) mode = 'table-rows'; else if (mode === 'table-rows') { if (line.startsWith(
+                                '──')) { mode = 'head';
+                                tableMode = false; } else { const parts = line.split('|'); if (parts.length >= 2) { const
+                                        timePart = parts[0].trim(),
+                                        courtPart = parts[1].trim(); const tm = timePart.match(
+                                            /(\d{1,2}:\d{2}\s*(?:AM|PM)?)\s*[–\-]\s*(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i
+                                            ); if (tm) { const s24 = parseTime12to24(tm[1]) || tm[1],
+                                            e24 = parseTime12to24(tm[2]) || tm[2]; const cleanC = courtPart.replace(
+                                                /^Court\s+/i, '').trim(); if (sessionNum === 0 || (newCourts
+                                                .length === 0 && !pStart)) { pStart = s24;
+                                            pEnd = e24;
+                                            sessionNum = 1; } else newCourts.push({ court: cleanC, start: s24,
+                                            end: e24 }); } } } } else if (/^⏰\s*Session\s+\d+/i.test(line) && !
+                                tableMode) { sessionNum = parseInt(line.match(/Session\s+(\d+)/i)[1]);
+                                tStart = '';
+                                tEnd = '';
+                                tCourt = '';
+                                mode = 'session'; } else if (mode === 'session' && !tableMode) { if (line.includes('–') ||
+                                    line.includes('-')) { const parts = line.split(/[–\-]/);
+                                    tStart = parts[0].trim();
+                                    tEnd = parts[1].trim(); } else if (line.startsWith('(') && line.endsWith(')')) { tCourt =
+                                        line.replace(/[()]/g, '').trim(); const s24 = parseTime12to24(tStart),
+                                        e24 = parseTime12to24(tEnd); if (sessionNum === 1) { if (s24) pStart = s24; if (
+                                            e24) pEnd = e24; } else newCourts.push({ court: tCourt.replace(
+                                            /^Court\s+/i, '').trim(), start: s24 || '', end: e24 || '' });
+                                    mode = 'head'; } } else if (line.startsWith('💵') || line.startsWith('RM')) { const m =
+                                    line.match(/RM\s*([\d.]+)/); if (m) pPrice = m[1]; } else if (line.startsWith(
+                                    '🏸 Shuttle:') || line.startsWith('Shuttle:')) pShuttle = line.replace(
+                                    /^🏸\s*Shuttle:\s*/i, '').replace(/^Shuttle:\s*/i, '').trim(); else if (line
+                                .startsWith('👤 Host:') || line.startsWith('Host:')) pHost = line.replace(
+                                    /^👤\s*Host:\s*/i, '').replace(/^Host:\s*/i, '').trim(); else if (line.startsWith(
+                                    '📍 Link:') || line.startsWith('📍 Location:') || line.startsWith('Link:') || line
+                                .startsWith('Location:')) { foundLoc = true;
+                                pLoc = line.replace(/^📍\s*(Link|Location):\s*/i, '').replace(
+                                    /^(Link|Location):\s*/i, '').trim(); } else if (line === 'Link update list' ||
+                                line === '🔗 Link update list') { if (i + 1 < lines.length) { pUpdate = lines[i + 1]
+                                    .trim();
+                                    i++; } } else if (line.startsWith('👥') && line.includes('Players')) continue; else if (
+                                line.startsWith('──────────────────') || line.startsWith('───')) { if (mode === 'head' ||
+                                    mode === 'table-rows') mode = 'players'; else if (mode === 'players') mode =
+                                'footer'; } else if (mode === 'players') { if (/^\d+\./.test(line)) { const m = line
+                                    .match(/^(\d+)\.\s*(.+)$/); if (m) { let name = m[2].trim(),
+                                            paid = false; if (name.endsWith('✅') || name.endsWith('✅️')) { paid =
+                                                true;
+                                            name = name.replace(/✅️?$/, '').trim(); }
+                                        name = cleanName(name); if (name === '(Open)' || name === '') name = '';
+                                        newPlayers.push({ name, paid }); } } else if (line.toLowerCase() ===
+                                    'waiting list' || line === '📋 Waiting List') mode = 'waiting'; } else if (mode ===
+                                'waiting') { if (/^\d+\./.test(line)) { const m = line.match(/^(\d+)\.\s*(.+)$/); if (m) { let
+                                        name = cleanName(m[2].trim()); if (name === '') name = '';
+                                    newWait.push({ name }); } } else if (line.startsWith('──────────────────') || line
+                                    .startsWith('───')) mode = 'footer'; } else if (mode === 'footer') { if (line !==
+                                    'Notes:' && line !== '') footerLines.push(line); } } if (pDate) els.date.value =
+                        pDate; if (pStart) els.start.value = pStart; if (pEnd) els.end.value = pEnd; if (pVenue) els
+                        .venue.value = pVenue; if (pCourt) els.court.value = pCourt; if (foundLoc || pLoc) { els
+                            .locationToggle.checked = true;
                         state.locationEnabled = true;
                         els.locationLink.classList.remove('hidden');
-                        els.locationLink.value = pLoc || 'https://g.co/kgs/UMbmmAz'; } else { els.locationToggle.checked = false;
+                        els.locationLink.value = pLoc || 'https://g.co/kgs/UMbmmAz'; } else { els.locationToggle
+                            .checked = false;
                         state.locationEnabled = false;
-                        els.locationLink.classList.add('hidden'); } if (pPrice) els.price.value = pPrice; if (pShuttle) els.shuttle.value = pShuttle; if (pHost) els.host.value = pHost; if (pUpdate) els.updateListLink.value = pUpdate;
+                        els.locationLink.classList.add('hidden'); } if (pPrice) els.price.value = pPrice; if (pShuttle)
+                        els.shuttle.value = pShuttle; if (pHost) els.host.value = pHost; if (pUpdate) els
+                        .updateListLink.value = pUpdate;
                     state.players = [];
                     state.players.push(...newPlayers);
                     state.waitingPlayers = [];
@@ -1528,11 +1809,13 @@
                     updateDateData();
                     updatePreview();
                     els.importModal.classList.remove('active');
-                    showToast(`Imported ${newPlayers.length + newWait.length} player(s)!`, '✅'); } catch (e) { showToast('Import error', '❌');
+                    showToast(`Imported ${newPlayers.length + newWait.length} player(s)!`, '✅'); } catch (e) { showToast(
+                        'Import error', '❌');
                     console.error(e); } });
 
-            // Saved bookings interactions
-            els.savedBookingsList.addEventListener('click', (e) => { const idx = parseInt(e.target.dataset.idx); if (isNaN(idx) || !state.savedBookings[idx]) return; if (e.target.classList.contains('load-btn')) { vibrate();
+            els.savedBookingsList.addEventListener('click', (e) => { const idx = parseInt(e.target.dataset.idx); if (
+                    isNaN(idx) || !state.savedBookings[idx]) return; if (e.target.classList.contains('load-btn')) {
+                    vibrate();
                     const d = state.savedBookings[idx];
                     els.date.value = d.date || '';
                     els.start.value = d.start || '21:30';
@@ -1548,7 +1831,8 @@
                     els.price.value = d.price || '17';
                     els.shuttle.value = d.shuttle || 'RSL';
                     els.host.value = d.host || '';
-                    els.footer.value = d.footer || ''; if (d.updateListLink) els.updateListLink.value = d.updateListLink;
+                    els.footer.value = d.footer || ''; if (d.updateListLink) els.updateListLink.value = d
+                        .updateListLink;
                     state.players = JSON.parse(JSON.stringify(d.players || []));
                     state.waitingPlayers = JSON.parse(JSON.stringify(d.waiting || []));
                     renderPlayers();
@@ -1556,13 +1840,16 @@
                     updateDateData();
                     updatePreview();
                     document.querySelector('.nav-item[data-tab="booking"]').click();
-                    showToast("Loaded!", "📂"); } else if (e.target.classList.contains('del-btn') && state.isAdmin) { vibrate();
-                    showConfirm('Delete Session', 'Remove this saved booking?', () => { state.savedBookings.splice(idx, 1);
+                    showToast("Loaded!", "📂"); } else if (e.target.classList.contains('del-btn') && state.isAdmin) {
+                    vibrate();
+                    showConfirm('Delete Session', 'Remove this saved booking?', () => { state.savedBookings.splice(
+                            idx, 1);
                         persistSavedBookings();
                         renderSaved();
                         showToast('Deleted', '🗑️'); }); } });
             els.clearSaved.addEventListener('click', () => { if (!state.isAdmin || !state.savedBookings.length) return;
-                showConfirm('Clear All', `Delete all ${state.savedBookings.length} saved sessions?`, () => { state.savedBookings = [];
+                showConfirm('Clear All', `Delete all ${state.savedBookings.length} saved sessions?`, () => { state
+                        .savedBookings = [];
                     persistSavedBookings();
                     renderSaved();
                     showToast('Cleared', '🗑️'); }); });
@@ -1571,10 +1858,12 @@
                 vibrate(); });
             $('tutorialCloseBtn').addEventListener('click', () => { els.tutorialModal.classList.remove('active');
                 vibrate(); });
-            document.querySelectorAll('.modal-overlay').forEach(ov => ov.addEventListener('click', (e) => { if (e.target === ov) { ov.classList.remove('active');
+            document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', (e) => { if (e.target ===
+                    o) { o.classList.remove('active');
                     dismissAllAutocomplete();
                     vibrate(); } }));
-            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { document.querySelectorAll(
+                    '.modal-overlay.active').forEach(m => m.classList.remove('active'));
                     dismissAllAutocomplete(); } });
 
             function init() {
