@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Smasholic Join List</title>
+    <title>Smasholic — Badminton Session Manager</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -65,44 +65,43 @@
             overflow-x: hidden;
         }
 
-        /* Subtle background orbs for glassmorphism depth */
+        /* ── Ambient background orbs ── */
         body::before,
         body::after {
             content: '';
             position: fixed;
             border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.5;
+            filter: blur(130px);
+            opacity: 0.48;
             z-index: 0;
             pointer-events: none;
+            transition: opacity 0.6s var(--ease-smooth);
         }
         body::before {
-            width: 320px;
-            height: 320px;
+            width: 340px;
+            height: 340px;
             background: var(--bg-orb-1);
-            top: -80px;
-            right: -60px;
+            top: -90px;
+            right: -70px;
         }
         body::after {
-            width: 280px;
-            height: 280px;
+            width: 300px;
+            height: 300px;
             background: var(--bg-orb-2);
-            bottom: -60px;
-            left: -80px;
+            bottom: -70px;
+            left: -90px;
         }
 
+        /* ── Loading screen ── */
         #loadingScreen {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: linear-gradient(135deg, #6366f1 0%, #7c3aed 40%, #4f46e5 100%);
             z-index: 999;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.4s var(--ease-smooth);
+            transition: opacity 0.45s var(--ease-smooth);
             opacity: 1;
         }
         #loadingScreen.hidden {
@@ -113,34 +112,36 @@
             text-align: center;
         }
         .loading-icon {
-            font-size: 3.5rem;
-            animation: pulse 1.2s infinite ease-in-out;
+            font-size: 3.6rem;
+            animation: pulseLoad 1.2s infinite ease-in-out;
             display: block;
         }
-        @keyframes pulse {
+        @keyframes pulseLoad {
             0%,
             100% {
                 transform: scale(1);
                 opacity: 0.8;
             }
             50% {
-                transform: scale(1.12);
+                transform: scale(1.14);
                 opacity: 1;
             }
         }
         .loading-title {
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             font-weight: 700;
             color: #fbbf24;
-            margin-top: 8px;
+            margin-top: 10px;
             letter-spacing: -0.3px;
         }
         .loading-subtitle {
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             color: rgba(255, 255, 255, 0.7);
-            margin-top: 4px;
+            margin-top: 6px;
+            font-weight: 400;
         }
 
+        /* ── App container ── */
         .app-container {
             width: 100%;
             max-width: 480px;
@@ -152,20 +153,20 @@
             background: transparent;
         }
 
-        /* ── Glass Header ── */
+        /* ── Glass header ── */
         .header {
             position: sticky;
             top: 0;
             z-index: 50;
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.68);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
             padding: 14px 18px;
             border-bottom: 1px solid var(--border-glass);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 1px 10px rgba(0, 0, 0, 0.035);
         }
         .header h1 {
             font-size: 1.25rem;
@@ -187,11 +188,11 @@
         .pill-btn {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             background: rgba(241, 245, 249, 0.8);
             color: var(--text-muted);
             border: 1px solid var(--border);
-            padding: 7px 12px;
+            padding: 7px 13px;
             border-radius: 100px;
             font-weight: 500;
             font-size: 0.73rem;
@@ -199,6 +200,8 @@
             transition: all 0.2s var(--ease-smooth);
             white-space: nowrap;
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-family: inherit;
         }
         .pill-btn:hover {
             background: var(--surface-solid);
@@ -223,11 +226,11 @@
             padding-bottom: calc(100px + env(safe-area-inset-bottom));
         }
 
-        /* ── Glass Card ── */
+        /* ── Glass card ── */
         .card {
             background: var(--surface);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             border-radius: var(--radius-lg);
             padding: 18px;
             border: 1px solid var(--border-glass);
@@ -253,7 +256,7 @@
             letter-spacing: -0.2px;
         }
 
-        /* ── Dashboard Badge ── */
+        /* ── Dashboard badge ── */
         .session-summary-badge {
             background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #4f46e5 100%);
             color: white;
@@ -262,19 +265,19 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+            box-shadow: 0 8px 28px rgba(99, 102, 241, 0.28);
             position: relative;
             overflow: hidden;
         }
         .session-summary-badge::after {
             content: '';
             position: absolute;
-            top: -40px;
-            right: -40px;
-            width: 140px;
-            height: 140px;
+            top: -45px;
+            right: -45px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.055);
             pointer-events: none;
         }
         .summary-row {
@@ -298,10 +301,11 @@
             letter-spacing: 0.8px;
         }
         .summary-value {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 600;
             text-align: right;
-            max-width: 60%;
+            max-width: 62%;
+            line-height: 1.35;
         }
 
         /* ── Form ── */
@@ -362,6 +366,7 @@
             font-weight: 600;
             font-size: 0.9rem;
             text-align: center;
+            user-select: none;
         }
 
         /* ── Buttons ── */
@@ -383,10 +388,11 @@
             position: relative;
             overflow: hidden;
             letter-spacing: -0.2px;
+            font-family: inherit;
         }
         .btn:hover {
             background: var(--primary-dark);
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.32);
             transform: translateY(-1px);
         }
         .btn:active {
@@ -427,7 +433,7 @@
         }
         .btn-danger:hover {
             background: #fee2e2;
-            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.22);
         }
         .btn-outline {
             background: transparent;
@@ -444,7 +450,7 @@
         }
         .btn-success:hover {
             background: #059669;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.32);
         }
         .btn-import {
             background: var(--primary-light);
@@ -457,7 +463,7 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* ── Player List ── */
+        /* ── Player list ── */
         .player-list {
             display: flex;
             flex-direction: column;
@@ -469,6 +475,7 @@
             gap: 8px;
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--border);
             padding: 8px 10px;
             border-radius: var(--radius);
@@ -507,12 +514,12 @@
         .player-row.focused {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-glow);
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
         }
         .player-row.duplicate {
             border-color: #fca5a5;
-            background: rgba(254, 242, 242, 0.8);
-            animation: shake 0.4s var(--ease-smooth);
+            background: rgba(254, 242, 242, 0.82);
+            animation: shake 0.45s var(--ease-smooth);
         }
         @keyframes shake {
             0%,
@@ -539,6 +546,7 @@
             font-size: 0.78rem;
             flex-shrink: 0;
             letter-spacing: -0.3px;
+            user-select: none;
         }
         .player-row input {
             flex: 1;
@@ -568,6 +576,7 @@
             transition: all 0.2s var(--ease-smooth);
             font-size: 1rem;
             background: transparent;
+            font-family: inherit;
         }
         .action-icon:focus-visible {
             outline: 2px solid var(--primary);
@@ -580,7 +589,7 @@
         .paid-toggle.active {
             background: var(--success);
             color: white;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.32);
             animation: popIn 0.3s var(--ease-spring);
         }
         @keyframes popIn {
@@ -604,6 +613,7 @@
             border-radius: 10px;
         }
 
+        /* ── Duplicate warning ── */
         .duplicate-warning {
             color: var(--danger);
             font-size: 0.78rem;
@@ -635,6 +645,7 @@
             gap: 14px;
             background: rgba(241, 245, 249, 0.6);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             padding: 6px 10px;
             border-radius: 100px;
             border: 1px solid var(--border);
@@ -653,6 +664,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: inherit;
         }
         .stepper-btn:hover {
             background: var(--primary-light);
@@ -679,6 +691,7 @@
             text-decoration: underline;
             text-underline-offset: 5px;
             text-decoration-color: var(--primary-light);
+            user-select: none;
         }
         .stepper-count:hover {
             background: var(--primary-light);
@@ -717,7 +730,7 @@
             margin-top: 0;
         }
 
-        /* ── Preview Box ── */
+        /* ── Preview box ── */
         .preview-box {
             background: #1e293b;
             color: #f1f5f9;
@@ -747,7 +760,7 @@
             margin-top: 8px;
         }
 
-        /* ── Admin Toolbar ── */
+        /* ── Admin toolbar ── */
         .admin-toolbar {
             margin-top: 10px;
             display: none;
@@ -762,7 +775,7 @@
             gap: 8px;
         }
 
-        /* ── Bottom Nav ── */
+        /* ── Bottom nav ── */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -770,15 +783,15 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 480px;
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.68);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
             border-top: 1px solid var(--border-glass);
             display: flex;
             justify-content: space-around;
             padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
             z-index: 50;
-            box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.035);
         }
         .nav-item {
             display: flex;
@@ -794,6 +807,7 @@
             border-radius: 100px;
             border: none;
             background: transparent;
+            font-family: inherit;
         }
         .nav-item.active {
             color: var(--primary-dark);
@@ -885,18 +899,22 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
             white-space: nowrap;
+            max-width: 90vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .toast.show {
             opacity: 1;
             transform: translate(-50%, 0);
         }
 
-        /* ── Saved Items ── */
+        /* ── Saved items ── */
         .saved-item {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 14px;
@@ -905,6 +923,8 @@
             justify-content: space-between;
             align-items: center;
             transition: all 0.2s var(--ease-smooth);
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .saved-item:hover {
             box-shadow: var(--shadow-md);
@@ -942,7 +962,7 @@
             border-bottom: none;
         }
 
-        /* ── Location Toggle ── */
+        /* ── Location toggle ── */
         .location-toggle {
             display: flex;
             align-items: center;
@@ -995,7 +1015,7 @@
             transform: translateX(18px);
         }
 
-        /* ── Court Row ── */
+        /* ── Court row ── */
         .court-row {
             background: rgba(255, 255, 255, 0.5);
             border: 1px solid var(--border);
@@ -1033,6 +1053,7 @@
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.2s;
+            font-family: inherit;
         }
         .court-detail .remove-btn:hover {
             color: var(--danger);
@@ -1071,6 +1092,15 @@
             flex-shrink: 0;
         }
 
+        /* ── Empty state ── */
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-style: italic;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -1096,12 +1126,16 @@
                 padding: 6px 10px;
                 font-size: 0.7rem;
             }
+            .toast {
+                font-size: 0.72rem;
+                padding: 8px 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loadingScreen" role="status" aria-label="Loading">
+    <!-- ═══════════ Loading Screen ═══════════ -->
+    <div id="loadingScreen" role="status" aria-label="Loading application">
         <div class="loading-content">
             <span class="loading-icon" aria-hidden="true">🏸</span>
             <div class="loading-title">Smasholic</div>
@@ -1109,9 +1143,9 @@
         </div>
     </div>
 
-    <!-- App Container -->
+    <!-- ═══════════ App Container ═══════════ -->
     <div class="app-container" id="appContainer">
-        <!-- Header -->
+        <!-- ── Header ── -->
         <header class="header" role="banner">
             <h1><span class="icon" aria-hidden="true">🏸</span> Smasholic</h1>
             <div class="header-actions">
@@ -1121,17 +1155,17 @@
             </div>
         </header>
 
-        <!-- Main Content -->
+        <!-- ── Main Content ── -->
         <main class="content" id="mainContent">
             <!-- Booking Tab -->
             <div id="bookingTab" style="display:flex; flex-direction:column; gap:14px;">
                 <!-- Dashboard -->
                 <div class="session-summary-badge" id="playerDashboard" aria-live="polite">
-                    <div class="summary-row"><span class="summary-label">📍 Venue & Court</span><span class="summary-value" id="dashVenue">Loading...</span></div>
-                    <div class="summary-row"><span class="summary-label">📅 Date & Day</span><span class="summary-value" id="dashDate">Loading...</span></div>
-                    <div class="summary-row"><span class="summary-label">⏰ Primary Time</span><span class="summary-value" id="dashTime">Loading...</span></div>
+                    <div class="summary-row"><span class="summary-label">📍 Venue & Court</span><span class="summary-value" id="dashVenue">—</span></div>
+                    <div class="summary-row"><span class="summary-label">📅 Date & Day</span><span class="summary-value" id="dashDate">—</span></div>
+                    <div class="summary-row"><span class="summary-label">⏰ Primary Time</span><span class="summary-value" id="dashTime">—</span></div>
                     <div class="summary-row" id="dashExtraSessionsRow"><span class="summary-label">🏟️ Extra Slots</span><span class="summary-value" id="dashExtra">None</span></div>
-                    <div class="summary-row"><span class="summary-label">💵 Fee / Shuttle</span><span class="summary-value" id="dashPrice">Loading...</span></div>
+                    <div class="summary-row"><span class="summary-label">💵 Fee / Shuttle</span><span class="summary-value" id="dashPrice">—</span></div>
                 </div>
 
                 <!-- Admin Config Card -->
@@ -1143,7 +1177,7 @@
                         <div class="input-group"><label for="startTime">Start</label><input type="time" id="startTime" value="21:30"></div>
                         <div class="input-group"><label for="endTime">End</label><input type="time" id="endTime" value="23:30"></div>
                         <div class="input-group"><label for="totalHours">Duration</label><div class="readonly-badge" id="totalHours" role="status">2.0 Hrs</div></div>
-                        <div class="input-group"><label for="price">Price (RM)</label><input type="number" id="price" value="17" step="0.5"></div>
+                        <div class="input-group"><label for="price">Price (RM)</label><input type="number" id="price" value="17" step="0.5" min="0"></div>
                         <div class="input-group full-width"><label for="venue">Venue</label><input type="text" id="venue" value="Forum SBA, Setia Alam"></div>
                         <div class="input-group full-width"><label for="court">Main Court</label><input type="text" id="court" value="14, 15, 16"></div>
                         <div class="input-group full-width">
@@ -1167,7 +1201,9 @@
                         <span class="card-title">🏟️ Additional Sessions</span><span class="chevron" aria-hidden="true">▼</span>
                     </div>
                     <div class="collapsible-body" style="max-height:2000px;">
-                        <div id="additionalCourtsContainer"></div>
+                        <div id="additionalCourtsContainer">
+                            <p class="empty-state" id="noCourtsMsg">No additional sessions yet. Click below to add one.</p>
+                        </div>
                         <button class="btn btn-outline hidden" id="addCourtBtn" style="margin-top:12px;">+ Add Session</button>
                     </div>
                 </div>
@@ -1185,7 +1221,7 @@
                     <div class="collapsible-body" style="max-height:2000px;">
                         <div class="player-list" id="playersContainer" role="list" aria-label="Player list"></div>
                         <button class="btn btn-outline" id="addPlayerBtn" style="margin-top:12px;">+ Add Player</button>
-                        <div class="duplicate-warning" id="duplicateWarning" role="alert"><span>⚠️</span> Duplicate name detected!</div>
+                        <div class="duplicate-warning" id="duplicateWarning" role="alert"><span aria-hidden="true">⚠️</span> Duplicate name detected!</div>
                         <div class="stepper-container">
                             <div class="stepper">
                                 <button class="stepper-btn" id="stepperMinus" aria-label="Remove one player">–</button>
@@ -1249,22 +1285,22 @@
             </div>
         </main>
 
-        <!-- Bottom Navigation -->
+        <!-- ── Bottom Navigation ── -->
         <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
             <button class="nav-item active" data-tab="booking" aria-current="page"><span class="nav-icon" aria-hidden="true">📅</span><span>Booking</span></button>
             <button class="nav-item" data-tab="saved"><span class="nav-icon" aria-hidden="true">📂</span><span>Saved</span></button>
         </nav>
     </div>
 
-    <!-- Toast -->
+    <!-- ═══════════ Toast ═══════════ -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <!-- Admin Login Modal -->
+    <!-- ═══════════ Admin Login Modal ═══════════ -->
     <div class="modal-overlay" id="adminLoginModal" role="dialog" aria-modal="true" aria-label="Admin login">
         <div class="modal-content">
             <h3 style="margin-bottom:12px;font-weight:600;">🔒 Access Key Needed</h3>
             <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px;">Enter administrative credentials to modify session details.</p>
-            <input type="password" id="adminPasswordInput" placeholder="Enter admin password..." aria-label="Admin password">
+            <input type="password" id="adminPasswordInput" placeholder="Enter admin password..." aria-label="Admin password" autocomplete="off">
             <div class="action-row" style="margin-top:14px;">
                 <button class="btn btn-secondary" id="loginCancelBtn">Cancel</button>
                 <button class="btn" id="loginSubmitBtn">Log In</button>
@@ -1272,12 +1308,12 @@
         </div>
     </div>
 
-    <!-- Import Modal -->
+    <!-- ═══════════ Import Modal ═══════════ -->
     <div class="modal-overlay" id="importModal" role="dialog" aria-modal="true" aria-label="Import session">
         <div class="modal-content">
-            <h3 style="margin-bottom:12px;font-weight:600;">Import Session</h3>
+            <h3 style="margin-bottom:12px;font-weight:600;">📥 Import Session</h3>
             <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px;">Paste the exact copied announcement text below to automatically reverse-fill the form.</p>
-            <textarea id="importTextarea" rows="10" placeholder="Paste announcement..." aria-label="Paste announcement text"></textarea>
+            <textarea id="importTextarea" rows="10" placeholder="Paste announcement here..." aria-label="Paste announcement text"></textarea>
             <div class="action-row" style="margin-top:14px;">
                 <button class="btn btn-secondary" id="importCancelBtn">Cancel</button>
                 <button class="btn" id="importParseBtn">Parse & Fill</button>
@@ -1285,7 +1321,7 @@
         </div>
     </div>
 
-    <!-- Confirm Modal -->
+    <!-- ═══════════ Confirm Modal ═══════════ -->
     <div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true" aria-label="Confirm action">
         <div class="modal-content">
             <h3 id="confirmTitle" style="margin-bottom:12px;font-weight:600;">Confirm</h3>
@@ -1297,7 +1333,7 @@
         </div>
     </div>
 
-    <!-- Tutorial Modal -->
+    <!-- ═══════════ Tutorial Modal ═══════════ -->
     <div class="modal-overlay" id="tutorialModal" role="dialog" aria-modal="true" aria-label="Tutorial">
         <div class="modal-content">
             <h3 style="margin-bottom:12px;font-weight:600;">📘 Cara Guna Sistem</h3>
@@ -1323,17 +1359,17 @@
 
     <script>
         (function() {
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 1. CONSTANTS & DOM REFERENCES
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             const ADMIN_PASSWORD = 'smash123';
-            const NAMES_KEY = 'smasholic_names';
-            const SAVED_KEY = 'smasholic_saved_bookings';
+            const NAMES_KEY = 'smasholic_names_v2';
+            const SAVED_KEY = 'smasholic_saved_bookings_v2';
             const malayDays = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
 
-            // ──────────────────────────────────────
-            // 2. APPLICATION STATE (Centralized)
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
+            // 2. CENTRALIZED STATE
+            // ═══════════════════════════════════════
             const state = {
                 isAdmin: false,
                 locationEnabled: false,
@@ -1346,9 +1382,9 @@
                 renderScheduled: false,
             };
 
-            // ──────────────────────────────────────
-            // 3. DOM ELEMENT CACHE (Minimize queries)
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
+            // 3. DOM ELEMENT CACHE
+            // ═══════════════════════════════════════
             const $ = (id) => document.getElementById(id);
             const els = {
                 loadingScreen: $('loadingScreen'),
@@ -1389,7 +1425,7 @@
                 confirmModal: $('confirmModal'),
                 additionalCourtsContainer: $('additionalCourtsContainer'),
                 addCourtBtn: $('addCourtBtn'),
-                playerDashboard: $('playerDashboard'),
+                noCourtsMsg: $('noCourtsMsg'),
                 adminConfigCard: $('adminConfigCard'),
                 additionalCourtsCard: $('additionalCourtsCard'),
                 footerCard: $('footerCard'),
@@ -1412,12 +1448,20 @@
                 dashPrice: $('dashPrice'),
             };
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 4. UTILITY FUNCTIONS
-            // ──────────────────────────────────────
-            const escapeHtml = (str) => (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            // ═══════════════════════════════════════
+            const escapeHtml = (str) => {
+                const div = document.createElement('div');
+                div.textContent = str || '';
+                return div.innerHTML;
+            };
 
-            const vibrate = (ms = 12) => { if (navigator.vibrate) navigator.vibrate(ms); };
+            const vibrate = (ms = 12) => {
+                if (navigator.vibrate) {
+                    try { navigator.vibrate(ms); } catch (_) { /* ignore */ }
+                }
+            };
 
             function showToast(msg, icon = '✅') {
                 els.toast.innerHTML = `<span aria-hidden="true">${icon}</span> ${escapeHtml(msg)}`;
@@ -1429,7 +1473,7 @@
             function timeToMinutes(t) {
                 if (!t) return 0;
                 const [h, m] = t.split(':').map(Number);
-                return h * 60 + m;
+                return isNaN(h) || isNaN(m) ? 0 : h * 60 + m;
             }
 
             function calcDurationSingle(start, end) {
@@ -1437,7 +1481,7 @@
                 let s = timeToMinutes(start),
                     e = timeToMinutes(end);
                 if (e <= s) e += 1440;
-                return (e - s) / 60;
+                return Math.max(0, (e - s) / 60);
             }
 
             function calcTotalDuration() {
@@ -1459,13 +1503,13 @@
                 if (!intervals.length) return 0;
                 intervals.sort((a, b) => a.start - b.start);
                 const merged = [];
-                let cur = intervals[0];
+                let cur = { ...intervals[0] };
                 for (let i = 1; i < intervals.length; i++) {
                     if (intervals[i].start <= cur.end) {
                         cur.end = Math.max(cur.end, intervals[i].end);
                     } else {
                         merged.push(cur);
-                        cur = intervals[i];
+                        cur = { ...intervals[i] };
                     }
                 }
                 merged.push(cur);
@@ -1475,19 +1519,21 @@
             }
 
             function formatDuration(hrs) {
-                return hrs === 0 ? '—' : (hrs % 1 === 0 ? hrs.toFixed(0) : hrs.toFixed(1)) + 'h';
+                if (hrs === 0 || isNaN(hrs)) return '—';
+                return (hrs % 1 === 0 ? hrs.toFixed(0) : hrs.toFixed(1)) + 'h';
             }
 
             function formatCourtName(name) {
                 if (!name || name.trim() === '') return name;
                 const t = name.trim();
-                return /court/i.test(t) ? t : 'Court ' + t;
+                return /^court\s/i.test(t) ? t : 'Court ' + t;
             }
 
             function formatTime12(t) {
                 if (!t) return '';
                 let [h, m] = t.split(':');
                 h = parseInt(h);
+                if (isNaN(h)) return t;
                 const ampm = h >= 12 ? 'PM' : 'AM';
                 let h12 = h % 12;
                 if (h12 === 0) h12 = 12;
@@ -1500,9 +1546,9 @@
                 return `${parseInt(d)}/${parseInt(m)}/${y}`;
             }
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 5. LOCAL STORAGE HELPERS
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             function getNames() {
                 try { return JSON.parse(localStorage.getItem(NAMES_KEY)) || []; } catch { return []; }
             }
@@ -1512,7 +1558,7 @@
                 if (!name) return;
                 let names = getNames().filter(n => n.toLowerCase() !== name.toLowerCase());
                 names.unshift(name);
-                if (names.length > 40) names.pop();
+                if (names.length > 50) names.pop();
                 localStorage.setItem(NAMES_KEY, JSON.stringify(names));
             }
 
@@ -1526,9 +1572,9 @@
                 localStorage.setItem(SAVED_KEY, JSON.stringify(state.savedBookings));
             }
 
-            // ──────────────────────────────────────
-            // 6. PREVIEW GENERATION (Memoized)
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
+            // 6. PREVIEW GENERATION
+            // ═══════════════════════════════════════
             function buildPreview() {
                 const dateVal = formatDateDMY(els.date.value);
                 const dayVal = els.day.textContent;
@@ -1570,7 +1616,7 @@
                 });
                 if (state.waitingPlayers.length) {
                     text += `\nWaiting List\n`;
-                    state.waitingPlayers.forEach((p, i) => text += `${i + 1}. ${p.name.trim() || ''}\n`);
+                    state.waitingPlayers.forEach((p, i) => text += `${i + 1}. ${p.name.trim() || '(Open)'}\n`);
                 }
                 text += `\n──────────────────\n\n`;
                 text += `Notes:\n${els.footer.value.trim()}\n`;
@@ -1598,22 +1644,21 @@
             }
 
             function updateLiveDashboard() {
-                els.dashVenue.textContent = `${els.venue.value} (${formatCourtName(els.court.value)})`;
-                els.dashDate.textContent =
-                    `${formatDateDMY(els.date.value)} (${els.day.textContent})`;
+                els.dashVenue.textContent = `${els.venue.value || '—'} (${formatCourtName(els.court.value) || '—'})`;
+                els.dashDate.textContent = `${formatDateDMY(els.date.value) || '—'} (${els.day.textContent || '—'})`;
                 els.dashTime.textContent =
-                    `${formatTime12(els.start.value)} - ${formatTime12(els.end.value)} (${els.duration.textContent})`;
+                    `${formatTime12(els.start.value) || '—'} - ${formatTime12(els.end.value) || '—'} (${els.duration.textContent || '—'})`;
                 els.dashPrice.textContent =
-                    `RM ${parseFloat(els.price.value || 0).toFixed(2)} • Shuttle: ${els.shuttle.value}`;
+                    `RM ${parseFloat(els.price.value || 0).toFixed(2)} • Shuttle: ${els.shuttle.value || '—'}`;
                 const validExtras = state.additionalCourts.filter(c => c.court.trim());
                 els.dashExtraSessionsRow.classList.toggle('hidden', validExtras.length === 0);
-                els.dashExtra.textContent = validExtras.length ? `${validExtras.length} Session(s) configured` :
-                    'None';
+                els.dashExtra.textContent = validExtras.length ?
+                    `${validExtras.length} Session(s) configured` : 'None';
             }
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 7. DUPLICATE DETECTION
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             function updateDuplicateStyling() {
                 const counts = new Map();
                 state.players.forEach(p => {
@@ -1623,15 +1668,14 @@
                 const rows = els.playersContainer.querySelectorAll('.player-row');
                 rows.forEach((row, idx) => {
                     const n = state.players[idx]?.name.trim().toLowerCase();
-                    row.classList.toggle('duplicate', n && counts.get(n) > 1);
+                    row.classList.toggle('duplicate', !!(n && counts.get(n) > 1));
                 });
-                els.dupWarning.classList.toggle('active', Array.from(counts.values()).some(v => v >
-                    1));
+                els.dupWarning.classList.toggle('active', Array.from(counts.values()).some(v => v > 1));
             }
 
-            // ──────────────────────────────────────
-            // 8. RENDERING FUNCTIONS (Fragment-based)
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
+            // 8. RENDERING FUNCTIONS
+            // ═══════════════════════════════════════
             function renderPlayers() {
                 const frag = document.createDocumentFragment();
                 state.players.forEach((p, idx) => {
@@ -1673,6 +1717,9 @@
 
             function renderAdditionalCourts() {
                 const frag = document.createDocumentFragment();
+                const hasCourts = state.additionalCourts.length > 0;
+                if (els.noCourtsMsg) els.noCourtsMsg.style.display = hasCourts ? 'none' : 'block';
+
                 state.additionalCourts.forEach((c, idx) => {
                     const row = document.createElement('div');
                     row.className = 'court-row';
@@ -1705,8 +1752,8 @@
                     item.setAttribute('role', 'listitem');
                     item.innerHTML = `
                         <div>
-                            <strong style="color:var(--primary-dark); font-size:0.95rem;">${b.day}, ${formatDateDMY(b.date)}</strong>
-                            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">${b.venue} • ${b.players.length} Players</p>
+                            <strong style="color:var(--primary-dark); font-size:0.95rem;">${escapeHtml(b.day)}, ${formatDateDMY(b.date)}</strong>
+                            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">${escapeHtml(b.venue)} • ${b.players?.length || 0} Players</p>
                         </div>
                         <div style="display:flex;gap:6px;">
                             <button class="btn btn-secondary load-btn" data-idx="${idx}" style="padding:6px 12px; font-size:0.78rem; width:auto;">Load</button>
@@ -1718,16 +1765,40 @@
                 els.savedBookingsList.appendChild(frag);
             }
 
-            // ──────────────────────────────────────
-            // 9. AUTOCOMPLETE
-            // ──────────────────────────────────────
-            function showAutocomplete(input, idx, isWaiting = false) {
+            // ═══════════════════════════════════════
+            // 9. AUTOCOMPLETE (with global cleanup)
+            // ═══════════════════════════════════════
+            function dismissAllAutocomplete() {
                 document.querySelectorAll('.autocomplete-list').forEach(e => e.remove());
+            }
+
+            // Global click to dismiss autocomplete
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.autocomplete-list') && !e.target.closest('.player-row input')) {
+                    dismissAllAutocomplete();
+                }
+            });
+
+            // Global focusout with small delay to allow mousedown on autocomplete item
+            document.addEventListener('focusout', (e) => {
+                if (e.target.closest('.player-row input')) {
+                    setTimeout(() => {
+                        if (!document.querySelector('.autocomplete-list:hover')) {
+                            dismissAllAutocomplete();
+                        }
+                    }, 150);
+                }
+            });
+
+            function showAutocomplete(input, idx, isWaiting = false) {
+                dismissAllAutocomplete();
                 const val = input.value.trim().toLowerCase();
                 if (!val) return;
-                const matches = getNames().filter(n => n.toLowerCase().includes(val) && n.toLowerCase() !==
-                    val);
+                const matches = getNames().filter(n =>
+                    n.toLowerCase().includes(val) && n.toLowerCase() !== val
+                ).slice(0, 8);
                 if (!matches.length) return;
+
                 const list = document.createElement('div');
                 list.className = 'autocomplete-list';
                 list.setAttribute('role', 'listbox');
@@ -1739,6 +1810,8 @@
                     item.tabIndex = 0;
                     list.appendChild(item);
                 });
+
+                // Use mousedown to prevent input blur before selection
                 list.addEventListener('mousedown', (e) => {
                     if (e.target.classList.contains('autocomplete-item')) {
                         e.preventDefault();
@@ -1750,24 +1823,30 @@
                             state.players[idx].name = selectedName;
                             updateDuplicateStyling();
                         }
-                        list.remove();
+                        dismissAllAutocomplete();
                         updatePreview();
                         addName(selectedName);
                         vibrate();
                     }
                 });
+
                 list.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' && e.target.classList.contains('autocomplete-item')) {
                         e.preventDefault();
                         e.target.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
                     }
+                    if (e.key === 'Escape') {
+                        dismissAllAutocomplete();
+                        input.focus();
+                    }
                 });
+
                 input.closest('.player-row').appendChild(list);
             }
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 10. EVENT DELEGATION SETUP
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             function setupPlayerContainerDelegation(container, arrayRef, isWaiting = false) {
                 container.addEventListener('input', (e) => {
                     const target = e.target;
@@ -1781,11 +1860,13 @@
                         }
                     }
                 });
+
                 container.addEventListener('click', (e) => {
                     const targetBtn = e.target.closest('.action-icon');
                     if (!targetBtn) return;
                     const idx = parseInt(targetBtn.dataset.idx);
                     if (isNaN(idx) || !arrayRef[idx]) return;
+
                     if (targetBtn.classList.contains('paid-toggle')) {
                         arrayRef[idx].paid = !arrayRef[idx].paid;
                         targetBtn.classList.toggle('active', arrayRef[idx].paid);
@@ -1799,11 +1880,12 @@
                         vibrate();
                     }
                 });
-                // Focus styling
+
                 container.addEventListener('focusin', (e) => {
                     const row = e.target.closest('.player-row');
                     if (row) row.classList.add('focused');
                 });
+
                 container.addEventListener('focusout', (e) => {
                     const row = e.target.closest('.player-row');
                     if (row) row.classList.remove('focused');
@@ -1816,22 +1898,23 @@
             // Additional courts delegation
             els.additionalCourtsContainer.addEventListener('input', (e) => {
                 const idx = parseInt(e.target.dataset.idx);
-                if (isNaN(idx)) return;
+                if (isNaN(idx) || !state.additionalCourts[idx]) return;
                 if (e.target.classList.contains('court-name-input')) {
                     state.additionalCourts[idx].court = e.target.value;
                 } else if (e.target.classList.contains('time-start')) {
                     state.additionalCourts[idx].start = e.target.value;
-                    updateRowDurationBadge(e.target, idx);
+                    updateCourtRowDuration(e.target, idx);
                 } else if (e.target.classList.contains('time-end')) {
                     state.additionalCourts[idx].end = e.target.value;
-                    updateRowDurationBadge(e.target, idx);
+                    updateCourtRowDuration(e.target, idx);
                 }
                 updateDateData();
             });
+
             els.additionalCourtsContainer.addEventListener('click', (e) => {
                 if (e.target.classList.contains('remove-btn')) {
                     const idx = parseInt(e.target.dataset.idx);
-                    if (!isNaN(idx)) {
+                    if (!isNaN(idx) && state.additionalCourts[idx]) {
                         state.additionalCourts.splice(idx, 1);
                         renderAdditionalCourts();
                         updateDateData();
@@ -1840,17 +1923,18 @@
                 }
             });
 
-            function updateRowDurationBadge(target, idx) {
+            function updateCourtRowDuration(target, idx) {
                 const row = target.closest('.court-row');
-                const dur = calcDurationSingle(state.additionalCourts[idx].start, state.additionalCourts[
-                    idx].end);
+                if (!row || !state.additionalCourts[idx]) return;
+                const dur = calcDurationSingle(state.additionalCourts[idx].start, state.additionalCourts[idx]
+                .end);
                 const badge = row.querySelector('.duration-badge');
                 if (badge) badge.textContent = formatDuration(dur);
             }
 
-            // ──────────────────────────────────────
-            // 11. COLLAPSIBLE (Global)
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
+            // 11. COLLAPSIBLE (global)
+            // ═══════════════════════════════════════
             window.toggleCollapse = function(id) {
                 const el = document.getElementById(id);
                 if (!el) return;
@@ -1862,9 +1946,9 @@
                 }
             };
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 12. CONFIRM MODAL
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             function showConfirm(title, msg, onConfirm) {
                 els.confirmTitle.textContent = title;
                 els.confirmMessage.textContent = msg;
@@ -1872,25 +1956,32 @@
                 els.confirmModal.classList.add('active');
                 $('confirmActionBtn').focus();
             }
+
             $('confirmCancelBtn').addEventListener('click', () => {
                 els.confirmModal.classList.remove('active');
+                state.confirmCallback = null;
                 vibrate();
             });
+
             $('confirmActionBtn').addEventListener('click', () => {
                 els.confirmModal.classList.remove('active');
                 vibrate();
-                if (state.confirmCallback) state.confirmCallback();
-                state.confirmCallback = null;
+                if (state.confirmCallback) {
+                    const cb = state.confirmCallback;
+                    state.confirmCallback = null;
+                    cb();
+                }
             });
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 13. DATE & TIME UPDATE
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             function updateDateData() {
-                if (!els.date.value) return;
-                const d = new Date(els.date.value + 'T00:00:00');
-                if (!isNaN(d.getTime())) {
-                    els.day.textContent = malayDays[d.getDay()];
+                if (els.date.value) {
+                    const d = new Date(els.date.value + 'T00:00:00');
+                    if (!isNaN(d.getTime())) {
+                        els.day.textContent = malayDays[d.getDay()];
+                    }
                 }
                 const totalHrs = calcTotalDuration();
                 els.duration.textContent = (totalHrs % 1 === 0 ? totalHrs.toFixed(0) : totalHrs.toFixed(1)) +
@@ -1902,24 +1993,25 @@
                 els.date, els.start, els.end, els.venue, els.court,
                 els.price, els.shuttle, els.host, els.footer, els.updateListLink, els.locationLink
             ].forEach(el => {
-                el.addEventListener('input', updateDateData);
+                if (el) el.addEventListener('input', updateDateData);
             });
-            els.date.addEventListener('change', updateDateData);
+            if (els.date) els.date.addEventListener('change', updateDateData);
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 14. ADMIN AUTH
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             function applyRoleUIState() {
                 const adminCards = [els.adminConfigCard, els.additionalCourtsCard, els.footerCard, els.addCourtBtn];
-                adminCards.forEach(el => el.classList.toggle('hidden', !state.isAdmin));
-                els.adminToolbar.style.display = state.isAdmin ? 'flex' : 'none';
-                els.clearSaved.classList.toggle('hidden', !state.isAdmin || state.savedBookings.length === 0);
-                els.footer.disabled = !state.isAdmin;
-                els.adminLoginBtn.classList.toggle('hidden', state.isAdmin);
-                els.adminLogoutBtn.classList.toggle('hidden', !state.isAdmin);
+                adminCards.forEach(el => { if (el) el.classList.toggle('hidden', !state.isAdmin); });
+                if (els.adminToolbar) els.adminToolbar.style.display = state.isAdmin ? 'flex' : 'none';
+                if (els.clearSaved) els.clearSaved.classList.toggle('hidden', !state.isAdmin || state
+                    .savedBookings.length === 0);
+                if (els.footer) els.footer.disabled = !state.isAdmin;
+                if (els.adminLoginBtn) els.adminLoginBtn.classList.toggle('hidden', state.isAdmin);
+                if (els.adminLogoutBtn) els.adminLogoutBtn.classList.toggle('hidden', !state.isAdmin);
                 renderAdditionalCourts();
                 updateLiveDashboard();
-                if (els.savedTab.style.display !== 'none' && !els.savedTab.classList.contains('hidden')) {
+                if (els.savedTab && !els.savedTab.classList.contains('hidden')) {
                     renderSaved();
                 }
             }
@@ -1928,12 +2020,14 @@
                 vibrate();
                 els.adminPasswordInput.value = '';
                 els.adminLoginModal.classList.add('active');
-                els.adminPasswordInput.focus();
+                setTimeout(() => els.adminPasswordInput.focus(), 100);
             });
+
             $('loginCancelBtn').addEventListener('click', () => {
                 vibrate();
                 els.adminLoginModal.classList.remove('active');
             });
+
             $('loginSubmitBtn').addEventListener('click', () => {
                 vibrate();
                 if (els.adminPasswordInput.value === ADMIN_PASSWORD) {
@@ -1943,25 +2037,30 @@
                     showToast('Admin mode enabled', '🔓');
                 } else {
                     showToast('Invalid access key', '❌');
+                    els.adminPasswordInput.value = '';
+                    els.adminPasswordInput.focus();
                 }
             });
+
             els.adminPasswordInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') $('loginSubmitBtn').click();
             });
+
             els.adminLogoutBtn.addEventListener('click', () => {
                 state.isAdmin = false;
                 applyRoleUIState();
                 showToast('Signed out of admin session', '🔒');
             });
+
             els.adminLogoutBtn2.addEventListener('click', () => {
                 state.isAdmin = false;
                 applyRoleUIState();
                 showToast('Signed out of admin session', '🔒');
             });
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 15. TAB NAVIGATION
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             document.querySelectorAll('.nav-item').forEach(nav => {
                 nav.addEventListener('click', () => {
                     document.querySelectorAll('.nav-item').forEach(n => {
@@ -1978,9 +2077,9 @@
                 });
             });
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 16. LOCATION TOGGLE
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             els.locationToggle.addEventListener('change', () => {
                 state.locationEnabled = els.locationToggle.checked;
                 els.locationLink.classList.toggle('hidden', !state.locationEnabled);
@@ -1988,35 +2087,39 @@
                 vibrate();
             });
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 17. PLAYER BUTTONS
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             els.addPlayer.addEventListener('click', () => {
                 state.players.push({ name: "", paid: false });
                 renderPlayers();
                 updatePreview();
                 vibrate();
             });
+
             els.addWaiting.addEventListener('click', () => {
                 state.waitingPlayers.push({ name: "" });
                 renderWaitingPlayers();
                 updatePreview();
                 vibrate();
             });
+
             els.stepPlus.addEventListener('click', () => {
                 state.players.push({ name: "", paid: false });
                 renderPlayers();
                 updatePreview();
                 vibrate();
             });
+
             els.stepMinus.addEventListener('click', () => {
-                if (state.players.length) {
+                if (state.players.length > 0) {
                     state.players.pop();
                     renderPlayers();
                     updatePreview();
                     vibrate();
                 }
             });
+
             els.playerCount.addEventListener('click', () => {
                 const count = parseInt(prompt("Enter total number of players (e.g. 16):", state.players.length));
                 if (!isNaN(count) && count >= 0 && count <= 100) {
@@ -2026,12 +2129,14 @@
                     updatePreview();
                 }
             });
+
             els.playerCount.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     els.playerCount.click();
                 }
             });
+
             els.addCourtBtn.addEventListener('click', () => {
                 if (!state.isAdmin) return;
                 state.additionalCourts.push({ court: '', start: '', end: '' });
@@ -2040,9 +2145,9 @@
                 vibrate();
             });
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 18. SAVE / RESET / CLEAR (Admin)
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             els.save.addEventListener('click', () => {
                 if (!state.isAdmin) return;
                 vibrate();
@@ -2065,13 +2170,15 @@
                     players: JSON.parse(JSON.stringify(state.players)),
                     waiting: JSON.parse(JSON.stringify(state.waitingPlayers)),
                 });
+                // Keep only last 20 saved bookings
+                if (state.savedBookings.length > 20) state.savedBookings.length = 20;
                 persistSavedBookings();
                 showToast("Session Saved!", "💾");
             });
 
             els.reset.addEventListener('click', () => {
                 if (!state.isAdmin) return;
-                showConfirm('Reset Form', 'Clear all fields and players?', () => {
+                showConfirm('Reset Form', 'Clear all fields and players? This cannot be undone.', () => {
                     els.date.value = new Date().toISOString().split('T')[0];
                     els.start.value = "21:30";
                     els.end.value = "23:30";
@@ -2091,47 +2198,47 @@
                     renderWaitingPlayers();
                     renderAdditionalCourts();
                     updateDateData();
-                    showToast('Reset complete!');
+                    showToast('Reset complete!', '🔄');
                 });
             });
 
             els.clearPlayersAdminBtn.addEventListener('click', () => {
                 if (!state.isAdmin || state.players.length === 0) return;
-                showConfirm('Clear All Players', 'Remove all players from the roster?', () => {
-                    state.players.length = 0;
-                    renderPlayers();
-                    updatePreview();
-                    showToast('All players cleared');
-                });
+                showConfirm('Clear All Players', `Remove all ${state.players.length} players from the roster?`,
+                    () => {
+                        state.players.length = 0;
+                        renderPlayers();
+                        updatePreview();
+                        showToast('All players cleared', '🗑️');
+                    });
             });
 
-            // ──────────────────────────────────────
-            // 19. COPY / SHARE (Modern Clipboard API)
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
+            // 19. COPY / SHARE
+            // ═══════════════════════════════════════
             els.copy.addEventListener('click', async () => {
                 vibrate();
                 const announcement = buildPreview();
-                // Try Web Share API first
+                // Try Web Share API first (mobile-friendly)
                 if (navigator.share && navigator.canShare && navigator.canShare({ text: announcement })) {
                     try {
                         await navigator.share({ text: announcement });
-                        showToast("Shared!");
+                        showToast("Shared successfully!", "📤");
                         return;
                     } catch (err) {
-                        // User cancelled or share failed — fall through to clipboard
+                        // User cancelled — fall through to clipboard
+                        if (err.name === 'AbortError') return;
                     }
                 }
                 // Modern Clipboard API
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     try {
                         await navigator.clipboard.writeText(announcement);
-                        showToast("Copied to clipboard!");
+                        showToast("Copied to clipboard!", "📋");
                         return;
-                    } catch (e) {
-                        // Fall through to legacy fallback
-                    }
+                    } catch (e) { /* fall through */ }
                 }
-                // Legacy fallback (no execCommand)
+                // Legacy fallback
                 const textarea = document.createElement('textarea');
                 textarea.value = announcement;
                 textarea.style.position = 'fixed';
@@ -2144,26 +2251,24 @@
                 textarea.select();
                 try {
                     const success = document.execCommand && document.execCommand('copy');
-                    if (success) {
-                        showToast("Copied to clipboard!");
-                    } else {
-                        showToast("Copy failed — try selecting and copying manually", "⚠️");
-                    }
+                    showToast(success ? "Copied to clipboard!" : "Copy failed — try selecting text manually",
+                        success ? "📋" : "⚠️");
                 } catch (e) {
-                    showToast("Copy failed — try selecting and copying manually", "⚠️");
+                    showToast("Copy failed — please select and copy manually", "⚠️");
                 }
                 document.body.removeChild(textarea);
             });
 
-            // ──────────────────────────────────────
-            // 20. IMPORT PARSER
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
+            // 20. IMPORT PARSER (robust)
+            // ═══════════════════════════════════════
             function parseTime12to24(str) {
                 const match = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
                 if (!match) return null;
                 let h = parseInt(match[1]),
                     m = match[2],
                     period = match[3].toUpperCase();
+                if (isNaN(h)) return null;
                 if (period === 'PM' && h !== 12) h += 12;
                 if (period === 'AM' && h === 12) h = 0;
                 return `${h.toString().padStart(2, '0')}:${m}`;
@@ -2172,24 +2277,31 @@
             function parseDMYtoYMD(str) {
                 const parts = str.split('/');
                 if (parts.length !== 3) return null;
-                return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                const d = parseInt(parts[0]),
+                    m = parseInt(parts[1]),
+                    y = parseInt(parts[2]);
+                if (isNaN(d) || isNaN(m) || isNaN(y)) return null;
+                return `${y}-${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
             }
 
             els.importBtn.addEventListener('click', () => {
                 vibrate();
                 els.importTextarea.value = '';
                 els.importModal.classList.add('active');
-                els.importTextarea.focus();
+                setTimeout(() => els.importTextarea.focus(), 100);
             });
+
             $('importCancelBtn').addEventListener('click', () => {
                 vibrate();
                 els.importModal.classList.remove('active');
             });
+
             $('importParseBtn').addEventListener('click', () => {
                 vibrate();
                 const raw = els.importTextarea.value.trim();
-                if (!raw) { showToast('Textarea empty', '⚠️');
+                if (!raw) { showToast('Textarea is empty', '⚠️');
                     return; }
+
                 try {
                     const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== '');
                     let parsedDate = '',
@@ -2215,47 +2327,66 @@
 
                     for (let i = 0; i < lines.length; i++) {
                         const line = lines[i];
-                        if (line.startsWith('🏸 BADMINTON SESSION')) continue;
-                        if (line.startsWith('📍') && !line.startsWith('📍 Link:') && !line.startsWith(
-                                '📍 Location:')) parsedVenue = line.replace('📍', '').trim();
-                        else if (line.startsWith('🏟️ Court:')) parsedCourt = line.replace('🏟️ Court:', '').trim();
-                        else if (line.startsWith('📅')) {
+
+                        if (line.startsWith('🏸 BADMINTON SESSION') || line.startsWith('BADMINTON SESSION'))
+                        continue;
+                        if ((line.startsWith('📍') || line.startsWith('Location:')) && !line.includes('Link') && !
+                            line.includes('Location:')) {
+                            parsedVenue = line.replace(/^📍\s*/, '').replace(/^Location:\s*/i, '').trim();
+                        } else if (line.startsWith('🏟️ Court:') || line.startsWith('Court:')) {
+                            parsedCourt = line.replace(/^🏟️\s*Court:\s*/i, '').replace(/^Court:\s*/i, '').trim();
+                        } else if (line.startsWith('📅')) {
                             const m = line.match(/📅\s+([\d\/]+)/);
                             if (m) { const ymd = parseDMYtoYMD(m[1].trim()); if (ymd) parsedDate = ymd; }
-                        } else if (line.startsWith('⏰ Session')) {
-                            sessionNum = parseInt(line.match(/Session\s+(\d+)/)[1]);
+                        } else if (/^⏰\s*Session\s+\d+/i.test(line)) {
+                            sessionNum = parseInt(line.match(/Session\s+(\d+)/i)[1]);
                             tempStart = '';
                             tempEnd = '';
                             tempCourt = '';
                             mode = 'session';
                         } else if (mode === 'session') {
-                            if (line.includes('–')) {
-                                const parts = line.split('–');
+                            if (line.includes('–') || line.includes('-')) {
+                                const parts = line.split(/[–\-]/);
                                 tempStart = parts[0].trim();
                                 tempEnd = parts[1].trim();
-                            } else if (line.startsWith('(')) {
+                            } else if (line.startsWith('(') && line.endsWith(')')) {
                                 tempCourt = line.replace(/[()]/g, '').trim();
                                 const start24 = parseTime12to24(tempStart),
                                     end24 = parseTime12to24(tempEnd);
-                                if (sessionNum === 1) { if (start24) parsedStart = start24; if (end24)
-                                        parsedEnd = end24; } else newAdditionalCourts.push({ court: tempCourt
-                                        .replace(/^Court\s+/i, '').trim(),
-                                    start: start24 || '',
-                                    end: end24 || '' });
+                                if (sessionNum === 1) {
+                                    if (start24) parsedStart = start24;
+                                    if (end24) parsedEnd = end24;
+                                } else {
+                                    newAdditionalCourts.push({
+                                        court: tempCourt.replace(/^Court\s+/i, '').trim(),
+                                        start: start24 || '',
+                                        end: end24 || ''
+                                    });
+                                }
                                 mode = 'head';
                             }
-                        } else if (line.startsWith('💵')) { const m = line.match(/RM\s*([\d.]+)/); if (m)
-                                parsedPrice = m[1]; } else if (line.startsWith('🏸 Shuttle:')) parsedShuttle = line
-                            .replace('🏸 Shuttle:', '').trim();
-                        else if (line.startsWith('👤 Host:')) parsedHost = line.replace('👤 Host:', '').trim();
-                        else if (line.startsWith('📍 Link:') || line.startsWith('📍 Location:')) { foundLocation =
-                                true;
-                            parsedLocation = line.replace(/📍 (Link|Location):/, '').trim(); } else if (line ===
-                            'Link update list') { if (i + 1 < lines.length) { parsedUpdateList = lines[i + 1]
-                                    .trim();
-                                i++; } } else if (line.startsWith('──────────────────')) { if (mode === 'head')
-                                mode = 'players';
-                            else if (mode === 'players') mode = 'footer'; } else if (mode === 'players') {
+                        } else if (line.startsWith('💵') || line.startsWith('RM')) {
+                            const m = line.match(/RM\s*([\d.]+)/);
+                            if (m) parsedPrice = m[1];
+                        } else if (line.startsWith('🏸 Shuttle:') || line.startsWith('Shuttle:')) {
+                            parsedShuttle = line.replace(/^🏸\s*Shuttle:\s*/i, '').replace(/^Shuttle:\s*/i, '')
+                                .trim();
+                        } else if (line.startsWith('👤 Host:') || line.startsWith('Host:')) {
+                            parsedHost = line.replace(/^👤\s*Host:\s*/i, '').replace(/^Host:\s*/i, '').trim();
+                        } else if (line.startsWith('📍 Link:') || line.startsWith('📍 Location:') || line
+                            .startsWith('Link:') || line.startsWith('Location:')) {
+                            foundLocation = true;
+                            parsedLocation = line.replace(/^📍\s*(Link|Location):\s*/i, '').replace(
+                                /^(Link|Location):\s*/i, '').trim();
+                        } else if (line === 'Link update list' || line === '🔗 Link update list') {
+                            if (i + 1 < lines.length) {
+                                parsedUpdateList = lines[i + 1].trim();
+                                i++;
+                            }
+                        } else if (line.startsWith('──────────────────') || line.startsWith('───')) {
+                            if (mode === 'head') mode = 'players';
+                            else if (mode === 'players') mode = 'footer';
+                        } else if (mode === 'players') {
                             if (/^\d+\./.test(line)) {
                                 const m = line.match(/^(\d+)\.\s*(.+)$/);
                                 if (m) {
@@ -2266,16 +2397,26 @@
                                     if (name === '(Open)' || name === '') name = '';
                                     newPlayers.push({ name: name.trim(), paid });
                                 }
-                            } else if (line === 'Waiting List') mode = 'waiting';
+                            } else if (line.toLowerCase() === 'waiting list' || line === '📋 Waiting List') {
+                                mode = 'waiting';
+                            }
                         } else if (mode === 'waiting') {
-                            if (/^\d+\./.test(line)) { const m = line.match(/^(\d+)\.\s*(.+)$/); if (m) { let name =
-                                        m[2].trim(); if (name === '') name = '';
-                                    newWaiting.push({ name: name.trim() }); } } else if (line.startsWith(
-                                    '──────────────────')) mode = 'footer';
-                        } else if (mode === 'footer') { if (line !== 'Notes:' && line !== '') footerLines.push(
-                            line); }
+                            if (/^\d+\./.test(line)) {
+                                const m = line.match(/^(\d+)\.\s*(.+)$/);
+                                if (m) {
+                                    let name = m[2].trim();
+                                    if (name === '') name = '';
+                                    newWaiting.push({ name: name.trim() });
+                                }
+                            } else if (line.startsWith('──────────────────') || line.startsWith('───')) {
+                                mode = 'footer';
+                            }
+                        } else if (mode === 'footer') {
+                            if (line !== 'Notes:' && line !== '') footerLines.push(line);
+                        }
                     }
 
+                    // Apply parsed values
                     if (parsedDate) els.date.value = parsedDate;
                     if (parsedStart) els.start.value = parsedStart;
                     if (parsedEnd) els.end.value = parsedEnd;
@@ -2310,27 +2451,29 @@
                     updateDateData();
                     updatePreview();
                     els.importModal.classList.remove('active');
-                    showToast('Imported successfully!');
+                    const totalImported = newPlayers.length + newWaiting.length;
+                    showToast(`Imported ${totalImported} player(s) successfully!`, '✅');
                 } catch (e) {
-                    showToast('Import parsing error', '❌');
+                    showToast('Import parsing error — check format', '❌');
                     console.error('Import error:', e);
                 }
             });
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 21. SAVED BOOKINGS INTERACTIONS
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             els.savedBookingsList.addEventListener('click', (e) => {
                 const idx = parseInt(e.target.dataset.idx);
-                if (isNaN(idx)) return;
+                if (isNaN(idx) || !state.savedBookings[idx]) return;
+
                 if (e.target.classList.contains('load-btn')) {
                     vibrate();
                     const d = state.savedBookings[idx];
-                    els.date.value = d.date;
-                    els.start.value = d.start;
-                    els.end.value = d.end;
-                    els.venue.value = d.venue;
-                    els.court.value = d.court;
+                    els.date.value = d.date || '';
+                    els.start.value = d.start || '21:30';
+                    els.end.value = d.end || '23:30';
+                    els.venue.value = d.venue || '';
+                    els.court.value = d.court || '';
                     state.additionalCourts.length = 0;
                     state.additionalCourts.push(...(d.additionalCourts ? JSON.parse(JSON.stringify(d
                         .additionalCourts)) : []));
@@ -2339,42 +2482,46 @@
                     state.locationEnabled = d.locationEnabled || false;
                     els.locationToggle.checked = state.locationEnabled;
                     els.locationLink.classList.toggle('hidden', !state.locationEnabled);
-                    els.price.value = d.price;
-                    els.shuttle.value = d.shuttle;
-                    els.host.value = d.host;
-                    els.footer.value = d.footer;
+                    els.price.value = d.price || '17';
+                    els.shuttle.value = d.shuttle || 'RSL';
+                    els.host.value = d.host || '';
+                    els.footer.value = d.footer || '';
                     if (d.updateListLink) els.updateListLink.value = d.updateListLink;
                     state.players.length = 0;
-                    state.players.push(...JSON.parse(JSON.stringify(d.players)));
+                    state.players.push(...JSON.parse(JSON.stringify(d.players || [])));
                     state.waitingPlayers.length = 0;
-                    state.waitingPlayers.push(...JSON.parse(JSON.stringify(d.waiting)));
+                    state.waitingPlayers.push(...JSON.parse(JSON.stringify(d.waiting || [])));
                     renderPlayers();
                     renderWaitingPlayers();
                     updateDateData();
                     updatePreview();
                     document.querySelector('.nav-item[data-tab="booking"]').click();
-                    showToast("Loaded!");
+                    showToast("Session loaded!", "📂");
                 } else if (e.target.classList.contains('del-btn') && state.isAdmin) {
                     vibrate();
                     showConfirm('Delete Session', 'Remove this saved booking permanently?', () => {
                         state.savedBookings.splice(idx, 1);
                         persistSavedBookings();
                         renderSaved();
+                        showToast('Deleted', '🗑️');
                     });
                 }
             });
+
             els.clearSaved.addEventListener('click', () => {
                 if (!state.isAdmin || state.savedBookings.length === 0) return;
-                showConfirm('Clear All', 'Delete all saved sessions?', () => {
-                    state.savedBookings = [];
-                    persistSavedBookings();
-                    renderSaved();
-                });
+                showConfirm('Clear All Saved',
+                    `Delete all ${state.savedBookings.length} saved sessions? This cannot be undone.`, () => {
+                        state.savedBookings = [];
+                        persistSavedBookings();
+                        renderSaved();
+                        showToast('All saved sessions cleared', '🗑️');
+                    });
             });
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 22. TUTORIAL MODAL
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             $('tutorialBtn').addEventListener('click', () => {
                 els.tutorialModal.classList.add('active');
                 vibrate();
@@ -2384,45 +2531,46 @@
                 vibrate();
             });
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 23. MODAL OVERLAY CLICK TO CLOSE
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             document.querySelectorAll('.modal-overlay').forEach(overlay => {
                 overlay.addEventListener('click', (e) => {
                     if (e.target === overlay) {
                         overlay.classList.remove('active');
+                        dismissAllAutocomplete();
                         vibrate();
                     }
                 });
             });
 
-            // ──────────────────────────────────────
-            // 24. KEYBOARD SUPPORT FOR ESC ON MODALS
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
+            // 24. KEYBOARD SUPPORT
+            // ═══════════════════════════════════════
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     document.querySelectorAll('.modal-overlay.active').forEach(m => {
                         m.classList.remove('active');
                     });
+                    dismissAllAutocomplete();
                 }
             });
 
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             // 25. INITIALIZATION
-            // ──────────────────────────────────────
+            // ═══════════════════════════════════════
             function init() {
                 // Loading screen
                 setTimeout(() => {
                     els.loadingScreen.classList.add('hidden');
-                    // Remove from DOM after transition for performance
                     setTimeout(() => {
                         if (els.loadingScreen.parentNode) {
                             els.loadingScreen.remove();
                         }
                     }, 500);
-                }, 1000);
+                }, 900);
 
-                // Set default date
+                // Set default date to today
                 els.date.value = new Date().toISOString().split('T')[0];
 
                 // Load saved data
@@ -2434,13 +2582,16 @@
                 renderWaitingPlayers();
                 updateDateData();
 
-                // Mark initial state clean
+                // Mark preview clean
                 state.previewDirty = false;
+
+                console.log('%c🏸 Smasholic Ready %c| %cGlassmorphism Edition v2',
+                    'color:#6366f1;font-weight:bold;',
+                    'color:#94a3b8;',
+                    'color:#10b981;');
             }
 
             init();
-
-            console.log('🏸 Smasholic — Glassmorphism Edition Ready');
         })();
     </script>
 </body>
