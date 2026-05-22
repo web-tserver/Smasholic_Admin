@@ -361,7 +361,6 @@
         .btn-success:hover {
             background: #059669;
         }
-        /* ── Fixed import button hover ── */
         .btn-import {
             background: var(--primary-light);
             color: var(--primary-dark);
@@ -374,9 +373,6 @@
             color: #3730a3;
             box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
             transform: translateY(-1px);
-        }
-        .btn-import:active {
-            transform: scale(0.97);
         }
         .player-list {
             display: flex;
@@ -466,6 +462,7 @@
             font-size: 1rem;
             background: transparent;
             font-family: inherit;
+            pointer-events: auto;
         }
         .paid-toggle {
             background: var(--input-bg);
@@ -1205,16 +1202,13 @@
             function cleanName(str) { return (str || '').replace(/[\u200B\u200C\u200D\u200E\u200F\uFEFF\u2060-\u2069\u202A-\u202E]/g,
                     '').trim(); }
 
-            /* ── Collect all unique court numbers from main + additional ── */
             function getAllUniqueCourts() {
                 const courts = new Set();
-                // Parse main court field
                 const mainRaw = els.court.value || '';
                 mainRaw.split(/[,&]+/).forEach(part => {
                     const trimmed = part.trim();
                     if (trimmed) courts.add(trimmed);
                 });
-                // Parse additional courts
                 state.additionalCourts.forEach(c => {
                     const raw = c.court || '';
                     raw.split(/[,&]+/).forEach(part => {
@@ -1234,7 +1228,6 @@
                 return `${allButLast} & ${courts[courts.length - 1]}`;
             }
 
-            /* ── Preview: court header shows ALL unique courts ── */
             function buildPreview() {
                 const dateVal = formatDateDMY(els.date.value);
                 const dayVal = els.day.textContent;
@@ -1337,8 +1330,8 @@
                     row.dataset.idx = idx;
                     row.innerHTML = `<div class="player-avatar">${idx + 1}</div>
                         <input type="text" class="pname" value="${escapeHtml(cleanName(p.name))}" placeholder="Enter name..." data-idx="${idx}" autocomplete="off">
-                        <button class="action-icon paid-toggle ${p.paid ? 'active' : ''}" data-idx="${idx}">✅</button>
-                        <button class="action-icon remove-toggle" data-idx="${idx}">✕</button>`;
+                        <button class="action-icon paid-toggle ${p.paid ? 'active' : ''}" data-idx="${idx}" aria-label="Toggle paid status">✅</button>
+                        <button class="action-icon remove-toggle" data-idx="${idx}" aria-label="Remove player">✕</button>`;
                     frag.appendChild(row);
                 });
                 els.playersContainer.innerHTML = '';
@@ -1356,7 +1349,7 @@
                     row.dataset.idx = idx;
                     row.innerHTML = `<div class="player-avatar" style="background:var(--input-bg);color:var(--text-muted);">${idx + 1}</div>
                         <input type="text" class="wname" value="${escapeHtml(cleanName(p.name))}" placeholder="Waiting player..." data-idx="${idx}" autocomplete="off">
-                        <button class="action-icon remove-toggle" data-idx="${idx}">✕</button>`;
+                        <button class="action-icon remove-toggle" data-idx="${idx}" aria-label="Remove waiting player">✕</button>`;
                     frag.appendChild(row);
                 });
                 els.waitingContainer.innerHTML = '';
@@ -1445,44 +1438,61 @@
                 input.closest('.player-row').appendChild(list);
             }
 
-            function setupPlayerDelegation(container, arr, isWaiting) {
-                container.addEventListener('input', (e) => {
-                    const t = e.target;
-                    if (t.classList.contains('pname') || t.classList.contains('wname')) {
-                        const idx = parseInt(t.dataset.idx);
-                        if (!isNaN(idx) && arr[idx]) { arr[idx].name = t.value; if (!isWaiting)
-                                updateDuplicateStyling();
-                            updatePreview();
-                            showAutocomplete(t, idx, isWaiting); }
-                    }
-                });
-                container.addEventListener('click', (e) => {
-                    const btn = e.target.closest('.action-icon');
-                    if (!btn) return;
-                    const idx = parseInt(btn.dataset.idx);
-                    if (isNaN(idx) || !arr[idx]) return;
-                    if (btn.classList.contains('paid-toggle')) {
-                        arr[idx].paid = !arr[idx].paid;
-                        btn.classList.toggle('active', arr[idx].paid);
-                        if (arr[idx].paid && arr[idx].name) addName(cleanName(arr[idx].name));
+            /* ── ROBUST EVENT HANDLING FOR PLAYER ROWS ── */
+            function handlePlayerInput(e, arr, isWaiting) {
+                const t = e.target;
+                if (t.classList.contains('pname') || t.classList.contains('wname')) {
+                    const idx = parseInt(t.dataset.idx);
+                    if (!isNaN(idx) && arr[idx]) {
+                        arr[idx].name = t.value;
+                        if (!isWaiting) updateDuplicateStyling();
                         updatePreview();
-                        vibrate();
-                        playTickSound();
-                    } else if (btn.classList.contains('remove-toggle')) {
-                        arr.splice(idx, 1);
-                        isWaiting ? renderWaitingPlayers() : renderPlayers();
-                        updatePreview();
-                        vibrate();
+                        showAutocomplete(t, idx, isWaiting);
                     }
-                });
-                container.addEventListener('focusin', (e) => { const r = e.target.closest('.player-row'); if (r) r
-                        .classList.add('focused'); });
-                container.addEventListener('focusout', (e) => { const r = e.target.closest('.player-row'); if (r) r
-                        .classList.remove('focused'); });
+                }
             }
-            setupPlayerDelegation(els.playersContainer, state.players, false);
-            setupPlayerDelegation(els.waitingContainer, state.waitingPlayers, true);
 
+            function handlePlayerAction(e, arr, isWaiting) {
+                const btn = e.target.closest('button.action-icon');
+                if (!btn) return;
+                const idx = parseInt(btn.dataset.idx);
+                if (isNaN(idx) || !arr[idx]) return;
+
+                if (btn.classList.contains('paid-toggle')) {
+                    arr[idx].paid = !arr[idx].paid;
+                    btn.classList.toggle('active', arr[idx].paid);
+                    if (arr[idx].paid && arr[idx].name) addName(cleanName(arr[idx].name));
+                    updatePreview();
+                    vibrate();
+                    playTickSound();
+                } else if (btn.classList.contains('remove-toggle')) {
+                    arr.splice(idx, 1);
+                    if (isWaiting) renderWaitingPlayers();
+                    else renderPlayers();
+                    updatePreview();
+                    vibrate();
+                }
+            }
+
+            // Attach delegation to players container
+            els.playersContainer.addEventListener('input', (e) => handlePlayerInput(e, state.players, false));
+            els.playersContainer.addEventListener('click', (e) => handlePlayerAction(e, state.players, false));
+
+            // Attach delegation to waiting container
+            els.waitingContainer.addEventListener('input', (e) => handlePlayerInput(e, state.waitingPlayers, true));
+            els.waitingContainer.addEventListener('click', (e) => handlePlayerAction(e, state.waitingPlayers, true));
+
+            // Focus styling
+            els.playersContainer.addEventListener('focusin', (e) => { const r = e.target.closest('.player-row'); if (r) r
+                    .classList.add('focused'); });
+            els.playersContainer.addEventListener('focusout', (e) => { const r = e.target.closest('.player-row'); if (r) r
+                    .classList.remove('focused'); });
+            els.waitingContainer.addEventListener('focusin', (e) => { const r = e.target.closest('.player-row'); if (r) r
+                    .classList.add('focused'); });
+            els.waitingContainer.addEventListener('focusout', (e) => { const r = e.target.closest('.player-row'); if (r) r
+                    .classList.remove('focused'); });
+
+            // Additional courts delegation
             els.additionalCourtsContainer.addEventListener('input', (e) => {
                 const idx = parseInt(e.target.dataset.idx);
                 if (isNaN(idx) || !state.additionalCourts[idx]) return;
@@ -1684,7 +1694,7 @@
                     showToast(ok ? "Copied!" : "Copy failed", ok ? "📋" : "⚠️"); } catch (e) { showToast("Copy failed",
                     "⚠️"); } document.body.removeChild(ta); });
 
-            /* ── Import parser (handles old & new formats) ── */
+            /* ── Import parser ── */
             function parseTime12to24(str) { const m = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i); if (!m) return null;
                 let h = parseInt(m[1]),
                     min = m[2],
