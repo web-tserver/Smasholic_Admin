@@ -78,6 +78,7 @@
             background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #4f46e5 100%);
             color: white; padding: 20px; border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: 10px;
             box-shadow: 0 8px 28px rgba(99,102,241,0.28); position: relative; overflow: hidden;
+            transition: filter 0.3s, opacity 0.3s; /* smooth blur transition */
         }
         .summary-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 8px; position: relative; z-index: 1; }
         .summary-row:last-child { border: none; padding-bottom: 0; }
@@ -171,7 +172,6 @@
         .toast { position: fixed; top: 20px; left: 50%; transform: translate(-50%, -30px); background: #1e293b; color: white; padding: 10px 20px; border-radius: 100px; font-size: 0.82rem; z-index: 200; opacity: 0; transition: all 0.3s var(--ease-spring); pointer-events: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis; }
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
         .saved-item { background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        /* Extra session styles (optimized) */
         .extra-session-row {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(8px);
@@ -488,6 +488,7 @@
                 confirmCallback: null,
                 previewDirty: true,
                 renderScheduled: false,
+                dataLoaded: false,   // <-- NEW: tracks whether real session data has been imported/loaded
             };
 
             const $ = (id) => document.getElementById(id);
@@ -551,6 +552,7 @@
                 dashExtra: $('dashExtra'),
                 dashExtraSessionsRow: $('dashExtraSessionsRow'),
                 dashPrice: $('dashPrice'),
+                playerDashboard: $('playerDashboard'),
             };
 
             const escapeHtml = (str) => { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; };
@@ -711,7 +713,7 @@
                 });
             }
 
-            // --- DASHBOARD: show "waiting import data" for players when empty ---
+            // UPDATED: Dashboard with blur for non‑admin when no data loaded
             function updateLiveDashboard() {
                 const allCourts = formatCourtList();
                 const venueVal = els.venue.value;
@@ -721,17 +723,23 @@
                 const priceVal = els.price.value;
                 const shuttleVal = els.shuttle.value;
 
-                const sessionEmpty = !venueVal && !dateVal;
-
-                if (!state.isAdmin && sessionEmpty) {
-                    els.dashVenue.innerHTML = '<span class="summary-value waiting-import">⏳ Waiting for import data…</span>';
-                    els.dashDate.innerHTML = '<span class="summary-value waiting-import">Use 📥 Import button</span>';
+                // Non‑admin, no data loaded → blur the dashboard
+                if (!state.isAdmin && !state.dataLoaded) {
+                    els.dashVenue.innerHTML = '<span class="summary-value waiting-import">🔒 Login admin or 📥 Import data</span>';
+                    els.dashDate.innerHTML = '<span class="summary-value waiting-import">—</span>';
                     els.dashTime.innerHTML = '<span class="summary-value waiting-import">—</span>';
                     els.dashExtraSessionsRow.classList.add('hidden');
                     els.dashPrice.innerHTML = '<span class="summary-value waiting-import">—</span>';
+                    els.playerDashboard.style.filter = 'blur(4px)';
+                    els.playerDashboard.style.opacity = '0.7';
                     return;
                 }
 
+                // Clear blur
+                els.playerDashboard.style.filter = '';
+                els.playerDashboard.style.opacity = '';
+
+                // Normal display
                 els.dashVenue.textContent = `${venueVal || '—'} (${allCourts})`;
                 els.dashDate.textContent = `${formatDateDMY(dateVal) || '—'} (${els.day.textContent || '—'})`;
                 els.dashTime.textContent = `${formatTime12(startVal) || '—'} - ${formatTime12(endVal) || '—'} (${els.duration.textContent || '—'})`;
@@ -781,7 +789,6 @@
                 els.waitingContainer.innerHTML = ''; els.waitingContainer.appendChild(frag);
             }
 
-            // --- OPTIMIZED ADDITIONAL COURTS RENDERING ---
             function renderAdditionalCourts() {
                 const frag = document.createDocumentFragment();
                 const hasCourts = state.additionalCourts.length > 0;
@@ -810,7 +817,6 @@
                         </div>`;
                     frag.appendChild(row);
                 });
-                // Clear container except noCourtsMsg
                 while (els.additionalCourtsContainer.firstChild) {
                     if (els.additionalCourtsContainer.firstChild.id === 'noCourtsMsg') break;
                     els.additionalCourtsContainer.removeChild(els.additionalCourtsContainer.firstChild);
@@ -833,14 +839,12 @@
                 }
             }
 
-            // Hook renderAdditionalCourts to also update card state
             const originalRenderAdditionalCourts = renderAdditionalCourts;
             renderAdditionalCourts = function() {
                 originalRenderAdditionalCourts();
                 updateAdditionalCourtsVisibility();
             };
 
-            // Event delegation for additional courts
             els.additionalCourtsContainer.addEventListener('input', (e) => {
                 const idx = parseInt(e.target.dataset.idx);
                 if (isNaN(idx) || !state.additionalCourts[idx]) return;
@@ -885,7 +889,7 @@
                 els.savedBookingsList.innerHTML = ''; els.savedBookingsList.appendChild(frag);
             }
 
-            /* --- AUTOCOMPLETE & STORAGE --- */
+            /* AUTOCOMPLETE & STORAGE */
             function getNames() {
                 const names = new Set();
                 state.players.forEach(p => { const n = cleanName(p.name); if (n) names.add(n); });
@@ -949,7 +953,7 @@
                 input.closest('.player-row').appendChild(list);
             }
 
-            /* --- PLAYER EVENT HANDLERS --- */
+            /* PLAYER EVENT HANDLERS */
             function handlePlayerInput(e, arr, isWaiting) {
                 const t = e.target;
                 if (t.classList.contains('pname') || t.classList.contains('wname')) {
@@ -981,7 +985,7 @@
             els.waitingContainer.addEventListener('focusin', (e) => { const r = e.target.closest('.player-row'); if (r) r.classList.add('focused'); });
             els.waitingContainer.addEventListener('focusout', (e) => { const r = e.target.closest('.player-row'); if (r) r.classList.remove('focused'); });
 
-            /* --- COLLAPSE --- */
+            /* COLLAPSE */
             window.toggleCollapse = function(id) {
                 const el = document.getElementById(id); if (!el) return;
                 const was = el.classList.contains('collapsed');
@@ -990,12 +994,12 @@
                 if (h) h.setAttribute('aria-expanded', was ? 'true' : 'false');
             };
 
-            /* --- CONFIRM MODAL --- */
+            /* CONFIRM MODAL */
             function showConfirm(title, msg, cb) { els.confirmTitle.textContent = title; els.confirmMessage.textContent = msg; state.confirmCallback = cb; els.confirmModal.classList.add('active'); $('confirmActionBtn').focus(); }
             $('confirmCancelBtn').addEventListener('click', () => { els.confirmModal.classList.remove('active'); state.confirmCallback = null; vibrate(); });
             $('confirmActionBtn').addEventListener('click', () => { els.confirmModal.classList.remove('active'); vibrate(); if (state.confirmCallback) { const cb = state.confirmCallback; state.confirmCallback = null; cb(); } });
 
-            /* --- DATE/TIME UPDATES --- */
+            /* DATE/TIME UPDATES */
             function updateDateData() {
                 if (els.date.value) { const d = new Date(els.date.value + 'T00:00:00'); if (!isNaN(d.getTime())) els.day.textContent = malayDays[d.getDay()]; }
                 const t = calcTotalDuration();
@@ -1005,7 +1009,7 @@
             [els.date, els.start, els.end, els.venue, els.court, els.price, els.shuttle, els.host, els.footer, els.updateListLink, els.locationLink].forEach(el => el && el.addEventListener('input', updateDateData));
             if (els.date) els.date.addEventListener('change', updateDateData);
 
-            /* --- ADMIN MODE --- */
+            /* ADMIN MODE */
             function applyRoleUIState() {
                 [els.adminConfigCard, els.additionalCourtsCard, els.footerCard, els.addCourtBtn].forEach(el => el && el.classList.toggle('hidden', !state.isAdmin));
                 els.adminToolbar.style.display = state.isAdmin ? 'flex' : 'none';
@@ -1025,7 +1029,7 @@
             els.adminLogoutBtn.addEventListener('click', () => { state.isAdmin = false; applyRoleUIState(); showToast('Signed out', '🔒'); });
             els.adminLogoutBtn2.addEventListener('click', () => { state.isAdmin = false; applyRoleUIState(); showToast('Signed out', '🔒'); });
 
-            /* --- TAB SWITCHING --- */
+            /* TAB SWITCHING */
             document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(x => { x.classList.remove('active'); x.removeAttribute('aria-current'); });
                 n.classList.add('active'); n.setAttribute('aria-current', 'page');
@@ -1036,10 +1040,10 @@
                 vibrate();
             }));
 
-            /* --- LOCATION TOGGLE --- */
+            /* LOCATION TOGGLE */
             els.locationToggle.addEventListener('change', () => { state.locationEnabled = els.locationToggle.checked; els.locationLink.classList.toggle('hidden', !state.locationEnabled); updatePreview(); vibrate(); });
 
-            /* --- BUTTONS --- */
+            /* BUTTONS */
             els.addPlayer.addEventListener('click', () => { state.players.push({ name: "", paid: false }); renderPlayers(); updatePreview(); vibrate(); });
             els.addWaiting.addEventListener('click', () => { state.waitingPlayers.push({ name: "" }); renderWaitingPlayers(); updatePreview(); vibrate(); });
             els.stepPlus.addEventListener('click', () => { state.players.push({ name: "", paid: false }); renderPlayers(); updatePreview(); vibrate(); });
@@ -1055,13 +1059,17 @@
                 persistSavedBookings(); showToast("Session Saved!", "💾"); });
 
             els.reset.addEventListener('click', () => { if (!state.isAdmin) return;
-                showConfirm('Reset Form', 'Clear all fields and players?', () => { els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30"; els.venue.value = "Forum SBA, Setia Alam"; els.court.value = "14, 15, 16"; els.locationLink.value = "https://g.co/kgs/UMbmmAz"; state.locationEnabled = false; els.locationToggle.checked = false; els.locationLink.classList.add('hidden'); els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = ""; state.players = []; state.waitingPlayers = []; state.additionalCourts = []; renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updateDateData(); showToast('Reset complete!', '🔄'); }); });
+                showConfirm('Reset Form', 'Clear all fields and players?', () => { 
+                    els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30"; els.venue.value = "Forum SBA, Setia Alam"; els.court.value = "14, 15, 16"; els.locationLink.value = "https://g.co/kgs/UMbmmAz"; state.locationEnabled = false; els.locationToggle.checked = false; els.locationLink.classList.add('hidden'); els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = ""; state.players = []; state.waitingPlayers = []; state.additionalCourts = []; renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts();
+                    state.dataLoaded = false;   // reset blur flag after admin reset
+                    updateDateData(); showToast('Reset complete!', '🔄'); 
+                }); });
             els.clearPlayersAdminBtn.addEventListener('click', () => { if (!state.isAdmin || !state.players.length) return; showConfirm('Clear Players', `Remove all ${state.players.length} players?`, () => { state.players = []; renderPlayers(); updatePreview(); showToast('Players cleared', '🗑️'); }); });
 
-            /* --- COPY / SHARE --- */
+            /* COPY / SHARE */
             els.copy.addEventListener('click', async () => { vibrate(); const msg = buildPreview(); if (navigator.share && navigator.canShare && navigator.canShare({ text: msg })) { try { await navigator.share({ text: msg }); showToast("Shared!", "📤"); return; } catch (e) { if (e.name === 'AbortError') return; } } if (navigator.clipboard && navigator.clipboard.writeText) { try { await navigator.clipboard.writeText(msg); showToast("Copied!", "📋"); return; } catch (e) {} } const ta = document.createElement('textarea'); ta.value = msg; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;'; document.body.appendChild(ta); ta.focus(); ta.select(); try { const ok = document.execCommand('copy'); showToast(ok ? "Copied!" : "Copy failed", ok ? "📋" : "⚠️"); } catch (e) { showToast("Copy failed", "⚠️"); } document.body.removeChild(ta); });
 
-            /* --- IMPORT PARSER --- */
+            /* IMPORT PARSER */
             function parseTime12to24(str) { const m = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i); if (!m) return null; let h = parseInt(m[1]), min = m[2], p = m[3].toUpperCase(); if (isNaN(h)) return null; if (p === 'PM' && h !== 12) h += 12; if (p === 'AM' && h === 12) h = 0; return `${h.toString().padStart(2, '0')}:${min}`; }
             function parseDMYtoYMD(str) { const p = str.split('/'); if (p.length !== 3) return null; const d = parseInt(p[0]), m = parseInt(p[1]), y = parseInt(p[2]); if (isNaN(d) || isNaN(m) || isNaN(y)) return null; return `${y}-${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`; }
 
@@ -1167,11 +1175,12 @@
                     if (footerLines.length) els.footer.value = footerLines.join('\n');
                     updateDateData(); updatePreview();
                     els.importModal.classList.remove('active');
+                    state.dataLoaded = true;   // <-- IMPORTANT: remove blur after successful import
                     showToast(`Imported ${newPlayers.length + newWait.length} player(s)!`, '✅');
                 } catch (e) { showToast('Import error', '❌'); console.error(e); }
             });
 
-            /* --- SAVED BOOKINGS INTERACTIONS --- */
+            /* SAVED BOOKINGS INTERACTIONS */
             els.savedBookingsList.addEventListener('click', (e) => {
                 const idx = parseInt(e.target.dataset.idx); if (isNaN(idx) || !state.savedBookings[idx]) return;
                 if (e.target.classList.contains('load-btn')) {
@@ -1185,6 +1194,7 @@
                     state.players = JSON.parse(JSON.stringify(d.players || [])); state.waitingPlayers = JSON.parse(JSON.stringify(d.waiting || []));
                     renderPlayers(); renderWaitingPlayers(); updateDateData(); updatePreview();
                     document.querySelector('.nav-item[data-tab="booking"]').click();
+                    state.dataLoaded = true;   // <-- IMPORTANT: remove blur after loading saved session
                     showToast("Loaded!", "📂");
                 } else if (e.target.classList.contains('del-btn') && state.isAdmin) {
                     vibrate(); showConfirm('Delete Session', 'Remove this saved booking?', () => { state.savedBookings.splice(idx, 1); persistSavedBookings(); renderSaved(); showToast('Deleted', '🗑️'); });
@@ -1192,13 +1202,13 @@
             });
             els.clearSaved.addEventListener('click', () => { if (!state.isAdmin || !state.savedBookings.length) return; showConfirm('Clear All', `Delete all ${state.savedBookings.length} saved sessions?`, () => { state.savedBookings = []; persistSavedBookings(); renderSaved(); showToast('Cleared', '🗑️'); }); });
 
-            /* --- MODALS & TUTORIAL --- */
+            /* MODALS & TUTORIAL */
             $('tutorialBtn').addEventListener('click', () => { els.tutorialModal.classList.add('active'); vibrate(); });
             $('tutorialCloseBtn').addEventListener('click', () => { els.tutorialModal.classList.remove('active'); vibrate(); });
             document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', (e) => { if (e.target === o) { o.classList.remove('active'); dismissAllAutocomplete(); vibrate(); } }));
             document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active')); dismissAllAutocomplete(); } });
 
-            /* --- INIT --- */
+            /* INIT */
             function init() {
                 setTimeout(() => { els.loadingScreen.classList.add('hidden'); setTimeout(() => els.loadingScreen.remove(), 500); }, 900);
                 els.date.value = new Date().toISOString().split('T')[0];
