@@ -34,832 +34,234 @@
             --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
             --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', system-ui, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', system-ui, sans-serif; }
         body {
-            background: var(--bg);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            overscroll-behavior-y: none;
-            -webkit-font-smoothing: antialiased;
-            -webkit-tap-highlight-color: transparent;
-            position: relative;
-            overflow-x: hidden;
+            background: var(--bg); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh;
+            overscroll-behavior-y: none; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+            position: relative; overflow-x: hidden;
         }
-        body::before,
-        body::after {
-            content: '';
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(130px);
-            opacity: 0.45;
-            z-index: 0;
-            pointer-events: none;
-        }
-        body::before {
-            width: 340px;
-            height: 340px;
-            background: #e8eaf6;
-            top: -90px;
-            right: -70px;
-        }
-        body::after {
-            width: 300px;
-            height: 300px;
-            background: #fce4ec;
-            bottom: -70px;
-            left: -90px;
-        }
+        body::before, body::after { content: ''; position: fixed; border-radius: 50%; filter: blur(130px); opacity: 0.45; z-index: 0; pointer-events: none; }
+        body::before { width: 340px; height: 340px; background: #e8eaf6; top: -90px; right: -70px; }
+        body::after { width: 300px; height: 300px; background: #fce4ec; bottom: -70px; left: -90px; }
         #loadingScreen {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 40%, #4f46e5 100%);
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.45s var(--ease-smooth);
-            opacity: 1;
+            position: fixed; inset: 0; background: linear-gradient(135deg, #6366f1 0%, #7c3aed 40%, #4f46e5 100%);
+            z-index: 999; display: flex; align-items: center; justify-content: center; transition: opacity 0.45s var(--ease-smooth); opacity: 1;
         }
-        #loadingScreen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .loading-content {
-            text-align: center;
-        }
-        .loading-icon {
-            font-size: 3.6rem;
-            animation: pulseLoad 1.2s infinite ease-in-out;
-            display: block;
-        }
-        @keyframes pulseLoad {
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
-            50% {
-                transform: scale(1.14);
-                opacity: 1;
-            }
-        }
-        .loading-title {
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: #fbbf24;
-            margin-top: 10px;
-            letter-spacing: -0.3px;
-        }
-        .loading-subtitle {
-            font-size: 0.82rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-top: 6px;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 1;
-        }
+        #loadingScreen.hidden { opacity: 0; pointer-events: none; }
+        .loading-content { text-align: center; }
+        .loading-icon { font-size: 3.6rem; animation: pulseLoad 1.2s infinite ease-in-out; display: block; }
+        @keyframes pulseLoad { 0%,100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.14); opacity: 1; } }
+        .loading-title { font-size: 1.7rem; font-weight: 700; color: #fbbf24; margin-top: 10px; letter-spacing: -0.3px; }
+        .loading-subtitle { font-size: 0.82rem; color: rgba(255,255,255,0.7); margin-top: 6px; }
+        .app-container { width: 100%; max-width: 480px; min-height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 1; }
         .header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: rgba(255, 255, 255, 0.68);
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
-            padding: 14px 18px;
-            border-bottom: 1px solid var(--border-glass);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 10px rgba(0, 0, 0, 0.035);
+            position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.68); backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px); padding: 14px 18px; border-bottom: 1px solid var(--border-glass);
+            display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 10px rgba(0,0,0,0.035);
         }
-        .header h1 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            letter-spacing: -0.3px;
-        }
-        .header-actions {
-            display: flex;
-            gap: 6px;
-        }
+        .header h1 { font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 8px; letter-spacing: -0.3px; }
+        .header-actions { display: flex; gap: 6px; }
         .pill-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(241, 245, 249, 0.8);
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 7px 13px;
-            border-radius: 100px;
-            font-weight: 500;
-            font-size: 0.73rem;
-            cursor: pointer;
-            transition: all 0.2s var(--ease-smooth);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            font-family: inherit;
+            display: inline-flex; align-items: center; gap: 5px; background: rgba(241,245,249,0.8); color: var(--text-muted);
+            border: 1px solid var(--border); padding: 7px 13px; border-radius: 100px; font-weight: 500; font-size: 0.73rem;
+            cursor: pointer; transition: all 0.2s var(--ease-smooth); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-family: inherit;
         }
-        .pill-btn:hover {
-            background: var(--surface-solid);
-            color: var(--text-main);
-            box-shadow: var(--shadow-sm);
-        }
-        .content {
-            flex: 1;
-            padding: 14px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            padding-bottom: calc(100px + env(safe-area-inset-bottom));
-        }
+        .pill-btn:hover { background: var(--surface-solid); color: var(--text-main); box-shadow: var(--shadow-sm); }
+        .content { flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
         .card {
-            background: var(--surface);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-radius: var(--radius-lg);
-            padding: 18px;
-            border: 1px solid var(--border-glass);
-            box-shadow: var(--shadow-md);
-            transition: box-shadow 0.3s var(--ease-smooth);
+            background: var(--surface); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-radius: var(--radius-lg);
+            padding: 18px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-md); transition: box-shadow 0.3s var(--ease-smooth);
         }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-        .card-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-main);
-        }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .card-title { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
         .session-summary-badge {
             background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #4f46e5 100%);
-            color: white;
-            padding: 20px;
-            border-radius: var(--radius-lg);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            box-shadow: 0 8px 28px rgba(99, 102, 241, 0.28);
-            position: relative;
-            overflow: hidden;
+            color: white; padding: 20px; border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: 10px;
+            box-shadow: 0 8px 28px rgba(99,102,241,0.28); position: relative; overflow: hidden;
         }
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            padding-bottom: 8px;
-            position: relative;
-            z-index: 1;
+        .summary-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 8px; position: relative; z-index: 1; }
+        .summary-row:last-child { border: none; padding-bottom: 0; }
+        .summary-label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.85; font-weight: 500; letter-spacing: 0.8px; }
+        .summary-value { font-size: 0.88rem; font-weight: 600; text-align: right; max-width: 62%; line-height: 1.35; }
+        .summary-value.waiting-import { color: #fbbf24; font-style: italic; font-weight: 500; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .full-width { grid-column: span 2; }
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .input-group label { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; }
+        input, textarea {
+            width: 100%; background: var(--input-bg); border: 2px solid transparent; border-radius: var(--radius-sm);
+            padding: 10px 14px; font-size: 0.9rem; color: var(--text-main); transition: all 0.2s var(--ease-smooth); outline: none; font-family: inherit;
         }
-        .summary-row:last-child {
-            border: none;
-            padding-bottom: 0;
-        }
-        .summary-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            opacity: 0.85;
-            font-weight: 500;
-            letter-spacing: 0.8px;
-        }
-        .summary-value {
-            font-size: 0.88rem;
-            font-weight: 600;
-            text-align: right;
-            max-width: 62%;
-            line-height: 1.35;
-        }
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .full-width {
-            grid-column: span 2;
-        }
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .input-group label {
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-        }
-        input,
-        textarea {
-            width: 100%;
-            background: var(--input-bg);
-            border: 2px solid transparent;
-            border-radius: var(--radius-sm);
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            color: var(--text-main);
-            transition: all 0.2s var(--ease-smooth);
-            outline: none;
-            font-family: inherit;
-        }
-        input:focus,
-        textarea:focus {
-            background: var(--surface-solid);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-glow);
-        }
-        .readonly-badge {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            padding: 10px 14px;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-align: center;
-            user-select: none;
-        }
+        input:focus, textarea:focus { background: var(--surface-solid); border-color: var(--primary); box-shadow: var(--shadow-glow); }
+        .readonly-badge { background: var(--primary-light); color: var(--primary-dark); padding: 10px 14px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.9rem; text-align: center; user-select: none; }
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 11px 18px;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s var(--ease-smooth);
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-            font-family: inherit;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: white;
+            border: none; padding: 11px 18px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.85rem; cursor: pointer;
+            transition: all 0.2s var(--ease-smooth); width: 100%; position: relative; overflow: hidden; font-family: inherit;
         }
-        .btn:hover {
-            background: var(--primary-dark);
-            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.32);
-            transform: translateY(-1px);
-        }
-        .btn:active {
-            transform: scale(0.97);
-        }
-        .btn-secondary {
-            background: var(--input-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-        }
-        .btn-secondary:hover {
-            background: var(--surface-solid);
-            box-shadow: var(--shadow-md);
-            color: var(--text-main);
-        }
-        .btn-danger {
-            background: var(--danger-light);
-            color: var(--danger);
-            border: 1px solid #fecaca;
-        }
-        .btn-danger:hover {
-            background: #fee2e2;
-        }
-        .btn-outline {
-            background: transparent;
-            border: 2px dashed var(--border);
-            color: var(--text-muted);
-        }
-        .btn-outline:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: var(--primary-light);
-        }
-        .btn-success {
-            background: var(--success);
-        }
-        .btn-success:hover {
-            background: #059669;
-        }
+        .btn:hover { background: var(--primary-dark); box-shadow: 0 4px 16px rgba(99,102,241,0.32); transform: translateY(-1px); }
+        .btn:active { transform: scale(0.97); }
+        .btn-secondary { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--surface-solid); box-shadow: var(--shadow-md); }
+        .btn-danger { background: var(--danger-light); color: var(--danger); border: 1px solid #fecaca; }
+        .btn-danger:hover { background: #fee2e2; }
+        .btn-outline { background: transparent; border: 2px dashed var(--border); color: var(--text-muted); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #059669; }
         .btn-import {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            font-weight: 700;
-            border: 1px solid #c7d2fe;
+            background: var(--primary-light); color: var(--primary-dark); font-weight: 700; border: 1px solid #c7d2fe;
             transition: all 0.2s var(--ease-smooth);
         }
-        .btn-import:hover {
-            background: #c7d2fe;
-            color: #3730a3;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
-            transform: translateY(-1px);
-        }
-        .player-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+        .btn-import:hover { background: #c7d2fe; color: #3730a3; box-shadow: 0 4px 14px rgba(99,102,241,0.25); transform: translateY(-1px); }
+        .player-list { display: flex; flex-direction: column; gap: 6px; }
         .player-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.6);
+            display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.6); backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px); border: 1px solid var(--border); padding: 8px 10px; border-radius: var(--radius);
+            transition: all 0.2s var(--ease-smooth); animation: rowFadeIn 0.3s ease both; position: relative;
+        }
+        @keyframes rowFadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+        .player-row.focused { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); background: rgba(255,255,255,0.92); }
+        .player-row.duplicate { border-color: #fca5a5; background: rgba(254,242,242,0.82); animation: shake 0.45s ease; }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+        .player-avatar {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary-dark);
+            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.78rem; flex-shrink: 0; user-select: none;
+        }
+        .player-row input { flex: 1; padding: 6px 0; background: transparent; border: none; box-shadow: none; font-size: 0.9rem; font-weight: 500; min-width: 0; }
+        .action-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; flex-shrink: 0; transition: all 0.2s var(--ease-smooth); font-size: 1rem; background: transparent; font-family: inherit; pointer-events: auto; }
+        .paid-toggle { background: var(--input-bg); color: #94a3b8; }
+        .paid-toggle.active { background: var(--success); color: white; box-shadow: 0 2px 10px rgba(16,185,129,0.32); animation: popIn 0.3s var(--ease-spring); }
+        @keyframes popIn { 0% { transform: scale(0.8); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+        .remove-toggle { background: transparent; color: #cbd5e1; }
+        .remove-toggle:hover { color: var(--danger); background: var(--danger-light); }
+        .duplicate-warning { color: var(--danger); font-size: 0.78rem; font-weight: 500; display: none; margin-top: 6px; padding: 8px 12px; background: var(--danger-light); border-radius: var(--radius-sm); align-items: center; gap: 6px; }
+        .duplicate-warning.active { display: flex; }
+        .autocomplete-list { position: absolute; top: 100%; left: 40px; right: 40px; background: var(--surface-solid); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); z-index: 60; max-height: 180px; overflow-y: auto; margin-top: 2px; }
+        .autocomplete-item { padding: 8px 14px; cursor: pointer; font-size: 0.85rem; border-bottom: 1px solid var(--border); transition: background 0.15s; color: var(--text-main); }
+        .autocomplete-item:last-child { border-bottom: none; }
+        .autocomplete-item:hover, .autocomplete-item:focus { background: var(--primary-light); color: var(--primary-dark); outline: none; }
+        .stepper-container { display: flex; flex-direction: column; align-items: center; margin-top: 12px; }
+        .stepper { display: flex; align-items: center; justify-content: center; gap: 14px; background: rgba(241,245,249,0.6); backdrop-filter: blur(8px); padding: 6px 10px; border-radius: 100px; border: 1px solid var(--border); }
+        .stepper-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--surface-solid); border: 1px solid var(--border); font-size: 1.1rem; cursor: pointer; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .stepper-count { font-weight: 700; font-size: 1.15rem; min-width: 28px; text-align: center; color: var(--primary-dark); cursor: pointer; user-select: none; }
+        .collapsible-header { cursor: pointer; width: 100%; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+        .collapsible-header .chevron { transition: transform 0.25s; color: var(--text-muted); font-size: 0.75rem; display: inline-block; }
+        .collapsed .collapsible-header .chevron { transform: rotate(-90deg); }
+        .collapsible-body { transition: max-height 0.35s, opacity 0.25s; overflow: hidden; opacity: 1; }
+        .collapsed .collapsible-body { max-height: 0 !important; opacity: 0; margin-top: 0; }
+        .preview-box {
+            background: #1e293b; color: #f1f5f9; border-radius: var(--radius); padding: 16px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.8rem; white-space: pre-wrap; line-height: 1.6; max-height: 360px; overflow-y: auto; border: 1px solid #334155;
+        }
+        .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+        .admin-toolbar { margin-top: 10px; display: none; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
+        .admin-toolbar .toolbar-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px;
+            background: rgba(255,255,255,0.68); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+            border-top: 1px solid var(--border-glass); display: flex; justify-content: space-around; padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); z-index: 50;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--text-muted); font-size: 0.7rem; font-weight: 500; cursor: pointer; padding: 4px 16px; border-radius: 100px; border: none; background: transparent; font-family: inherit; }
+        .nav-item.active { color: var(--primary-dark); background: var(--primary-light); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.5); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.25s; padding: 16px; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--surface-solid); border-radius: 24px; padding: 22px; width: 100%; max-width: 400px; transform: translateY(20px) scale(0.96); transition: transform 0.3s var(--ease-spring); max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translate(-50%, -30px); background: #1e293b; color: white; padding: 10px 20px; border-radius: 100px; font-size: 0.82rem; z-index: 200; opacity: 0; transition: all 0.3s var(--ease-spring); pointer-events: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis; }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+        .saved-item { background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        /* Extra session styles (optimized) */
+        .extra-session-row {
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--border);
-            padding: 8px 10px;
-            border-radius: var(--radius);
-            transition: all 0.2s var(--ease-smooth);
-            animation: rowFadeIn 0.3s ease both;
-            position: relative;
-        }
-        @keyframes rowFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-6px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .player-row.focused {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-glow);
-            background: rgba(255, 255, 255, 0.92);
-        }
-        .player-row.duplicate {
-            border-color: #fca5a5;
-            background: rgba(254, 242, 242, 0.82);
-            animation: shake 0.45s ease;
-        }
-        @keyframes shake {
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-            25% {
-                transform: translateX(-3px);
-            }
-            75% {
-                transform: translateX(3px);
-            }
-        }
-        .player-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.78rem;
-            flex-shrink: 0;
-            user-select: none;
-        }
-        .player-row input {
-            flex: 1;
-            padding: 6px 0;
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            min-width: 0;
-        }
-        .action-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: all 0.2s var(--ease-smooth);
-            font-size: 1rem;
-            background: transparent;
-            font-family: inherit;
-            pointer-events: auto;
-        }
-        .paid-toggle {
-            background: var(--input-bg);
-            color: #94a3b8;
-        }
-        .paid-toggle.active {
-            background: var(--success);
-            color: white;
-            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.32);
-            animation: popIn 0.3s var(--ease-spring);
-        }
-        @keyframes popIn {
-            0% {
-                transform: scale(0.8);
-            }
-            60% {
-                transform: scale(1.15);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        .remove-toggle {
-            background: transparent;
-            color: #cbd5e1;
-        }
-        .remove-toggle:hover {
-            color: var(--danger);
-            background: var(--danger-light);
-        }
-        .duplicate-warning {
-            color: var(--danger);
-            font-size: 0.78rem;
-            font-weight: 500;
-            display: none;
-            margin-top: 6px;
-            padding: 8px 12px;
-            background: var(--danger-light);
-            border-radius: var(--radius-sm);
-            align-items: center;
-            gap: 6px;
-        }
-        .duplicate-warning.active {
-            display: flex;
-        }
-        /* ---- AUTOCOMPLETE DROPDOWN ---- */
-        .autocomplete-list {
-            position: absolute;
-            top: 100%;
-            left: 40px;
-            right: 40px;
-            background: var(--surface-solid);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            box-shadow: var(--shadow-lg);
-            z-index: 60;
-            max-height: 180px;
-            overflow-y: auto;
-            margin-top: 2px;
-        }
-        .autocomplete-item {
-            padding: 8px 14px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            border-bottom: 1px solid var(--border);
-            transition: background 0.15s;
-            color: var(--text-main);
-        }
-        .autocomplete-item:last-child {
-            border-bottom: none;
-        }
-        .autocomplete-item:hover,
-        .autocomplete-item:focus {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            outline: none;
-        }
-        /* --------------------------------- */
-        .stepper-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 12px;
-        }
-        .stepper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            background: rgba(241, 245, 249, 0.6);
-            backdrop-filter: blur(8px);
-            padding: 6px 10px;
-            border-radius: 100px;
-            border: 1px solid var(--border);
-        }
-        .stepper-btn {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: var(--surface-solid);
-            border: 1px solid var(--border);
-            font-size: 1.1rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .stepper-count {
-            font-weight: 700;
-            font-size: 1.15rem;
-            min-width: 28px;
-            text-align: center;
-            color: var(--primary-dark);
-            cursor: pointer;
-            user-select: none;
-        }
-        .collapsible-header {
-            cursor: pointer;
-            width: 100%;
-            user-select: none;
-        }
-        .collapsible-header .chevron {
-            transition: transform 0.25s;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            display: inline-block;
-        }
-        .collapsed .collapsible-header .chevron {
-            transform: rotate(-90deg);
-        }
-        .collapsible-body {
-            transition: max-height 0.35s, opacity 0.25s;
-            overflow: hidden;
-            opacity: 1;
-        }
-        .collapsed .collapsible-body {
-            max-height: 0 !important;
-            opacity: 0;
-            margin-top: 0;
-        }
-        .preview-box {
-            background: #1e293b;
-            color: #f1f5f9;
-            border-radius: var(--radius);
-            padding: 16px;
-            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-            font-size: 0.8rem;
-            white-space: pre-wrap;
-            line-height: 1.6;
-            max-height: 360px;
-            overflow-y: auto;
-            border: 1px solid #334155;
-        }
-        .action-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 8px;
-        }
-        .admin-toolbar {
-            margin-top: 10px;
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            padding-top: 10px;
-            border-top: 1px solid var(--border);
-        }
-        .admin-toolbar .toolbar-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            background: rgba(255, 255, 255, 0.68);
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
-            border-top: 1px solid var(--border-glass);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
-            z-index: 50;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 4px 16px;
-            border-radius: 100px;
-            border: none;
-            background: transparent;
-            font-family: inherit;
-        }
-        .nav-item.active {
-            color: var(--primary-dark);
-            background: var(--primary-light);
-        }
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(6px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s;
-            padding: 16px;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .modal-content {
-            background: var(--surface-solid);
-            border-radius: 24px;
-            padding: 22px;
-            width: 100%;
-            max-width: 400px;
-            transform: translateY(20px) scale(0.96);
-            transition: transform 0.3s var(--ease-spring);
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-        }
-        .modal-overlay.active .modal-content {
-            transform: translateY(0) scale(1);
-        }
-        .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translate(-50%, -30px);
-            background: #1e293b;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 100px;
-            font-size: 0.82rem;
-            z-index: 200;
-            opacity: 0;
-            transition: all 0.3s var(--ease-spring);
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            max-width: 90vw;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translate(-50%, 0);
-        }
-        .saved-item {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 14px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        .extra-session-header {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
+            margin-bottom: 10px;
         }
-        .court-row {
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 12px;
-            margin-bottom: 8px;
-        }
-        .court-detail {
+        .extra-session-title {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--primary-dark);
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 5px;
         }
-        .court-detail input {
-            flex: 1;
-            min-width: 0;
+        .extra-session-delete {
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .extra-session-delete:hover {
+            color: var(--danger);
+            background: var(--danger-light);
+        }
+        .extra-session-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .extra-session-body .court-input {
+            background: var(--input-bg);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             padding: 8px 12px;
             font-size: 0.85rem;
-            background: var(--input-bg);
+            width: 100%;
         }
-        .time-row {
+        .extra-time-row {
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .time-row input {
+        .extra-time-row input[type="time"] {
             flex: 1;
-            min-width: 0;
+            background: var(--input-bg);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             padding: 8px 4px;
             font-size: 0.82rem;
-            background: var(--input-bg);
             text-align: center;
         }
-        .duration-badge {
+        .extra-duration-badge {
             font-size: 0.75rem;
             color: var(--primary-dark);
             font-weight: 600;
+            background: var(--primary-light);
+            padding: 4px 10px;
+            border-radius: 6px;
             min-width: 38px;
             text-align: center;
-            background: var(--primary-light);
-            padding: 4px 8px;
-            border-radius: 6px;
         }
-        .location-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 42px;
-            height: 24px;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            position: absolute;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #cbd5e1;
-            transition: 0.25s;
-            border-radius: 24px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: 0.25s var(--ease-spring);
-            border-radius: 50%;
-        }
-        input:checked+.slider {
-            background-color: var(--primary);
-        }
-        input:checked+.slider:before {
-            transform: translateX(18px);
-        }
-        .hidden {
-            display: none !important;
-        }
+        .location-toggle { display: flex; align-items: center; gap: 8px; }
+        .toggle-switch { position: relative; display: inline-block; width: 42px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: 0.25s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.25s var(--ease-spring); border-radius: 50%; }
+        input:checked+.slider { background-color: var(--primary); }
+        input:checked+.slider:before { transform: translateX(18px); }
+        .hidden { display: none !important; }
         @media (max-width: 380px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .full-width {
-                grid-column: span 1;
-            }
-            .action-row {
-                grid-template-columns: 1fr;
-            }
-            .admin-toolbar .toolbar-row {
-                grid-template-columns: 1fr;
-            }
-            .header h1 {
-                font-size: 1.1rem;
-            }
-            .pill-btn {
-                padding: 6px 10px;
-                font-size: 0.7rem;
-            }
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+            .action-row { grid-template-columns: 1fr; }
+            .admin-toolbar .toolbar-row { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.1rem; }
+            .pill-btn { padding: 6px 10px; font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -921,8 +323,10 @@
                         <span class="card-title">🏟️ Additional Sessions</span><span class="chevron">▼</span>
                     </div>
                     <div class="collapsible-body" style="max-height:2000px;">
-                        <div id="additionalCourtsContainer"><p class="empty-state" id="noCourtsMsg">No additional sessions yet.</p></div>
-                        <button class="btn btn-outline hidden" id="addCourtBtn" style="margin-top:12px;">+ Add Session</button>
+                        <div id="additionalCourtsContainer">
+                            <p class="empty-state" id="noCourtsMsg" style="text-align:center;color:var(--text-muted);padding:10px;">No extra sessions added yet.</p>
+                        </div>
+                        <button class="btn btn-outline hidden" id="addCourtBtn" style="margin-top:12px;">+ Add Extra Session</button>
                     </div>
                 </div>
 
@@ -1149,23 +553,20 @@
                 dashPrice: $('dashPrice'),
             };
 
-            const escapeHtml = (str) => { const d = document.createElement('div');
-                d.textContent = str || ''; return d.innerHTML; };
+            const escapeHtml = (str) => { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; };
             const vibrate = (ms = 12) => { if (navigator.vibrate) try { navigator.vibrate(ms); } catch (_) {} };
 
             function playTickSound() {
                 try {
-                    const ctx = new(window.AudioContext || window.webkitAudioContext)();
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
+                    osc.connect(gain); gain.connect(ctx.destination);
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(880, ctx.currentTime);
                     gain.gain.setValueAtTime(0.3, ctx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.1);
+                    osc.start(); osc.stop(ctx.currentTime + 0.1);
                 } catch (e) {}
             }
 
@@ -1176,13 +577,11 @@
                 els.toast._timeout = setTimeout(() => els.toast.classList.remove('show'), 2200);
             }
 
-            function timeToMinutes(t) { if (!t) return 0;
-                const [h, m] = t.split(':').map(Number); return isNaN(h) || isNaN(m) ? 0 : h * 60 + m; }
+            function timeToMinutes(t) { if (!t) return 0; const [h, m] = t.split(':').map(Number); return isNaN(h) || isNaN(m) ? 0 : h * 60 + m; }
 
             function calcDurationSingle(start, end) {
                 if (!start || !end) return 0;
-                let s = timeToMinutes(start),
-                    e = timeToMinutes(end);
+                let s = timeToMinutes(start), e = timeToMinutes(end);
                 if (e <= s) e += 1440;
                 return Math.max(0, (e - s) / 60);
             }
@@ -1190,15 +589,13 @@
             function calcTotalDuration() {
                 const intervals = [];
                 if (els.start.value && els.end.value) {
-                    let s = timeToMinutes(els.start.value),
-                        e = timeToMinutes(els.end.value);
+                    let s = timeToMinutes(els.start.value), e = timeToMinutes(els.end.value);
                     if (e <= s) e += 1440;
                     intervals.push({ start: s, end: e });
                 }
                 state.additionalCourts.forEach(c => {
                     if (c.start && c.end) {
-                        let s = timeToMinutes(c.start),
-                            e = timeToMinutes(c.end);
+                        let s = timeToMinutes(c.start), e = timeToMinutes(c.end);
                         if (e <= s) e += 1440;
                         intervals.push({ start: s, end: e });
                     }
@@ -1209,8 +606,7 @@
                 let cur = { ...intervals[0] };
                 for (let i = 1; i < intervals.length; i++) {
                     if (intervals[i].start <= cur.end) cur.end = Math.max(cur.end, intervals[i].end);
-                    else { merged.push(cur);
-                        cur = { ...intervals[i] }; }
+                    else { merged.push(cur); cur = { ...intervals[i] }; }
                 }
                 merged.push(cur);
                 let totalMin = 0;
@@ -1218,8 +614,7 @@
                 return totalMin / 60;
             }
 
-            function formatDuration(hrs) { return (hrs === 0 || isNaN(hrs)) ? '—' : (hrs % 1 === 0 ? hrs.toFixed(0) : hrs
-                    .toFixed(1)) + 'h'; }
+            function formatDuration(hrs) { return (hrs === 0 || isNaN(hrs)) ? '—' : (hrs % 1 === 0 ? hrs.toFixed(0) : hrs.toFixed(1)) + 'h'; }
 
             function formatTime12(t) {
                 if (!t) return '';
@@ -1233,22 +628,15 @@
 
             function formatDateDMY(dStr) { if (!dStr) return ''; const [y, m, d] = dStr.split('-'); return `${parseInt(d)}/${parseInt(m)}/${y}`; }
 
-            function cleanName(str) { return (str || '').replace(/[\u200B\u200C\u200D\u200E\u200F\uFEFF\u2060-\u2069\u202A-\u202E]/g,
-                    '').trim(); }
+            function cleanName(str) { return (str || '').replace(/[\u200B\u200C\u200D\u200E\u200F\uFEFF\u2060-\u2069\u202A-\u202E]/g, '').trim(); }
 
             function getAllUniqueCourts() {
                 const courts = new Set();
                 const mainRaw = els.court.value || '';
-                mainRaw.split(/[,&]+/).forEach(part => {
-                    const trimmed = part.trim();
-                    if (trimmed) courts.add(trimmed);
-                });
+                mainRaw.split(/[,&]+/).forEach(part => { const trimmed = part.trim(); if (trimmed) courts.add(trimmed); });
                 state.additionalCourts.forEach(c => {
                     const raw = c.court || '';
-                    raw.split(/[,&]+/).forEach(part => {
-                        const trimmed = part.trim();
-                        if (trimmed) courts.add(trimmed);
-                    });
+                    raw.split(/[,&]+/).forEach(part => { const trimmed = part.trim(); if (trimmed) courts.add(trimmed); });
                 });
                 return Array.from(courts);
             }
@@ -1280,10 +668,8 @@
                 text += `📍 ${venueVal}\n`;
                 text += `🏟️ Court: ${allCourts}\n\n`;
                 text += `📅 ${dateVal} (${dayVal})\n\n`;
-                text +=
-                    `⏰ SESSIONS & COURTS\n────────────────────────────────\n Time                | Courts\n────────────────────────────────\n`;
-                text +=
-                ` ${formatTime12(els.start.value)} – ${formatTime12(els.end.value)}  | ${mainCourt}\n`;
+                text += `⏰ SESSIONS & COURTS\n────────────────────────────────\n Time                | Courts\n────────────────────────────────\n`;
+                text += ` ${formatTime12(els.start.value)} – ${formatTime12(els.end.value)}  | ${mainCourt}\n`;
                 state.additionalCourts.forEach(c => {
                     if (c.court.trim()) {
                         const s = formatTime12(c.start) || '?';
@@ -1297,8 +683,7 @@
                 const totalPlayers = state.players.length;
                 const paidCount = state.players.filter(p => p.paid).length;
                 const pendingCount = totalPlayers - paidCount;
-                text +=
-                    `──────────────────\n👥 ${totalPlayers} Players  |  ✅ ${paidCount} Paid  |  ⏳ ${pendingCount} Pending\n──────────────────\n\n`;
+                text += `──────────────────\n👥 ${totalPlayers} Players  |  ✅ ${paidCount} Paid  |  ⏳ ${pendingCount} Pending\n──────────────────\n\n`;
 
                 state.players.forEach((p, i) => {
                     const name = cleanName(p.name) || '(Open)';
@@ -1306,8 +691,7 @@
                 });
                 if (state.waitingPlayers.length) {
                     text += `\nWaiting List\n`;
-                    state.waitingPlayers.forEach((p, i) => text +=
-                        `${i + 1}. ${cleanName(p.name) || '(Open)'}\n`);
+                    state.waitingPlayers.forEach((p, i) => text += `${i + 1}. ${cleanName(p.name) || '(Open)'}\n`);
                 }
                 text += `\n──────────────────\n\nNotes:\n${els.footer.value.trim()}\n`;
                 if (state.locationEnabled && locationVal) text += `\n📍 Location: ${locationVal}\n`;
@@ -1315,39 +699,52 @@
                 return text;
             }
 
-            function updatePreview() { state.previewDirty = true;
-                schedulePreviewRender(); }
+            function updatePreview() { state.previewDirty = true; schedulePreviewRender(); }
 
             function schedulePreviewRender() {
                 if (state.renderScheduled) return;
                 state.renderScheduled = true;
                 requestAnimationFrame(() => {
-                    if (state.previewDirty) { els.preview.textContent = buildPreview();
-                        state.previewDirty = false; }
+                    if (state.previewDirty) { els.preview.textContent = buildPreview(); state.previewDirty = false; }
                     state.renderScheduled = false;
                     updateLiveDashboard();
                 });
             }
 
+            // --- DASHBOARD: show "waiting import data" for players when empty ---
             function updateLiveDashboard() {
                 const allCourts = formatCourtList();
-                els.dashVenue.textContent = `${els.venue.value || '—'} (${allCourts})`;
-                els.dashDate.textContent =
-                    `${formatDateDMY(els.date.value) || '—'} (${els.day.textContent || '—'})`;
-                els.dashTime.textContent =
-                    `${formatTime12(els.start.value) || '—'} - ${formatTime12(els.end.value) || '—'} (${els.duration.textContent || '—'})`;
-                els.dashPrice.textContent =
-                    `RM ${parseFloat(els.price.value || 0).toFixed(2)} • Shuttle: ${els.shuttle.value || '—'}`;
+                const venueVal = els.venue.value;
+                const dateVal = els.date.value;
+                const startVal = els.start.value;
+                const endVal = els.end.value;
+                const priceVal = els.price.value;
+                const shuttleVal = els.shuttle.value;
+
+                const sessionEmpty = !venueVal && !dateVal;
+
+                if (!state.isAdmin && sessionEmpty) {
+                    els.dashVenue.innerHTML = '<span class="summary-value waiting-import">⏳ Waiting for import data…</span>';
+                    els.dashDate.innerHTML = '<span class="summary-value waiting-import">Use 📥 Import button</span>';
+                    els.dashTime.innerHTML = '<span class="summary-value waiting-import">—</span>';
+                    els.dashExtraSessionsRow.classList.add('hidden');
+                    els.dashPrice.innerHTML = '<span class="summary-value waiting-import">—</span>';
+                    return;
+                }
+
+                els.dashVenue.textContent = `${venueVal || '—'} (${allCourts})`;
+                els.dashDate.textContent = `${formatDateDMY(dateVal) || '—'} (${els.day.textContent || '—'})`;
+                els.dashTime.textContent = `${formatTime12(startVal) || '—'} - ${formatTime12(endVal) || '—'} (${els.duration.textContent || '—'})`;
+                els.dashPrice.textContent = `RM ${parseFloat(priceVal || 0).toFixed(2)} • Shuttle: ${shuttleVal || '—'}`;
+
                 const validExtras = state.additionalCourts.filter(c => c.court.trim());
                 els.dashExtraSessionsRow.classList.toggle('hidden', validExtras.length === 0);
-                els.dashExtra.textContent = validExtras.length ? `${validExtras.length} Session(s) configured` :
-                    'None';
+                els.dashExtra.textContent = validExtras.length ? `${validExtras.length} Session(s) configured` : 'None';
             }
 
             function updateDuplicateStyling() {
                 const counts = new Map();
-                state.players.forEach(p => { const n = cleanName(p.name).toLowerCase(); if (n) counts.set(n, (counts
-                        .get(n) || 0) + 1); });
+                state.players.forEach(p => { const n = cleanName(p.name).toLowerCase(); if (n) counts.set(n, (counts.get(n) || 0) + 1); });
                 els.playersContainer.querySelectorAll('.player-row').forEach((row, idx) => {
                     const n = cleanName(state.players[idx]?.name || '').toLowerCase();
                     row.classList.toggle('duplicate', !!(n && counts.get(n) > 1));
@@ -1359,17 +756,14 @@
                 const frag = document.createDocumentFragment();
                 state.players.forEach((p, idx) => {
                     const row = document.createElement('div');
-                    row.className = 'player-row';
-                    row.setAttribute('role', 'listitem');
-                    row.dataset.idx = idx;
+                    row.className = 'player-row'; row.setAttribute('role', 'listitem'); row.dataset.idx = idx;
                     row.innerHTML = `<div class="player-avatar">${idx + 1}</div>
                         <input type="text" class="pname" value="${escapeHtml(cleanName(p.name))}" placeholder="Enter name..." data-idx="${idx}" autocomplete="off">
                         <button class="action-icon paid-toggle ${p.paid ? 'active' : ''}" data-idx="${idx}" aria-label="Toggle paid status">✅</button>
                         <button class="action-icon remove-toggle" data-idx="${idx}" aria-label="Remove player">✕</button>`;
                     frag.appendChild(row);
                 });
-                els.playersContainer.innerHTML = '';
-                els.playersContainer.appendChild(frag);
+                els.playersContainer.innerHTML = ''; els.playersContainer.appendChild(frag);
                 els.playerCount.textContent = state.players.length;
                 updateDuplicateStyling();
             }
@@ -1378,39 +772,101 @@
                 const frag = document.createDocumentFragment();
                 state.waitingPlayers.forEach((p, idx) => {
                     const row = document.createElement('div');
-                    row.className = 'player-row';
-                    row.setAttribute('role', 'listitem');
-                    row.dataset.idx = idx;
+                    row.className = 'player-row'; row.setAttribute('role', 'listitem'); row.dataset.idx = idx;
                     row.innerHTML = `<div class="player-avatar" style="background:var(--input-bg);color:var(--text-muted);">${idx + 1}</div>
                         <input type="text" class="wname" value="${escapeHtml(cleanName(p.name))}" placeholder="Waiting player..." data-idx="${idx}" autocomplete="off">
                         <button class="action-icon remove-toggle" data-idx="${idx}" aria-label="Remove waiting player">✕</button>`;
                     frag.appendChild(row);
                 });
-                els.waitingContainer.innerHTML = '';
-                els.waitingContainer.appendChild(frag);
+                els.waitingContainer.innerHTML = ''; els.waitingContainer.appendChild(frag);
             }
 
+            // --- OPTIMIZED ADDITIONAL COURTS RENDERING ---
             function renderAdditionalCourts() {
                 const frag = document.createDocumentFragment();
                 const hasCourts = state.additionalCourts.length > 0;
-                if (els.noCourtsMsg) els.noCourtsMsg.style.display = hasCourts ? 'none' : 'block';
+                if (els.noCourtsMsg) {
+                    els.noCourtsMsg.textContent = hasCourts ? '' : 'No extra sessions added yet.';
+                    els.noCourtsMsg.style.display = hasCourts ? 'none' : 'block';
+                }
                 state.additionalCourts.forEach((c, idx) => {
-                    const row = document.createElement('div');
-                    row.className = 'court-row';
-                    row.dataset.idx = idx;
                     const dur = calcDurationSingle(c.start, c.end);
-                    row.innerHTML = `<div class="court-detail">
-                        <input type="text" class="court-name-input" value="${escapeHtml(c.court)}" placeholder="e.g. 16" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
-                        ${state.isAdmin ? `<button class="remove-btn" data-idx="${idx}" style="cursor:pointer;background:none;border:none;color:#cbd5e1;font-size:1rem;">✕</button>` : ''}</div>
-                        <div class="time-row">
-                        <input type="time" class="time-start" value="${c.start || ''}" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
-                        <span>|</span>
-                        <input type="time" class="time-end" value="${c.end || ''}" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
-                        <span class="duration-badge">${formatDuration(dur)}</span></div>`;
+                    const row = document.createElement('div');
+                    row.className = 'extra-session-row';
+                    row.dataset.idx = idx;
+                    row.innerHTML = `
+                        <div class="extra-session-header">
+                            <span class="extra-session-title">🏟️ Extra Session #${idx + 1}</span>
+                            ${state.isAdmin ? `<button class="extra-session-delete" data-idx="${idx}" aria-label="Delete session">✕</button>` : ''}
+                        </div>
+                        <div class="extra-session-body">
+                            <input type="text" class="court-input court-name-input" value="${escapeHtml(c.court)}" placeholder="Court number(s) e.g. 17, 18" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
+                            <div class="extra-time-row">
+                                <input type="time" class="time-start" value="${c.start || ''}" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
+                                <span>to</span>
+                                <input type="time" class="time-end" value="${c.end || ''}" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''}>
+                                <span class="extra-duration-badge">${formatDuration(dur)}</span>
+                            </div>
+                        </div>`;
                     frag.appendChild(row);
                 });
-                els.additionalCourtsContainer.innerHTML = '';
-                els.additionalCourtsContainer.appendChild(frag);
+                // Clear container except noCourtsMsg
+                while (els.additionalCourtsContainer.firstChild) {
+                    if (els.additionalCourtsContainer.firstChild.id === 'noCourtsMsg') break;
+                    els.additionalCourtsContainer.removeChild(els.additionalCourtsContainer.firstChild);
+                }
+                if (els.noCourtsMsg && els.noCourtsMsg.parentNode === els.additionalCourtsContainer) {
+                    els.additionalCourtsContainer.insertBefore(frag, els.noCourtsMsg);
+                } else {
+                    els.additionalCourtsContainer.appendChild(frag);
+                }
+            }
+
+            function updateAdditionalCourtsVisibility() {
+                const card = els.additionalCourtsCard;
+                if (!card) return;
+                const hasExtras = state.additionalCourts.length > 0;
+                if (state.isAdmin) {
+                    card.classList.toggle('collapsed', !hasExtras);
+                    const header = card.querySelector('.collapsible-header');
+                    if (header) header.setAttribute('aria-expanded', hasExtras ? 'true' : 'false');
+                }
+            }
+
+            // Hook renderAdditionalCourts to also update card state
+            const originalRenderAdditionalCourts = renderAdditionalCourts;
+            renderAdditionalCourts = function() {
+                originalRenderAdditionalCourts();
+                updateAdditionalCourtsVisibility();
+            };
+
+            // Event delegation for additional courts
+            els.additionalCourtsContainer.addEventListener('input', (e) => {
+                const idx = parseInt(e.target.dataset.idx);
+                if (isNaN(idx) || !state.additionalCourts[idx]) return;
+                if (e.target.classList.contains('court-name-input')) state.additionalCourts[idx].court = e.target.value;
+                else if (e.target.classList.contains('time-start')) { state.additionalCourts[idx].start = e.target.value; updateRowDuration(e.target, idx); }
+                else if (e.target.classList.contains('time-end')) { state.additionalCourts[idx].end = e.target.value; updateRowDuration(e.target, idx); }
+                updateDateData();
+            });
+            els.additionalCourtsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('extra-session-delete')) {
+                    const idx = parseInt(e.target.dataset.idx);
+                    if (!isNaN(idx) && state.additionalCourts[idx]) {
+                        state.additionalCourts.splice(idx, 1);
+                        renderAdditionalCourts();
+                        updateDateData();
+                        vibrate();
+                    }
+                }
+            });
+
+            function updateRowDuration(target, idx) {
+                const row = target.closest('.extra-session-row');
+                if (!row || !state.additionalCourts[idx]) return;
+                const dur = calcDurationSingle(state.additionalCourts[idx].start, state.additionalCourts[idx].end);
+                const badge = row.querySelector('.extra-duration-badge');
+                if (badge) badge.textContent = formatDuration(dur);
             }
 
             function renderSaved() {
@@ -1426,11 +882,10 @@
                         ${state.isAdmin ? `<button class="btn btn-danger del-btn" data-idx="${idx}" style="padding:6px 12px;font-size:0.78rem;">✕</button>` : ''}</div>`;
                     frag.appendChild(item);
                 });
-                els.savedBookingsList.innerHTML = '';
-                els.savedBookingsList.appendChild(frag);
+                els.savedBookingsList.innerHTML = ''; els.savedBookingsList.appendChild(frag);
             }
 
-            /* ── NAME STORAGE FOR AUTOCOMPLETE ── */
+            /* --- AUTOCOMPLETE & STORAGE --- */
             function getNames() {
                 const names = new Set();
                 state.players.forEach(p => { const n = cleanName(p.name); if (n) names.add(n); });
@@ -1447,56 +902,35 @@
             }
 
             function addName(name) {
-                const n = cleanName(name);
-                if (!n) return;
+                const n = cleanName(name); if (!n) return;
                 try {
                     const stored = localStorage.getItem(NAMES_KEY);
                     const names = stored ? JSON.parse(stored) : [];
-                    if (!names.includes(n)) {
-                        names.push(n);
-                        if (names.length > 200) names.splice(0, names.length - 200);
-                        localStorage.setItem(NAMES_KEY, JSON.stringify(names));
-                    }
+                    if (!names.includes(n)) { names.push(n); if (names.length > 200) names.splice(0, names.length - 200); localStorage.setItem(NAMES_KEY, JSON.stringify(names)); }
                 } catch (e) {}
             }
 
             function persistSavedBookings() {
-                try {
-                    localStorage.setItem(SAVED_KEY, JSON.stringify(state.savedBookings));
-                } catch (e) { showToast('Storage full', '⚠️'); }
+                try { localStorage.setItem(SAVED_KEY, JSON.stringify(state.savedBookings)); } catch (e) { showToast('Storage full', '⚠️'); }
             }
 
             function loadSavedBookings() {
-                try {
-                    const stored = localStorage.getItem(SAVED_KEY);
-                    if (stored) state.savedBookings = JSON.parse(stored);
-                } catch (e) { state.savedBookings = []; }
+                try { const stored = localStorage.getItem(SAVED_KEY); if (stored) state.savedBookings = JSON.parse(stored); } catch (e) { state.savedBookings = []; }
             }
 
-            /* ── AUTOCOMPLETE ── */
-            function dismissAllAutocomplete() { document.querySelectorAll('.autocomplete-list').forEach(e => e
-            .remove()); }
-            document.addEventListener('click', (e) => { if (!e.target.closest('.autocomplete-list') && !e.target.closest(
-                    '.player-row input')) dismissAllAutocomplete(); });
-            document.addEventListener('focusout', (e) => { if (e.target.closest('.player-row input')) setTimeout(() => { if (
-                        !document.querySelector('.autocomplete-list:hover')) dismissAllAutocomplete(); }, 150); });
+            function dismissAllAutocomplete() { document.querySelectorAll('.autocomplete-list').forEach(e => e.remove()); }
+            document.addEventListener('click', (e) => { if (!e.target.closest('.autocomplete-list') && !e.target.closest('.player-row input')) dismissAllAutocomplete(); });
+            document.addEventListener('focusout', (e) => { if (e.target.closest('.player-row input')) setTimeout(() => { if (!document.querySelector('.autocomplete-list:hover')) dismissAllAutocomplete(); }, 150); });
 
             function showAutocomplete(input, idx, isWaiting = false) {
                 dismissAllAutocomplete();
-                const val = cleanName(input.value).toLowerCase();
-                if (!val) return;
-                const matches = getNames().filter(n => cleanName(n).toLowerCase().includes(val) && cleanName(n)
-                    .toLowerCase() !== val).slice(0, 8);
+                const val = cleanName(input.value).toLowerCase(); if (!val) return;
+                const matches = getNames().filter(n => cleanName(n).toLowerCase().includes(val) && cleanName(n).toLowerCase() !== val).slice(0, 8);
                 if (!matches.length) return;
                 const list = document.createElement('div');
-                list.className = 'autocomplete-list';
-                list.setAttribute('role', 'listbox');
+                list.className = 'autocomplete-list'; list.setAttribute('role', 'listbox');
                 matches.forEach(name => {
-                    const item = document.createElement('div');
-                    item.className = 'autocomplete-item';
-                    item.textContent = cleanName(name);
-                    item.setAttribute('role', 'option');
-                    item.tabIndex = 0;
+                    const item = document.createElement('div'); item.className = 'autocomplete-item'; item.textContent = cleanName(name); item.setAttribute('role', 'option'); item.tabIndex = 0;
                     list.appendChild(item);
                 });
                 list.addEventListener('mousedown', (e) => {
@@ -1505,8 +939,7 @@
                         const n = cleanName(e.target.textContent);
                         input.value = n;
                         if (isWaiting) state.waitingPlayers[idx].name = n;
-                        else { state.players[idx].name = n;
-                            updateDuplicateStyling(); }
+                        else { state.players[idx].name = n; updateDuplicateStyling(); }
                         dismissAllAutocomplete();
                         updatePreview();
                         addName(n);
@@ -1516,39 +949,25 @@
                 input.closest('.player-row').appendChild(list);
             }
 
-            /* ── ROBUST EVENT HANDLING FOR PLAYER ROWS ── */
+            /* --- PLAYER EVENT HANDLERS --- */
             function handlePlayerInput(e, arr, isWaiting) {
                 const t = e.target;
                 if (t.classList.contains('pname') || t.classList.contains('wname')) {
                     const idx = parseInt(t.dataset.idx);
-                    if (!isNaN(idx) && arr[idx]) {
-                        arr[idx].name = t.value;
-                        if (!isWaiting) updateDuplicateStyling();
-                        updatePreview();
-                        showAutocomplete(t, idx, isWaiting);
-                    }
+                    if (!isNaN(idx) && arr[idx]) { arr[idx].name = t.value; if (!isWaiting) updateDuplicateStyling(); updatePreview(); showAutocomplete(t, idx, isWaiting); }
                 }
             }
-
             function handlePlayerAction(e, arr, isWaiting) {
-                const btn = e.target.closest('button.action-icon');
-                if (!btn) return;
-                const idx = parseInt(btn.dataset.idx);
-                if (isNaN(idx) || !arr[idx]) return;
-
+                const btn = e.target.closest('button.action-icon'); if (!btn) return;
+                const idx = parseInt(btn.dataset.idx); if (isNaN(idx) || !arr[idx]) return;
                 if (btn.classList.contains('paid-toggle')) {
-                    arr[idx].paid = !arr[idx].paid;
-                    btn.classList.toggle('active', arr[idx].paid);
+                    arr[idx].paid = !arr[idx].paid; btn.classList.toggle('active', arr[idx].paid);
                     if (arr[idx].paid && arr[idx].name) addName(cleanName(arr[idx].name));
-                    updatePreview();
-                    vibrate();
-                    playTickSound();
+                    updatePreview(); vibrate(); playTickSound();
                 } else if (btn.classList.contains('remove-toggle')) {
                     arr.splice(idx, 1);
-                    if (isWaiting) renderWaitingPlayers();
-                    else renderPlayers();
-                    updatePreview();
-                    vibrate();
+                    if (isWaiting) renderWaitingPlayers(); else renderPlayers();
+                    updatePreview(); vibrate();
                 }
             }
 
@@ -1557,79 +976,38 @@
             els.waitingContainer.addEventListener('input', (e) => handlePlayerInput(e, state.waitingPlayers, true));
             els.waitingContainer.addEventListener('click', (e) => handlePlayerAction(e, state.waitingPlayers, true));
 
-            els.playersContainer.addEventListener('focusin', (e) => { const r = e.target.closest('.player-row'); if (r) r
-                    .classList.add('focused'); });
-            els.playersContainer.addEventListener('focusout', (e) => { const r = e.target.closest('.player-row'); if (r) r
-                    .classList.remove('focused'); });
-            els.waitingContainer.addEventListener('focusin', (e) => { const r = e.target.closest('.player-row'); if (r) r
-                    .classList.add('focused'); });
-            els.waitingContainer.addEventListener('focusout', (e) => { const r = e.target.closest('.player-row'); if (r) r
-                    .classList.remove('focused'); });
+            els.playersContainer.addEventListener('focusin', (e) => { const r = e.target.closest('.player-row'); if (r) r.classList.add('focused'); });
+            els.playersContainer.addEventListener('focusout', (e) => { const r = e.target.closest('.player-row'); if (r) r.classList.remove('focused'); });
+            els.waitingContainer.addEventListener('focusin', (e) => { const r = e.target.closest('.player-row'); if (r) r.classList.add('focused'); });
+            els.waitingContainer.addEventListener('focusout', (e) => { const r = e.target.closest('.player-row'); if (r) r.classList.remove('focused'); });
 
-            els.additionalCourtsContainer.addEventListener('input', (e) => {
-                const idx = parseInt(e.target.dataset.idx);
-                if (isNaN(idx) || !state.additionalCourts[idx]) return;
-                if (e.target.classList.contains('court-name-input')) state.additionalCourts[idx].court = e.target
-                    .value;
-                else if (e.target.classList.contains('time-start')) { state.additionalCourts[idx].start = e.target
-                        .value;
-                    updateRowDuration(e.target, idx); } else if (e.target.classList.contains('time-end')) { state
-                        .additionalCourts[idx].end = e.target.value;
-                    updateRowDuration(e.target, idx); }
-                updateDateData();
-            });
-            els.additionalCourtsContainer.addEventListener('click', (e) => { if (e.target.classList.contains(
-                    'remove-btn')) { const idx = parseInt(e.target.dataset.idx); if (!isNaN(idx) && state
-                        .additionalCourts[idx]) { state.additionalCourts.splice(idx, 1);
-                        renderAdditionalCourts();
-                        updateDateData();
-                        vibrate(); } } });
-
-            function updateRowDuration(target, idx) {
-                const row = target.closest('.court-row');
-                if (!row || !state.additionalCourts[idx]) return;
-                const dur = calcDurationSingle(state.additionalCourts[idx].start, state.additionalCourts[idx].end);
-                const badge = row.querySelector('.duration-badge');
-                if (badge) badge.textContent = formatDuration(dur);
-            }
-
+            /* --- COLLAPSE --- */
             window.toggleCollapse = function(id) {
-                const el = document.getElementById(id);
-                if (!el) return;
+                const el = document.getElementById(id); if (!el) return;
                 const was = el.classList.contains('collapsed');
                 el.classList.toggle('collapsed');
                 const h = el.querySelector('.collapsible-header');
                 if (h) h.setAttribute('aria-expanded', was ? 'true' : 'false');
             };
 
-            function showConfirm(title, msg, cb) { els.confirmTitle.textContent = title;
-                els.confirmMessage.textContent = msg;
-                state.confirmCallback = cb;
-                els.confirmModal.classList.add('active');
-                $('confirmActionBtn').focus(); }
-            $('confirmCancelBtn').addEventListener('click', () => { els.confirmModal.classList.remove('active');
-                state.confirmCallback = null;
-                vibrate(); });
-            $('confirmActionBtn').addEventListener('click', () => { els.confirmModal.classList.remove('active');
-                vibrate(); if (state.confirmCallback) { const cb = state.confirmCallback;
-                    state.confirmCallback = null;
-                    cb(); } });
+            /* --- CONFIRM MODAL --- */
+            function showConfirm(title, msg, cb) { els.confirmTitle.textContent = title; els.confirmMessage.textContent = msg; state.confirmCallback = cb; els.confirmModal.classList.add('active'); $('confirmActionBtn').focus(); }
+            $('confirmCancelBtn').addEventListener('click', () => { els.confirmModal.classList.remove('active'); state.confirmCallback = null; vibrate(); });
+            $('confirmActionBtn').addEventListener('click', () => { els.confirmModal.classList.remove('active'); vibrate(); if (state.confirmCallback) { const cb = state.confirmCallback; state.confirmCallback = null; cb(); } });
 
+            /* --- DATE/TIME UPDATES --- */
             function updateDateData() {
-                if (els.date.value) { const d = new Date(els.date.value + 'T00:00:00'); if (!isNaN(d.getTime())) els
-                        .day.textContent = malayDays[d.getDay()]; }
+                if (els.date.value) { const d = new Date(els.date.value + 'T00:00:00'); if (!isNaN(d.getTime())) els.day.textContent = malayDays[d.getDay()]; }
                 const t = calcTotalDuration();
                 els.duration.textContent = (t % 1 === 0 ? t.toFixed(0) : t.toFixed(1)) + ' Hrs';
                 updatePreview();
             }
-            [els.date, els.start, els.end, els.venue, els.court, els.price, els.shuttle, els.host, els.footer, els
-                .updateListLink, els.locationLink
-            ].forEach(el => el && el.addEventListener('input', updateDateData));
+            [els.date, els.start, els.end, els.venue, els.court, els.price, els.shuttle, els.host, els.footer, els.updateListLink, els.locationLink].forEach(el => el && el.addEventListener('input', updateDateData));
             if (els.date) els.date.addEventListener('change', updateDateData);
 
+            /* --- ADMIN MODE --- */
             function applyRoleUIState() {
-                [els.adminConfigCard, els.additionalCourtsCard, els.footerCard, els.addCourtBtn].forEach(el => el &&
-                    el.classList.toggle('hidden', !state.isAdmin));
+                [els.adminConfigCard, els.additionalCourtsCard, els.footerCard, els.addCourtBtn].forEach(el => el && el.classList.toggle('hidden', !state.isAdmin));
                 els.adminToolbar.style.display = state.isAdmin ? 'flex' : 'none';
                 els.clearSaved.classList.toggle('hidden', !state.isAdmin || !state.savedBookings.length);
                 if (els.footer) els.footer.disabled = !state.isAdmin;
@@ -1640,33 +1018,17 @@
                 if (els.savedTab && !els.savedTab.classList.contains('hidden')) renderSaved();
             }
 
-            els.adminLoginBtn.addEventListener('click', () => { vibrate();
-                els.adminPasswordInput.value = '';
-                els.adminLoginModal.classList.add('active');
-                setTimeout(() => els.adminPasswordInput.focus(), 100); });
-            $('loginCancelBtn').addEventListener('click', () => { vibrate();
-                els.adminLoginModal.classList.remove('active'); });
-            $('loginSubmitBtn').addEventListener('click', () => { vibrate(); if (els.adminPasswordInput.value ===
-                    ADMIN_PASSWORD) { state.isAdmin = true;
-                    els.adminLoginModal.classList.remove('active');
-                    applyRoleUIState();
-                    showToast('Admin mode enabled', '🔓'); } else { showToast('Invalid access key', '❌');
-                    els.adminPasswordInput.value = '';
-                    els.adminPasswordInput.focus(); } });
-            els.adminPasswordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('loginSubmitBtn')
-                .click(); });
-            els.adminLogoutBtn.addEventListener('click', () => { state.isAdmin = false;
-                applyRoleUIState();
-                showToast('Signed out', '🔒'); });
-            els.adminLogoutBtn2.addEventListener('click', () => { state.isAdmin = false;
-                applyRoleUIState();
-                showToast('Signed out', '🔒'); });
+            els.adminLoginBtn.addEventListener('click', () => { vibrate(); els.adminPasswordInput.value = ''; els.adminLoginModal.classList.add('active'); setTimeout(() => els.adminPasswordInput.focus(), 100); });
+            $('loginCancelBtn').addEventListener('click', () => { vibrate(); els.adminLoginModal.classList.remove('active'); });
+            $('loginSubmitBtn').addEventListener('click', () => { vibrate(); if (els.adminPasswordInput.value === ADMIN_PASSWORD) { state.isAdmin = true; els.adminLoginModal.classList.remove('active'); applyRoleUIState(); showToast('Admin mode enabled', '🔓'); } else { showToast('Invalid access key', '❌'); els.adminPasswordInput.value = ''; els.adminPasswordInput.focus(); } });
+            els.adminPasswordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('loginSubmitBtn').click(); });
+            els.adminLogoutBtn.addEventListener('click', () => { state.isAdmin = false; applyRoleUIState(); showToast('Signed out', '🔒'); });
+            els.adminLogoutBtn2.addEventListener('click', () => { state.isAdmin = false; applyRoleUIState(); showToast('Signed out', '🔒'); });
 
+            /* --- TAB SWITCHING --- */
             document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => {
-                document.querySelectorAll('.nav-item').forEach(x => { x.classList.remove('active');
-                    x.removeAttribute('aria-current'); });
-                n.classList.add('active');
-                n.setAttribute('aria-current', 'page');
+                document.querySelectorAll('.nav-item').forEach(x => { x.classList.remove('active'); x.removeAttribute('aria-current'); });
+                n.classList.add('active'); n.setAttribute('aria-current', 'page');
                 const isB = n.dataset.tab === 'booking';
                 els.bookingTab.classList.toggle('hidden', !isB);
                 els.savedTab.classList.toggle('hidden', isB);
@@ -1674,501 +1036,175 @@
                 vibrate();
             }));
 
-            els.locationToggle.addEventListener('change', () => { state.locationEnabled = els.locationToggle.checked;
-                els.locationLink.classList.toggle('hidden', !state.locationEnabled);
-                updatePreview();
-                vibrate(); });
+            /* --- LOCATION TOGGLE --- */
+            els.locationToggle.addEventListener('change', () => { state.locationEnabled = els.locationToggle.checked; els.locationLink.classList.toggle('hidden', !state.locationEnabled); updatePreview(); vibrate(); });
 
-            els.addPlayer.addEventListener('click', () => { state.players.push({ name: "", paid: false });
-                renderPlayers();
-                updatePreview();
-                vibrate(); });
-            els.addWaiting.addEventListener('click', () => { state.waitingPlayers.push({ name: "" });
-                renderWaitingPlayers();
-                updatePreview();
-                vibrate(); });
-            els.stepPlus.addEventListener('click', () => { state.players.push({ name: "", paid: false });
-                renderPlayers();
-                updatePreview();
-                vibrate(); });
-            els.stepMinus.addEventListener('click', () => { if (state.players.length) { state.players.pop();
-                    renderPlayers();
-                    updatePreview();
-                    vibrate(); } });
-            els.playerCount.addEventListener('click', () => { const n = parseInt(prompt("Total players:", state
-                    .players.length)); if (!isNaN(n) && n >= 0 && n <= 100) { while (state.players.length < n) state
-                        .players.push({ name: "", paid: false }); while (state.players.length > n) state.players
-                        .pop();
-                    renderPlayers();
-                    updatePreview(); } });
-            els.playerCount.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e
-                    .preventDefault();
-                    els.playerCount.click(); } });
-            els.addCourtBtn.addEventListener('click', () => { if (!state.isAdmin) return;
-                state.additionalCourts.push({ court: '', start: '', end: '' });
-                renderAdditionalCourts();
-                updateDateData();
-                vibrate(); });
+            /* --- BUTTONS --- */
+            els.addPlayer.addEventListener('click', () => { state.players.push({ name: "", paid: false }); renderPlayers(); updatePreview(); vibrate(); });
+            els.addWaiting.addEventListener('click', () => { state.waitingPlayers.push({ name: "" }); renderWaitingPlayers(); updatePreview(); vibrate(); });
+            els.stepPlus.addEventListener('click', () => { state.players.push({ name: "", paid: false }); renderPlayers(); updatePreview(); vibrate(); });
+            els.stepMinus.addEventListener('click', () => { if (state.players.length) { state.players.pop(); renderPlayers(); updatePreview(); vibrate(); } });
+            els.playerCount.addEventListener('click', () => { const n = parseInt(prompt("Total players:", state.players.length)); if (!isNaN(n) && n >= 0 && n <= 100) { while (state.players.length < n) state.players.push({ name: "", paid: false }); while (state.players.length > n) state.players.pop(); renderPlayers(); updatePreview(); } });
+            els.playerCount.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); els.playerCount.click(); } });
 
-            els.save.addEventListener('click', () => { if (!state.isAdmin) return;
-                vibrate();
-                state.savedBookings.unshift({ id: Date.now(), date: els.date.value, day: els.day.textContent,
-                    start: els.start.value, end: els.end.value, venue: els.venue.value, court: els.court.value,
-                    additionalCourts: JSON.parse(JSON.stringify(state.additionalCourts)), location: els
-                    .locationLink.value, locationEnabled: state.locationEnabled, price: els.price.value,
-                    shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value,
-                    updateListLink: els.updateListLink.value, players: JSON.parse(JSON.stringify(state
-                        .players)), waiting: JSON.parse(JSON.stringify(state.waitingPlayers)) });
+            els.addCourtBtn.addEventListener('click', () => { if (!state.isAdmin) return; state.additionalCourts.push({ court: '', start: '', end: '' }); renderAdditionalCourts(); updateDateData(); vibrate(); });
+
+            els.save.addEventListener('click', () => { if (!state.isAdmin) return; vibrate();
+                state.savedBookings.unshift({ id: Date.now(), date: els.date.value, day: els.day.textContent, start: els.start.value, end: els.end.value, venue: els.venue.value, court: els.court.value, additionalCourts: JSON.parse(JSON.stringify(state.additionalCourts)), location: els.locationLink.value, locationEnabled: state.locationEnabled, price: els.price.value, shuttle: els.shuttle.value, host: els.host.value, footer: els.footer.value, updateListLink: els.updateListLink.value, players: JSON.parse(JSON.stringify(state.players)), waiting: JSON.parse(JSON.stringify(state.waitingPlayers)) });
                 if (state.savedBookings.length > 20) state.savedBookings.length = 20;
-                persistSavedBookings();
-                showToast("Session Saved!", "💾"); });
+                persistSavedBookings(); showToast("Session Saved!", "💾"); });
+
             els.reset.addEventListener('click', () => { if (!state.isAdmin) return;
-                showConfirm('Reset Form', 'Clear all fields and players?', () => { els.date.value = new Date()
-                        .toISOString().split('T')[0];
-                    els.start.value = "21:30";
-                    els.end.value = "23:30";
-                    els.venue.value = "Forum SBA, Setia Alam";
-                    els.court.value = "14, 15, 16";
-                    els.locationLink.value = "https://g.co/kgs/UMbmmAz";
-                    state.locationEnabled = false;
-                    els.locationToggle.checked = false;
-                    els.locationLink.classList.add('hidden');
-                    els.price.value = "17";
-                    els.shuttle.value = "RSL";
-                    els.host.value = "";
-                    state.players = [];
-                    state.waitingPlayers = [];
-                    state.additionalCourts = [];
-                    renderPlayers();
-                    renderWaitingPlayers();
-                    renderAdditionalCourts();
-                    updateDateData();
-                    showToast('Reset complete!', '🔄'); }); });
-            els.clearPlayersAdminBtn.addEventListener('click', () => { if (!state.isAdmin || !state.players.length)
-                    return;
-                showConfirm('Clear Players', `Remove all ${state.players.length} players?`, () => { state.players =
-                        [];
-                    renderPlayers();
-                    updatePreview();
-                    showToast('Players cleared', '🗑️'); }); });
+                showConfirm('Reset Form', 'Clear all fields and players?', () => { els.date.value = new Date().toISOString().split('T')[0]; els.start.value = "21:30"; els.end.value = "23:30"; els.venue.value = "Forum SBA, Setia Alam"; els.court.value = "14, 15, 16"; els.locationLink.value = "https://g.co/kgs/UMbmmAz"; state.locationEnabled = false; els.locationToggle.checked = false; els.locationLink.classList.add('hidden'); els.price.value = "17"; els.shuttle.value = "RSL"; els.host.value = ""; state.players = []; state.waitingPlayers = []; state.additionalCourts = []; renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updateDateData(); showToast('Reset complete!', '🔄'); }); });
+            els.clearPlayersAdminBtn.addEventListener('click', () => { if (!state.isAdmin || !state.players.length) return; showConfirm('Clear Players', `Remove all ${state.players.length} players?`, () => { state.players = []; renderPlayers(); updatePreview(); showToast('Players cleared', '🗑️'); }); });
 
-            /* ── COPY / SHARE ── */
-            els.copy.addEventListener('click', async () => {
-                vibrate();
-                const msg = buildPreview();
-                // Try Web Share API first (mobile-friendly)
-                if (navigator.share && navigator.canShare && navigator.canShare({ text: msg })) {
-                    try {
-                        await navigator.share({ text: msg });
-                        showToast("Shared!", "📤");
-                        return;
-                    } catch (e) {
-                        if (e.name === 'AbortError') return;
-                    }
-                }
-                // Fallback: clipboard
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    try {
-                        await navigator.clipboard.writeText(msg);
-                        showToast("Copied!", "📋");
-                        return;
-                    } catch (e) {}
-                }
-                // Legacy fallback
-                const ta = document.createElement('textarea');
-                ta.value = msg;
-                ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
-                document.body.appendChild(ta);
-                ta.focus();
-                ta.select();
-                try {
-                    const ok = document.execCommand('copy');
-                    showToast(ok ? "Copied!" : "Copy failed", ok ? "📋" : "⚠️");
-                } catch (e) {
-                    showToast("Copy failed", "⚠️");
-                }
-                document.body.removeChild(ta);
-            });
+            /* --- COPY / SHARE --- */
+            els.copy.addEventListener('click', async () => { vibrate(); const msg = buildPreview(); if (navigator.share && navigator.canShare && navigator.canShare({ text: msg })) { try { await navigator.share({ text: msg }); showToast("Shared!", "📤"); return; } catch (e) { if (e.name === 'AbortError') return; } } if (navigator.clipboard && navigator.clipboard.writeText) { try { await navigator.clipboard.writeText(msg); showToast("Copied!", "📋"); return; } catch (e) {} } const ta = document.createElement('textarea'); ta.value = msg; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;'; document.body.appendChild(ta); ta.focus(); ta.select(); try { const ok = document.execCommand('copy'); showToast(ok ? "Copied!" : "Copy failed", ok ? "📋" : "⚠️"); } catch (e) { showToast("Copy failed", "⚠️"); } document.body.removeChild(ta); });
 
-            /* ── IMPORT / REVERSE PARSER (fixed) ── */
-            function parseTime12to24(str) {
-                const m = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-                if (!m) return null;
-                let h = parseInt(m[1]),
-                    min = m[2],
-                    p = m[3].toUpperCase();
-                if (isNaN(h)) return null;
-                if (p === 'PM' && h !== 12) h += 12;
-                if (p === 'AM' && h === 12) h = 0;
-                return `${h.toString().padStart(2, '0')}:${min}`;
-            }
+            /* --- IMPORT PARSER --- */
+            function parseTime12to24(str) { const m = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i); if (!m) return null; let h = parseInt(m[1]), min = m[2], p = m[3].toUpperCase(); if (isNaN(h)) return null; if (p === 'PM' && h !== 12) h += 12; if (p === 'AM' && h === 12) h = 0; return `${h.toString().padStart(2, '0')}:${min}`; }
+            function parseDMYtoYMD(str) { const p = str.split('/'); if (p.length !== 3) return null; const d = parseInt(p[0]), m = parseInt(p[1]), y = parseInt(p[2]); if (isNaN(d) || isNaN(m) || isNaN(y)) return null; return `${y}-${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`; }
 
-            function parseDMYtoYMD(str) {
-                const p = str.split('/');
-                if (p.length !== 3) return null;
-                const d = parseInt(p[0]),
-                    m = parseInt(p[1]),
-                    y = parseInt(p[2]);
-                if (isNaN(d) || isNaN(m) || isNaN(y)) return null;
-                return `${y}-${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
-            }
-
-            els.importBtn.addEventListener('click', () => {
-                vibrate();
-                els.importTextarea.value = '';
-                els.importModal.classList.add('active');
-                setTimeout(() => els.importTextarea.focus(), 100);
-            });
-            $('importCancelBtn').addEventListener('click', () => {
-                vibrate();
-                els.importModal.classList.remove('active');
-            });
+            els.importBtn.addEventListener('click', () => { vibrate(); els.importTextarea.value = ''; els.importModal.classList.add('active'); setTimeout(() => els.importTextarea.focus(), 100); });
+            $('importCancelBtn').addEventListener('click', () => { vibrate(); els.importModal.classList.remove('active'); });
             $('importParseBtn').addEventListener('click', () => {
                 vibrate();
-                const raw = els.importTextarea.value.trim();
-                if (!raw) { showToast('Textarea empty', '⚠️'); return; }
+                const raw = els.importTextarea.value.trim(); if (!raw) { showToast('Textarea empty', '⚠️'); return; }
                 try {
                     const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== '');
-                    let pDate = '',
-                        pStart = '',
-                        pEnd = '',
-                        pVenue = '',
-                        pCourt = '',
-                        pLoc = '',
-                        pPrice = '',
-                        pShuttle = '',
-                        pHost = '',
-                        pUpdate = '';
-                    const newPlayers = [],
-                        newWait = [],
-                        newCourts = [];
-                    let mode = 'head',
-                        footerLines = [],
-                        foundLoc = false,
-                        tableMode = false,
-                        sessionNum = 0;
+                    let pDate = '', pStart = '', pEnd = '', pVenue = '', pCourt = '', pLoc = '', pPrice = '', pShuttle = '', pHost = '', pUpdate = '';
+                    const newPlayers = [], newWait = [], newCourts = [];
+                    let mode = 'head', footerLines = [], foundLoc = false, tableMode = false, sessionNum = 0;
 
                     for (let i = 0; i < lines.length; i++) {
                         const line = lines[i];
-
-                        // Skip header
                         if (line.startsWith('🏸 BADMINTON SESSION') || line.startsWith('BADMINTON SESSION')) continue;
-
-                        // Venue: line starts with 📍 but is NOT a location link
-                        if (line.startsWith('📍') && !line.includes('Link') && !line.startsWith('📍 Location:') && !line
-                            .startsWith('📍 Link:')) {
-                            pVenue = line.replace(/^📍\s*/, '').trim();
-                            continue;
-                        }
-                        // Also handle "Location:" prefix for venue (legacy)
-                        if (line.startsWith('Location:') && !line.includes('Link') && !line.includes('📍')) {
-                            pVenue = line.replace(/^Location:\s*/i, '').trim();
-                            continue;
-                        }
-
-                        // Court header
-                        if (line.startsWith('🏟️ Court:') || line.startsWith('Court:')) {
-                            pCourt = line.replace(/^🏟️\s*Court:\s*/i, '').replace(/^Court:\s*/i, '').trim();
-                            continue;
-                        }
-
-                        // Date
-                        if (line.startsWith('📅')) {
-                            const m = line.match(/📅\s+([\d\/]+)/);
-                            if (m) {
-                                const ymd = parseDMYtoYMD(m[1].trim());
-                                if (ymd) pDate = ymd;
-                            }
-                            continue;
-                        }
-
-                        // Table mode
-                        if (line === '⏰ SESSIONS & COURTS') {
-                            tableMode = true;
-                            mode = 'table-header';
-                            continue;
-                        }
-                        if (mode === 'table-header' && line.includes('Time') && line.includes('Courts')) {
-                            mode = 'table-divider';
-                            continue;
-                        }
-                        if (mode === 'table-divider' && line.startsWith('──')) {
-                            mode = 'table-rows';
-                            continue;
-                        }
+                        if (line.startsWith('📍') && !line.includes('Link') && !line.startsWith('📍 Location:') && !line.startsWith('📍 Link:')) { pVenue = line.replace(/^📍\s*/, '').trim(); continue; }
+                        if (line.startsWith('Location:') && !line.includes('Link') && !line.includes('📍')) { pVenue = line.replace(/^Location:\s*/i, '').trim(); continue; }
+                        if (line.startsWith('🏟️ Court:') || line.startsWith('Court:')) { pCourt = line.replace(/^🏟️\s*Court:\s*/i, '').replace(/^Court:\s*/i, '').trim(); continue; }
+                        if (line.startsWith('📅')) { const m = line.match(/📅\s+([\d\/]+)/); if (m) { const ymd = parseDMYtoYMD(m[1].trim()); if (ymd) pDate = ymd; } continue; }
+                        if (line === '⏰ SESSIONS & COURTS') { tableMode = true; mode = 'table-header'; continue; }
+                        if (mode === 'table-header' && line.includes('Time') && line.includes('Courts')) { mode = 'table-divider'; continue; }
+                        if (mode === 'table-divider' && line.startsWith('──')) { mode = 'table-rows'; continue; }
                         if (mode === 'table-rows') {
-                            if (line.startsWith('──')) {
-                                mode = 'head';
-                                tableMode = false;
-                                continue;
-                            }
+                            if (line.startsWith('──')) { mode = 'head'; tableMode = false; continue; }
                             const parts = line.split('|');
                             if (parts.length >= 2) {
-                                const timePart = parts[0].trim(),
-                                    courtPart = parts[1].trim();
-                                const tm = timePart.match(
-                                    /(\d{1,2}:\d{2}\s*(?:AM|PM)?)\s*[–\-]\s*(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i
-                                    );
+                                const timePart = parts[0].trim(), courtPart = parts[1].trim();
+                                const tm = timePart.match(/(\d{1,2}:\d{2}\s*(?:AM|PM)?)\s*[–\-]\s*(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i);
                                 if (tm) {
                                     const s24 = parseTime12to24(tm[1]) || tm[1];
                                     const e24 = parseTime12to24(tm[2]) || tm[2];
                                     const cleanC = courtPart.replace(/^Court\s+/i, '').trim();
-                                    if (sessionNum === 0 || (newCourts.length === 0 && !pStart)) {
-                                        pStart = s24;
-                                        pEnd = e24;
-                                        // Use table court as fallback if main court not yet set
-                                        if (!pCourt && cleanC) pCourt = cleanC;
-                                        sessionNum = 1;
-                                    } else {
-                                        newCourts.push({ court: cleanC, start: s24, end: e24 });
-                                    }
+                                    if (sessionNum === 0 || (newCourts.length === 0 && !pStart)) { pStart = s24; pEnd = e24; if (!pCourt && cleanC) pCourt = cleanC; sessionNum = 1; }
+                                    else newCourts.push({ court: cleanC, start: s24, end: e24 });
                                 }
                             }
                             continue;
                         }
-
-                        // Legacy session parsing (Session 1 / Session 2 format)
-                        if (/^⏰\s*Session\s+\d+/i.test(line) && !tableMode) {
-                            sessionNum = parseInt(line.match(/Session\s+(\d+)/i)[1]);
-                            mode = 'session';
-                            continue;
-                        }
+                        if (/^⏰\s*Session\s+\d+/i.test(line) && !tableMode) { sessionNum = parseInt(line.match(/Session\s+(\d+)/i)[1]); mode = 'session'; continue; }
                         if (mode === 'session' && !tableMode) {
                             if (line.includes('–') || line.includes('-')) {
-                                const parts = line.split(/[–\-]/);
-                                const tStart = parts[0].trim();
-                                const tEnd = parts[1].trim();
-                                const s24 = parseTime12to24(tStart),
-                                    e24 = parseTime12to24(tEnd);
-                                if (sessionNum === 1) {
-                                    if (s24) pStart = s24;
-                                    if (e24) pEnd = e24;
-                                }
+                                const parts = line.split(/[–\-]/); const tStart = parts[0].trim(); const tEnd = parts[1].trim();
+                                const s24 = parseTime12to24(tStart), e24 = parseTime12to24(tEnd);
+                                if (sessionNum === 1) { if (s24) pStart = s24; if (e24) pEnd = e24; }
                             } else if (line.startsWith('(') && line.endsWith(')')) {
                                 const tCourt = line.replace(/[()]/g, '').trim();
-                                if (sessionNum > 1) {
-                                    newCourts.push({ court: tCourt.replace(/^Court\s+/i, '').trim(), start: pStart || '',
-                                        end: pEnd || '' });
-                                }
+                                if (sessionNum > 1) newCourts.push({ court: tCourt.replace(/^Court\s+/i, '').trim(), start: pStart || '', end: pEnd || '' });
                                 mode = 'head';
                             }
                             continue;
                         }
-
-                        // Price
-                        if (line.startsWith('💵') || line.startsWith('RM')) {
-                            const m = line.match(/RM\s*([\d.]+)/);
-                            if (m) pPrice = m[1];
-                            continue;
-                        }
-
-                        // Shuttle
-                        if (line.startsWith('🏸 Shuttle:') || line.startsWith('Shuttle:')) {
-                            pShuttle = line.replace(/^🏸\s*Shuttle:\s*/i, '').replace(/^Shuttle:\s*/i, '').trim();
-                            continue;
-                        }
-
-                        // Host
-                        if (line.startsWith('👤 Host:') || line.startsWith('Host:')) {
-                            pHost = line.replace(/^👤\s*Host:\s*/i, '').replace(/^Host:\s*/i, '').trim();
-                            continue;
-                        }
-
-                        // Location link
-                        if (line.startsWith('📍 Link:') || line.startsWith('📍 Location:') || line.startsWith('Link:') ||
-                            line.startsWith('Location:')) {
-                            foundLoc = true;
-                            pLoc = line.replace(/^📍\s*(Link|Location):\s*/i, '').replace(/^(Link|Location):\s*/i, '')
-                                .trim();
-                            continue;
-                        }
-
-                        // Update list link
-                        if (line === 'Link update list' || line === '🔗 Link update list') {
-                            if (i + 1 < lines.length) {
-                                pUpdate = lines[i + 1].trim();
-                                i++;
-                            }
-                            continue;
-                        }
-
-                        // Player summary header
+                        if (line.startsWith('💵') || line.startsWith('RM')) { const m = line.match(/RM\s*([\d.]+)/); if (m) pPrice = m[1]; continue; }
+                        if (line.startsWith('🏸 Shuttle:') || line.startsWith('Shuttle:')) { pShuttle = line.replace(/^🏸\s*Shuttle:\s*/i, '').replace(/^Shuttle:\s*/i, '').trim(); continue; }
+                        if (line.startsWith('👤 Host:') || line.startsWith('Host:')) { pHost = line.replace(/^👤\s*Host:\s*/i, '').replace(/^Host:\s*/i, '').trim(); continue; }
+                        if (line.startsWith('📍 Link:') || line.startsWith('📍 Location:') || line.startsWith('Link:') || line.startsWith('Location:')) { foundLoc = true; pLoc = line.replace(/^📍\s*(Link|Location):\s*/i, '').replace(/^(Link|Location):\s*/i, '').trim(); continue; }
+                        if (line === 'Link update list' || line === '🔗 Link update list') { if (i + 1 < lines.length) { pUpdate = lines[i + 1].trim(); i++; } continue; }
                         if (line.startsWith('👥') && line.includes('Players')) continue;
-
-                        // Section dividers
                         if (line.startsWith('──────────────────') || line.startsWith('───')) {
                             if (mode === 'head' || mode === 'table-rows' || mode === 'players') mode = 'players';
                             else if (mode === 'players') mode = 'footer';
                             else if (mode === 'waiting') mode = 'footer';
                             continue;
                         }
-
-                        // Player rows
                         if (mode === 'players') {
                             if (/^\d+\./.test(line)) {
                                 const m = line.match(/^(\d+)\.\s*(.+)$/);
                                 if (m) {
-                                    let name = m[2].trim(),
-                                        paid = false;
-                                    if (name.endsWith('✅') || name.endsWith('✅️')) {
-                                        paid = true;
-                                        name = name.replace(/✅️?$/, '').trim();
-                                    }
-                                    name = cleanName(name);
-                                    if (name === '(Open)' || name === '') name = '';
+                                    let name = m[2].trim(), paid = false;
+                                    if (name.endsWith('✅') || name.endsWith('✅️')) { paid = true; name = name.replace(/✅️?$/, '').trim(); }
+                                    name = cleanName(name); if (name === '(Open)' || name === '') name = '';
                                     newPlayers.push({ name, paid });
                                 }
-                            } else if (line.toLowerCase() === 'waiting list' || line === '📋 Waiting List') {
-                                mode = 'waiting';
-                            }
+                            } else if (line.toLowerCase() === 'waiting list' || line === '📋 Waiting List') mode = 'waiting';
                             continue;
                         }
-
-                        // Waiting list rows
                         if (mode === 'waiting') {
                             if (/^\d+\./.test(line)) {
                                 const m = line.match(/^(\d+)\.\s*(.+)$/);
-                                if (m) {
-                                    let name = cleanName(m[2].trim());
-                                    if (name === '') name = '';
-                                    newWait.push({ name });
-                                }
-                            } else if (line.startsWith('──────────────────') || line.startsWith('───')) {
-                                mode = 'footer';
-                            }
+                                if (m) { let name = cleanName(m[2].trim()); if (name === '') name = ''; newWait.push({ name }); }
+                            } else if (line.startsWith('──────────────────') || line.startsWith('───')) mode = 'footer';
                             continue;
                         }
-
-                        // Footer notes
-                        if (mode === 'footer') {
-                            if (line !== 'Notes:' && line !== '') footerLines.push(line);
-                            continue;
-                        }
+                        if (mode === 'footer') { if (line !== 'Notes:' && line !== '') footerLines.push(line); }
                     }
 
-                    // Apply parsed data
                     if (pDate) els.date.value = pDate;
                     if (pStart) els.start.value = pStart;
                     if (pEnd) els.end.value = pEnd;
                     if (pVenue) els.venue.value = pVenue;
                     if (pCourt) els.court.value = pCourt;
-                    if (foundLoc || pLoc) {
-                        els.locationToggle.checked = true;
-                        state.locationEnabled = true;
-                        els.locationLink.classList.remove('hidden');
-                        els.locationLink.value = pLoc || 'https://g.co/kgs/UMbmmAz';
-                    } else {
-                        els.locationToggle.checked = false;
-                        state.locationEnabled = false;
-                        els.locationLink.classList.add('hidden');
-                    }
+                    if (foundLoc || pLoc) { els.locationToggle.checked = true; state.locationEnabled = true; els.locationLink.classList.remove('hidden'); els.locationLink.value = pLoc || 'https://g.co/kgs/UMbmmAz'; }
+                    else { els.locationToggle.checked = false; state.locationEnabled = false; els.locationLink.classList.add('hidden'); }
                     if (pPrice) els.price.value = pPrice;
                     if (pShuttle) els.shuttle.value = pShuttle;
                     if (pHost) els.host.value = pHost;
                     if (pUpdate) els.updateListLink.value = pUpdate;
-
-                    state.players = [];
-                    state.players.push(...newPlayers);
-                    state.waitingPlayers = [];
-                    state.waitingPlayers.push(...newWait);
-                    state.additionalCourts = [];
-                    state.additionalCourts.push(...newCourts);
-
-                    renderPlayers();
-                    renderWaitingPlayers();
-                    renderAdditionalCourts();
+                    state.players = []; state.players.push(...newPlayers);
+                    state.waitingPlayers = []; state.waitingPlayers.push(...newWait);
+                    state.additionalCourts = []; state.additionalCourts.push(...newCourts);
+                    renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts();
                     if (footerLines.length) els.footer.value = footerLines.join('\n');
-                    updateDateData();
-                    updatePreview();
+                    updateDateData(); updatePreview();
                     els.importModal.classList.remove('active');
                     showToast(`Imported ${newPlayers.length + newWait.length} player(s)!`, '✅');
-                } catch (e) {
-                    showToast('Import error', '❌');
-                    console.error(e);
-                }
+                } catch (e) { showToast('Import error', '❌'); console.error(e); }
             });
 
-            /* ── SAVED BOOKINGS ── */
+            /* --- SAVED BOOKINGS INTERACTIONS --- */
             els.savedBookingsList.addEventListener('click', (e) => {
-                const idx = parseInt(e.target.dataset.idx);
-                if (isNaN(idx) || !state.savedBookings[idx]) return;
+                const idx = parseInt(e.target.dataset.idx); if (isNaN(idx) || !state.savedBookings[idx]) return;
                 if (e.target.classList.contains('load-btn')) {
-                    vibrate();
-                    const d = state.savedBookings[idx];
-                    els.date.value = d.date || '';
-                    els.start.value = d.start || '21:30';
-                    els.end.value = d.end || '23:30';
-                    els.venue.value = d.venue || '';
-                    els.court.value = d.court || '';
-                    state.additionalCourts = JSON.parse(JSON.stringify(d.additionalCourts || []));
-                    renderAdditionalCourts();
-                    els.locationLink.value = d.location || '';
-                    state.locationEnabled = d.locationEnabled || false;
-                    els.locationToggle.checked = state.locationEnabled;
-                    els.locationLink.classList.toggle('hidden', !state.locationEnabled);
-                    els.price.value = d.price || '17';
-                    els.shuttle.value = d.shuttle || 'RSL';
-                    els.host.value = d.host || '';
-                    els.footer.value = d.footer || '';
+                    vibrate(); const d = state.savedBookings[idx];
+                    els.date.value = d.date || ''; els.start.value = d.start || '21:30'; els.end.value = d.end || '23:30'; els.venue.value = d.venue || ''; els.court.value = d.court || '';
+                    state.additionalCourts = JSON.parse(JSON.stringify(d.additionalCourts || [])); renderAdditionalCourts();
+                    els.locationLink.value = d.location || ''; state.locationEnabled = d.locationEnabled || false;
+                    els.locationToggle.checked = state.locationEnabled; els.locationLink.classList.toggle('hidden', !state.locationEnabled);
+                    els.price.value = d.price || '17'; els.shuttle.value = d.shuttle || 'RSL'; els.host.value = d.host || ''; els.footer.value = d.footer || '';
                     if (d.updateListLink) els.updateListLink.value = d.updateListLink;
-                    state.players = JSON.parse(JSON.stringify(d.players || []));
-                    state.waitingPlayers = JSON.parse(JSON.stringify(d.waiting || []));
-                    renderPlayers();
-                    renderWaitingPlayers();
-                    updateDateData();
-                    updatePreview();
+                    state.players = JSON.parse(JSON.stringify(d.players || [])); state.waitingPlayers = JSON.parse(JSON.stringify(d.waiting || []));
+                    renderPlayers(); renderWaitingPlayers(); updateDateData(); updatePreview();
                     document.querySelector('.nav-item[data-tab="booking"]').click();
                     showToast("Loaded!", "📂");
                 } else if (e.target.classList.contains('del-btn') && state.isAdmin) {
-                    vibrate();
-                    showConfirm('Delete Session', 'Remove this saved booking?', () => {
-                        state.savedBookings.splice(idx, 1);
-                        persistSavedBookings();
-                        renderSaved();
-                        showToast('Deleted', '🗑️');
-                    });
+                    vibrate(); showConfirm('Delete Session', 'Remove this saved booking?', () => { state.savedBookings.splice(idx, 1); persistSavedBookings(); renderSaved(); showToast('Deleted', '🗑️'); });
                 }
             });
-            els.clearSaved.addEventListener('click', () => {
-                if (!state.isAdmin || !state.savedBookings.length) return;
-                showConfirm('Clear All', `Delete all ${state.savedBookings.length} saved sessions?`, () => {
-                    state.savedBookings = [];
-                    persistSavedBookings();
-                    renderSaved();
-                    showToast('Cleared', '🗑️');
-                });
-            });
+            els.clearSaved.addEventListener('click', () => { if (!state.isAdmin || !state.savedBookings.length) return; showConfirm('Clear All', `Delete all ${state.savedBookings.length} saved sessions?`, () => { state.savedBookings = []; persistSavedBookings(); renderSaved(); showToast('Cleared', '🗑️'); }); });
 
-            /* ── MODALS ── */
-            $('tutorialBtn').addEventListener('click', () => { els.tutorialModal.classList.add('active');
-                vibrate(); });
-            $('tutorialCloseBtn').addEventListener('click', () => { els.tutorialModal.classList.remove('active');
-                vibrate(); });
-            document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', (e) => {
-                if (e.target === o) {
-                    o.classList.remove('active');
-                    dismissAllAutocomplete();
-                    vibrate();
-                }
-            }));
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
-                    dismissAllAutocomplete();
-                }
-            });
+            /* --- MODALS & TUTORIAL --- */
+            $('tutorialBtn').addEventListener('click', () => { els.tutorialModal.classList.add('active'); vibrate(); });
+            $('tutorialCloseBtn').addEventListener('click', () => { els.tutorialModal.classList.remove('active'); vibrate(); });
+            document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', (e) => { if (e.target === o) { o.classList.remove('active'); dismissAllAutocomplete(); vibrate(); } }));
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active')); dismissAllAutocomplete(); } });
 
-            /* ── INIT ── */
+            /* --- INIT --- */
             function init() {
-                setTimeout(() => {
-                    els.loadingScreen.classList.add('hidden');
-                    setTimeout(() => els.loadingScreen.remove(), 500);
-                }, 900);
+                setTimeout(() => { els.loadingScreen.classList.add('hidden'); setTimeout(() => els.loadingScreen.remove(), 500); }, 900);
                 els.date.value = new Date().toISOString().split('T')[0];
                 loadSavedBookings();
                 applyRoleUIState();
-                renderPlayers();
-                renderWaitingPlayers();
+                renderPlayers(); renderWaitingPlayers();
                 updateDateData();
                 state.previewDirty = false;
             }
