@@ -4,774 +4,2444 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Smasholic Join List</title>
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Smasholic%22%2C%22short_name%22%3A%22Smasholic%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f0f2f8%22%2C%22theme_color%22%3A%22%236366f1%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Ctext%20x%3D'50'%20y%3D'70'%20font-size%3D'70'%20text-anchor%3D'middle'%3E%F0%9F%8F%B8%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22100x100%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #e0e7ff;
-            --primary-glow: rgba(99, 102, 241, 0.3); --accent: #f59e0b; --accent-light: #fef3c7;
-            --bg: #f0f2f8; --bg-orb-1: #e8eaf6; --bg-orb-2: #fce4ec;
-            --surface: rgba(255, 255, 255, 0.72); --surface-solid: #ffffff;
-            --text-main: #1e293b; --text-muted: #64748b; --text-subtle: #94a3b8;
-            --border: rgba(226, 232, 240, 0.7); --border-glass: rgba(255, 255, 255, 0.5);
-            --input-bg: #f1f5f9; --danger: #ef4444; --danger-light: #fef2f2;
-            --success: #10b981; --success-light: #d1fae5; --purple: #7c3aed; --purple-light: #ede9fe;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04); --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
-            --shadow-lg: 0 12px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
-            --shadow-glow: 0 0 0 4px var(--primary-glow); --radius-sm: 10px; --radius: 14px;
-            --radius-lg: 20px; --radius-xl: 24px;
-            --ease-out: cubic-bezier(0.25,0.46,0.45,0.94);
-            --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
-            --ease-smooth: cubic-bezier(0.4,0,0.2,1);
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #e0e7ff;
+            --primary-glow: rgba(99, 102, 241, 0.3);
+            --accent: #f59e0b;
+            --accent-light: #fef3c7;
+            --bg: #f0f2f8;
+            --bg-orb-1: #e8eaf6;
+            --bg-orb-2: #fce4ec;
+            --surface: rgba(255, 255, 255, 0.72);
+            --surface-solid: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --text-subtle: #94a3b8;
+            --border: rgba(226, 232, 240, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.5);
+            --input-bg: #f1f5f9;
+            --danger: #ef4444;
+            --danger-light: #fef2f2;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --purple: #7c3aed;
+            --purple-light: #ede9fe;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-glow: 0 0 0 4px var(--primary-glow);
+            --radius-sm: 10px;
+            --radius: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',system-ui,sans-serif; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', system-ui, sans-serif;
+        }
+
         body {
-            background:var(--bg); color:var(--text-main); display:flex; justify-content:center;
-            min-height:100vh; overscroll-behavior-y:none; -webkit-font-smoothing:antialiased;
-            -webkit-tap-highlight-color:transparent; position:relative; overflow-x:hidden;
+            background: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overscroll-behavior-y: none;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow-x: hidden;
         }
-        body::before, body::after { content:''; position:fixed; border-radius:50%; filter:blur(120px); opacity:0.5; z-index:0; pointer-events:none; }
-        body::before { width:320px; height:320px; background:var(--bg-orb-1); top:-80px; right:-60px; }
-        body::after { width:280px; height:280px; background:var(--bg-orb-2); bottom:-60px; left:-80px; }
 
-        #loadingScreen { position:fixed; top:0; left:0; right:0; bottom:0; background:linear-gradient(135deg, #6366f1 0%, #7c3aed 40%, #4f46e5 100%); z-index:999; display:flex; align-items:center; justify-content:center; transition:opacity 0.4s var(--ease-smooth); opacity:1; }
-        #loadingScreen.hidden { opacity:0; pointer-events:none; }
-        .loading-content { text-align:center; }
-        .loading-icon { font-size:3.5rem; animation:pulse 1.2s infinite ease-in-out; display:block; }
-        @keyframes pulse { 0%,100%{transform:scale(1);opacity:0.8;} 50%{transform:scale(1.12);opacity:1;} }
-        .loading-title { font-size:1.6rem; font-weight:700; color:#fbbf24; margin-top:8px; letter-spacing:-0.3px; }
-        .loading-subtitle { font-size:0.8rem; color:rgba(255,255,255,0.7); margin-top:4px; }
+        /* Subtle background orbs for glassmorphism depth */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
+        }
+        body::before {
+            width: 320px;
+            height: 320px;
+            background: var(--bg-orb-1);
+            top: -80px;
+            right: -60px;
+        }
+        body::after {
+            width: 280px;
+            height: 280px;
+            background: var(--bg-orb-2);
+            bottom: -60px;
+            left: -80px;
+        }
 
-        .app-container { width:100%; max-width:480px; min-height:100vh; display:flex; flex-direction:column; position:relative; z-index:1; background:transparent; }
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 40%, #4f46e5 100%);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.4s var(--ease-smooth);
+            opacity: 1;
+        }
+        #loadingScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-content {
+            text-align: center;
+        }
+        .loading-icon {
+            font-size: 3.5rem;
+            animation: pulse 1.2s infinite ease-in-out;
+            display: block;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.12);
+                opacity: 1;
+            }
+        }
+        .loading-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fbbf24;
+            margin-top: 8px;
+            letter-spacing: -0.3px;
+        }
+        .loading-subtitle {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 4px;
+        }
 
-        .header { position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); padding:14px 18px; border-bottom:1px solid var(--border-glass); display:flex; justify-content:space-between; align-items:center; box-shadow:0 1px 8px rgba(0,0,0,0.03); }
-        .header h1 { font-size:1.25rem; font-weight:700; color:var(--primary-dark); display:flex; align-items:center; gap:8px; letter-spacing:-0.3px; }
-        .header h1 .icon { font-size:1.5rem; }
-        .header-actions { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-        .pill-btn { display:inline-flex; align-items:center; gap:4px; background:rgba(241,245,249,0.8); color:var(--text-muted); border:1px solid var(--border); padding:7px 12px; border-radius:100px; font-weight:500; font-size:0.73rem; cursor:pointer; transition:all 0.2s var(--ease-smooth); white-space:nowrap; backdrop-filter:blur(8px); }
-        .pill-btn:hover { background:var(--surface-solid); color:var(--text-main); box-shadow:var(--shadow-sm); }
-        .pill-btn:active { transform:scale(0.96); }
-        .pill-btn:focus-visible { outline:2px solid var(--primary); outline-offset:2px; }
-        .install-btn { background:var(--primary-light); color:var(--primary-dark); font-weight:600; }
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+            background: transparent;
+        }
 
-        .content { flex:1; padding:14px 16px; display:flex; flex-direction:column; gap:14px; padding-bottom:calc(100px + env(safe-area-inset-bottom)); }
+        /* ── Glass Header ── */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.03);
+        }
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.3px;
+        }
+        .header h1 .icon {
+            font-size: 1.5rem;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pill-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(241, 245, 249, 0.8);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 7px 12px;
+            border-radius: 100px;
+            font-weight: 500;
+            font-size: 0.73rem;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            white-space: nowrap;
+            backdrop-filter: blur(8px);
+        }
+        .pill-btn:hover {
+            background: var(--surface-solid);
+            color: var(--text-main);
+            box-shadow: var(--shadow-sm);
+        }
+        .pill-btn:active {
+            transform: scale(0.96);
+        }
+        .pill-btn:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
 
-        .card { background:var(--surface); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-radius:var(--radius-lg); padding:18px; border:1px solid var(--border-glass); box-shadow:var(--shadow-md); transition:box-shadow 0.3s var(--ease-smooth), transform 0.2s var(--ease-smooth); }
-        .card:hover { box-shadow:var(--shadow-lg); }
-        .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
-        .card-title { font-size:0.95rem; font-weight:600; display:flex; align-items:center; gap:8px; color:var(--text-main); letter-spacing:-0.2px; }
+        /* ── Content ── */
+        .content {
+            flex: 1;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom));
+        }
 
-        .session-summary-badge { background:linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #4f46e5 100%); color:white; padding:20px; border-radius:var(--radius-lg); display:flex; flex-direction:column; gap:10px; box-shadow:0 8px 24px rgba(99,102,241,0.25); position:relative; overflow:hidden; }
-        .session-summary-badge::after { content:''; position:absolute; top:-40px; right:-40px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.06); pointer-events:none; }
-        .summary-row { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:8px; position:relative; z-index:1; }
-        .summary-row:last-child { border:none; padding-bottom:0; }
-        .summary-label { font-size:0.7rem; text-transform:uppercase; opacity:0.85; font-weight:500; letter-spacing:0.8px; }
-        .summary-value { font-size:0.9rem; font-weight:600; text-align:right; max-width:60%; }
+        /* ── Glass Card ── */
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            border: 1px solid var(--border-glass);
+            box-shadow: var(--shadow-md);
+            transition: box-shadow 0.3s var(--ease-smooth), transform 0.2s var(--ease-smooth);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+            letter-spacing: -0.2px;
+        }
 
-        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-        .full-width { grid-column:span 2; }
-        .input-group { display:flex; flex-direction:column; gap:5px; }
-        .input-group label { font-size:0.7rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.6px; }
-        input, textarea { width:100%; background:var(--input-bg); border:2px solid transparent; border-radius:var(--radius-sm); padding:10px 14px; font-size:0.9rem; color:var(--text-main); transition:all 0.2s var(--ease-smooth); outline:none; font-family:inherit; }
-        input:focus, textarea:focus { background:var(--surface-solid); border-color:var(--primary); box-shadow:var(--shadow-glow); }
-        .readonly-badge { background:var(--primary-light); color:var(--primary-dark); padding:10px 14px; border-radius:var(--radius-sm); font-weight:600; font-size:0.9rem; text-align:center; }
+        /* ── Dashboard Badge ── */
+        .session-summary-badge {
+            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #4f46e5 100%);
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        .session-summary-badge::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            pointer-events: none;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        .summary-row:last-child {
+            border: none;
+            padding-bottom: 0;
+        }
+        .summary-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            opacity: 0.85;
+            font-weight: 500;
+            letter-spacing: 0.8px;
+        }
+        .summary-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: right;
+            max-width: 60%;
+        }
 
-        .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--primary); color:white; border:none; padding:11px 18px; border-radius:var(--radius-sm); font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.2s var(--ease-smooth); width:100%; position:relative; overflow:hidden; letter-spacing:-0.2px; }
-        .btn:hover { background:var(--primary-dark); box-shadow:0 4px 14px rgba(99,102,241,0.3); transform:translateY(-1px); }
-        .btn:active { transform:scale(0.97); transition:transform 0.1s var(--ease-smooth); }
-        .btn:focus-visible { outline:2px solid var(--primary-dark); outline-offset:3px; }
-        .btn::after { content:''; position:absolute; inset:0; background:radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%); opacity:0; transition:opacity 0.3s; pointer-events:none; }
-        .btn:active::after { opacity:1; transition:opacity 0s; }
-        .btn-secondary { background:var(--input-bg); color:var(--text-main); border:1px solid var(--border); }
-        .btn-secondary:hover { background:var(--surface-solid); box-shadow:var(--shadow-md); }
-        .btn-danger { background:var(--danger-light); color:var(--danger); border:1px solid #fecaca; }
-        .btn-danger:hover { background:#fee2e2; box-shadow:0 4px 14px rgba(239,68,68,0.2); }
-        .btn-outline { background:transparent; border:2px dashed var(--border); color:var(--text-muted); }
-        .btn-outline:hover { border-color:var(--primary); color:var(--primary); background:var(--primary-light); }
-        .btn-success { background:var(--success); }
-        .btn-success:hover { background:#059669; box-shadow:0 4px 14px rgba(16,185,129,0.3); }
-        .btn-import { background:var(--primary-light); color:var(--primary-dark); font-weight:700; border:1px solid #c7d2fe; }
-        .btn-import:hover { background:#c7d2fe; box-shadow:var(--shadow-md); }
+        /* ── Form ── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .full-width {
+            grid-column: span 2;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .input-group label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+        input,
+        textarea {
+            width: 100%;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            transition: all 0.2s var(--ease-smooth);
+            outline: none;
+            font-family: inherit;
+        }
+        input:focus,
+        textarea:focus {
+            background: var(--surface-solid);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        input:focus-visible,
+        textarea:focus-visible {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .readonly-badge {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+        }
 
-        .player-list { display:flex; flex-direction:column; gap:6px; }
-        .player-row { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.6); backdrop-filter:blur(8px); border:1px solid var(--border); padding:8px 10px; border-radius:var(--radius); transition:all 0.2s var(--ease-smooth); position:relative; animation:rowFadeIn 0.3s var(--ease-out) both; }
-        @keyframes rowFadeIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
-        .player-row.focused { border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-glow); background:rgba(255,255,255,0.9); }
-        .player-row.duplicate { border-color:#fca5a5; background:rgba(254,242,242,0.8); animation:shake 0.4s var(--ease-smooth); }
-        @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-3px);} 75%{transform:translateX(3px);} }
-        .player-avatar { width:32px; height:32px; border-radius:50%; background:var(--primary-light); color:var(--primary-dark); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.78rem; flex-shrink:0; }
-        .player-row input { flex:1; padding:6px 0; background:transparent; border:none; box-shadow:none; font-size:0.9rem; font-weight:500; min-width:0; }
-        .action-icon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; border:none; cursor:pointer; flex-shrink:0; transition:all 0.2s var(--ease-smooth); font-size:1rem; background:transparent; }
-        .paid-toggle { background:var(--input-bg); color:#94a3b8; }
-        .paid-toggle.active { background:var(--success); color:white; box-shadow:0 2px 8px rgba(16,185,129,0.3); animation:popIn 0.3s var(--ease-spring); }
-        @keyframes popIn { 0%{transform:scale(0.8);} 60%{transform:scale(1.15);} 100%{transform:scale(1);} }
-        .remove-toggle { background:transparent; color:#cbd5e1; }
-        .remove-toggle:hover { color:var(--danger); background:var(--danger-light); border-radius:10px; }
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: -0.2px;
+        }
+        .btn:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn:active {
+            transform: scale(0.97);
+            transition: transform 0.1s var(--ease-smooth);
+        }
+        .btn:focus-visible {
+            outline: 2px solid var(--primary-dark);
+            outline-offset: 3px;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .btn:active::after {
+            opacity: 1;
+            transition: opacity 0s;
+        }
+        .btn-secondary {
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            background: var(--surface-solid);
+            box-shadow: var(--shadow-md);
+            color: var(--text-main);
+        }
+        .btn-danger {
+            background: var(--danger-light);
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+        .btn-danger:hover {
+            background: #fee2e2;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px dashed var(--border);
+            color: var(--text-muted);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .btn-success {
+            background: var(--success);
+        }
+        .btn-success:hover {
+            background: #059669;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+        }
+        .btn-import {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 700;
+            border: 1px solid #c7d2fe;
+        }
+        .btn-import:hover {
+            background: #c7d2fe;
+            box-shadow: var(--shadow-md);
+        }
 
-        .duplicate-warning { color:var(--danger); font-size:0.78rem; font-weight:500; display:none; margin-top:6px; padding:8px 12px; background:var(--danger-light); border-radius:var(--radius-sm); align-items:center; gap:6px; }
-        .duplicate-warning.active { display:flex; animation:rowFadeIn 0.3s var(--ease-out); }
+        /* ── Player List ── */
+        .player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .player-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            padding: 8px 10px;
+            border-radius: var(--radius);
+            transition: all 0.2s var(--ease-smooth);
+            position: relative;
+            animation: rowFadeIn 0.3s var(--ease-out) both;
+        }
+        @keyframes rowFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .player-row:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .player-row:nth-child(2) {
+            animation-delay: 0.03s;
+        }
+        .player-row:nth-child(3) {
+            animation-delay: 0.06s;
+        }
+        .player-row:nth-child(4) {
+            animation-delay: 0.09s;
+        }
+        .player-row:nth-child(5) {
+            animation-delay: 0.12s;
+        }
+        .player-row:nth-child(n+6) {
+            animation-delay: 0.15s;
+        }
+        .player-row.focused {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .player-row.duplicate {
+            border-color: #fca5a5;
+            background: rgba(254, 242, 242, 0.8);
+            animation: shake 0.4s var(--ease-smooth);
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-3px);
+            }
+            75% {
+                transform: translateX(3px);
+            }
+        }
+        .player-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.78rem;
+            flex-shrink: 0;
+            letter-spacing: -0.3px;
+        }
+        .player-row input {
+            flex: 1;
+            padding: 6px 0;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            min-width: 0;
+        }
+        .player-row input:focus {
+            box-shadow: none;
+            border: none;
+            background: transparent;
+        }
+        .action-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s var(--ease-smooth);
+            font-size: 1rem;
+            background: transparent;
+        }
+        .action-icon:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        .paid-toggle {
+            background: var(--input-bg);
+            color: #94a3b8;
+        }
+        .paid-toggle.active {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+            animation: popIn 0.3s var(--ease-spring);
+        }
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+            }
+            60% {
+                transform: scale(1.15);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .remove-toggle {
+            background: transparent;
+            color: #cbd5e1;
+        }
+        .remove-toggle:hover {
+            color: var(--danger);
+            background: var(--danger-light);
+            border-radius: 10px;
+        }
 
-        .stepper-container { display:flex; flex-direction:column; align-items:center; margin-top:12px; }
-        .stepper { display:flex; align-items:center; justify-content:center; gap:14px; background:rgba(241,245,249,0.6); backdrop-filter:blur(8px); padding:6px 10px; border-radius:100px; border:1px solid var(--border); }
-        .stepper-btn { width:34px; height:34px; border-radius:50%; background:var(--surface-solid); border:1px solid var(--border); font-size:1.1rem; color:var(--text-main); cursor:pointer; font-weight:600; transition:all 0.2s var(--ease-smooth); display:flex; align-items:center; justify-content:center; }
-        .stepper-btn:hover { background:var(--primary-light); border-color:var(--primary); color:var(--primary-dark); }
-        .stepper-count { font-weight:700; font-size:1.15rem; min-width:28px; text-align:center; color:var(--primary-dark); cursor:pointer; padding:2px 6px; border-radius:6px; text-decoration:underline; text-underline-offset:5px; }
+        .duplicate-warning {
+            color: var(--danger);
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: none;
+            margin-top: 6px;
+            padding: 8px 12px;
+            background: var(--danger-light);
+            border-radius: var(--radius-sm);
+            align-items: center;
+            gap: 6px;
+        }
+        .duplicate-warning.active {
+            display: flex;
+            animation: rowFadeIn 0.3s var(--ease-out);
+        }
 
-        .collapsible-header { cursor:pointer; width:100%; user-select:none; }
-        .collapsible-header .chevron { transition:transform 0.25s var(--ease-smooth); color:var(--text-muted); font-size:0.75rem; }
-        .collapsed .collapsible-header .chevron { transform:rotate(-90deg); }
-        .collapsible-body { transition:max-height 0.35s var(--ease-smooth), opacity 0.25s var(--ease-smooth); overflow:hidden; opacity:1; }
-        .collapsed .collapsible-body { max-height:0!important; opacity:0; margin-top:0; }
+        /* ── Stepper ── */
+        .stepper-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 12px;
+        }
+        .stepper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            background: rgba(241, 245, 249, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 6px 10px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+        }
+        .stepper-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            font-size: 1.1rem;
+            color: var(--text-main);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s var(--ease-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stepper-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+        .stepper-btn:active {
+            transform: scale(0.9);
+        }
+        .stepper-btn:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        .stepper-count {
+            font-weight: 700;
+            font-size: 1.15rem;
+            min-width: 28px;
+            text-align: center;
+            color: var(--primary-dark);
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: all 0.2s var(--ease-smooth);
+            text-decoration: underline;
+            text-underline-offset: 5px;
+            text-decoration-color: var(--primary-light);
+        }
+        .stepper-count:hover {
+            background: var(--primary-light);
+            text-decoration-color: var(--primary);
+        }
+        .stepper-hint {
+            font-size: 0.68rem;
+            color: var(--text-subtle);
+            margin-top: 5px;
+        }
 
-        .preview-box { background:#1e293b; color:#f1f5f9; border-radius:var(--radius); padding:16px; font-family:'SF Mono','Fira Code',monospace; font-size:0.8rem; white-space:pre-wrap; line-height:1.6; max-height:360px; overflow-y:auto; border:1px solid #334155; }
+        /* ── Collapsible ── */
+        .collapsible-header {
+            cursor: pointer;
+            width: 100%;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .collapsible-header .chevron {
+            transition: transform 0.25s var(--ease-smooth);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+        .collapsed .collapsible-header .chevron {
+            transform: rotate(-90deg);
+        }
+        .collapsible-body {
+            transition: max-height 0.35s var(--ease-smooth), opacity 0.25s var(--ease-smooth);
+            overflow: hidden;
+            opacity: 1;
+        }
+        .collapsed .collapsible-body {
+            max-height: 0 !important;
+            opacity: 0;
+            margin-top: 0;
+        }
 
-        .action-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
-        .admin-toolbar { margin-top:10px; display:none; flex-direction:column; gap:8px; padding-top:10px; border-top:1px solid var(--border); }
-        .admin-toolbar .toolbar-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        /* ── Preview Box ── */
+        .preview-box {
+            background: #1e293b;
+            color: #f1f5f9;
+            border-radius: var(--radius);
+            padding: 16px;
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            max-height: 360px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+            scrollbar-width: thin;
+            scrollbar-color: #475569 transparent;
+        }
+        .preview-box::-webkit-scrollbar {
+            width: 4px;
+        }
+        .preview-box::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        .action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
 
-        .bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:rgba(255,255,255,0.65); backdrop-filter:blur(20px); border-top:1px solid var(--border-glass); display:flex; justify-content:space-around; padding:10px 0 calc(10px + env(safe-area-inset-bottom)); z-index:50; box-shadow:0 -1px 8px rgba(0,0,0,0.03); }
-        .nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-muted); font-size:0.7rem; font-weight:500; cursor:pointer; padding:4px 16px; border-radius:100px; border:none; background:transparent; }
-        .nav-item.active { color:var(--primary-dark); background:var(--primary-light); }
+        /* ── Admin Toolbar ── */
+        .admin-toolbar {
+            margin-top: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .admin-toolbar .toolbar-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
 
-        .modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,0.5); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:100; opacity:0; pointer-events:none; transition:opacity 0.25s var(--ease-smooth); padding:16px; }
-        .modal-overlay.active { opacity:1; pointer-events:auto; }
-        .modal-content { background:var(--surface-solid); border-radius:var(--radius-xl); padding:22px; width:100%; max-width:400px; transform:translateY(20px) scale(0.96); transition:transform 0.3s var(--ease-spring); overflow-y:auto; max-height:85vh; box-shadow:0 20px 50px rgba(0,0,0,0.15); }
+        /* ── Bottom Nav ── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border-glass);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+            z-index: 50;
+            box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.03);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            padding: 4px 16px;
+            border-radius: 100px;
+            border: none;
+            background: transparent;
+        }
+        .nav-item.active {
+            color: var(--primary-dark);
+            background: var(--primary-light);
+        }
+        .nav-item:hover {
+            color: var(--primary);
+        }
+        .nav-item:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        .nav-icon {
+            font-size: 1.2rem;
+            transition: transform 0.2s var(--ease-spring);
+        }
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
 
-        .toast { position:fixed; top:20px; left:50%; transform:translate(-50%,-30px); background:#1e293b; color:white; padding:10px 20px; border-radius:100px; font-size:0.82rem; font-weight:500; z-index:200; opacity:0; transition:all 0.3s var(--ease-spring); pointer-events:none; display:flex; align-items:center; gap:8px; }
-        .toast.show { opacity:1; transform:translate(-50%,0); }
+        /* ── Modals ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s var(--ease-smooth);
+            padding: 16px;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background: var(--surface-solid);
+            border-radius: var(--radius-xl);
+            padding: 22px;
+            width: 100%;
+            max-width: 400px;
+            transform: translateY(20px) scale(0.96);
+            transition: transform 0.3s var(--ease-spring);
+            overflow-y: auto;
+            max-height: 85vh;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border-glass);
+        }
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+        .tutorial-text {
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+        .tutorial-text h3 {
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .tutorial-text ol,
+        .tutorial-text ul {
+            padding-left: 18px;
+            margin-bottom: 10px;
+        }
 
-        .court-row { background:rgba(255,255,255,0.5); border:1px solid var(--border); border-radius:var(--radius); padding:12px; margin-bottom:8px; }
-        .court-detail { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-        .time-row { display:flex; align-items:center; gap:8px; }
-        .duration-badge { font-size:0.75rem; color:var(--primary-dark); font-weight:600; min-width:38px; text-align:center; background:var(--primary-light); padding:4px 8px; border-radius:6px; }
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translate(-50%, -30px);
+            background: #1e293b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            z-index: 200;
+            opacity: 0;
+            transition: all 0.3s var(--ease-spring);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
 
-        .admin-info-box { background:var(--primary-light); border-radius:12px; padding:12px; margin-bottom:14px; font-size:0.8rem; color:var(--primary-dark); line-height:1.5; }
-        .admin-info-box strong { display:block; margin-bottom:4px; }
+        /* ── Saved Items ── */
+        .saved-item {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s var(--ease-smooth);
+        }
+        .saved-item:hover {
+            box-shadow: var(--shadow-md);
+            background: rgba(255, 255, 255, 0.85);
+        }
 
-        .hidden { display:none!important; }
-        @media (max-width:380px) { .form-grid { grid-template-columns:1fr; } .full-width { grid-column:span 1; } .action-row { grid-template-columns:1fr; } }
+        /* ── Autocomplete ── */
+        .autocomplete-list {
+            position: absolute;
+            top: 100%;
+            left: 40px;
+            right: 40px;
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            z-index: 50;
+            max-height: 140px;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: rowFadeIn 0.2s var(--ease-out);
+        }
+        .autocomplete-item {
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--input-bg);
+            transition: background 0.15s;
+        }
+        .autocomplete-item:hover,
+        .autocomplete-item:focus {
+            background: var(--primary-light);
+            outline: none;
+        }
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        /* ── Location Toggle ── */
+        .location-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 42px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        .toggle-switch input:focus-visible+.slider {
+            outline: 2px solid var(--primary);
+            outline-offset: 3px;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.25s var(--ease-smooth);
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.25s var(--ease-spring);
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+        }
+        input:checked+.slider {
+            background-color: var(--primary);
+        }
+        input:checked+.slider:before {
+            transform: translateX(18px);
+        }
+
+        /* ── Court Row ── */
+        .court-row {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            margin-bottom: 8px;
+            transition: all 0.2s var(--ease-smooth);
+        }
+        .court-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .court-detail input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            background: var(--input-bg);
+        }
+        .court-detail .remove-btn {
+            flex-shrink: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: #cbd5e1;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .court-detail .remove-btn:hover {
+            color: var(--danger);
+            background: var(--danger-light);
+        }
+        .time-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .time-row input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 4px;
+            font-size: 0.82rem;
+            background: var(--input-bg);
+            text-align: center;
+        }
+        .time-row .time-sep {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .time-row .duration-badge {
+            font-size: 0.75rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+            min-width: 38px;
+            text-align: center;
+            background: var(--primary-light);
+            padding: 4px 8px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 380px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-grid .full-width {
+                grid-column: span 1;
+            }
+            .action-row {
+                grid-template-columns: 1fr;
+            }
+            .admin-toolbar .toolbar-row {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.1rem;
+            }
+            .pill-btn {
+                padding: 6px 10px;
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 <body>
-<div id="loadingScreen" role="status"><div class="loading-content"><span class="loading-icon">🏸</span><div class="loading-title">Smasholic</div><div class="loading-subtitle">Badminton Session Manager</div></div></div>
-
-<div class="app-container" id="appContainer">
-    <header class="header">
-        <h1><span class="icon">🏸</span> Smasholic</h1>
-        <div class="header-actions">
-            <button class="pill-btn install-btn hidden" id="installBtn">📲 Install</button>
-            <button class="pill-btn" id="tutorialBtn">📘 Tutorial</button>
-            <button class="pill-btn" id="adminLoginBtn">🔒 Admin</button>
-            <button class="pill-btn hidden" id="adminLogoutBtn">🔓 Logout</button>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" role="status" aria-label="Loading">
+        <div class="loading-content">
+            <span class="loading-icon" aria-hidden="true">🏸</span>
+            <div class="loading-title">Smasholic</div>
+            <div class="loading-subtitle">Badminton Session Manager</div>
         </div>
-    </header>
+    </div>
 
-    <main class="content" id="mainContent">
-        <div id="bookingTab" style="display:flex;flex-direction:column;gap:14px;">
-            <div class="session-summary-badge" id="playerDashboard" aria-live="polite">
-                <div class="summary-row"><span class="summary-label">📍 Venue & Court</span><span class="summary-value" id="dashVenue">Loading...</span></div>
-                <div class="summary-row"><span class="summary-label">📅 Date & Day</span><span class="summary-value" id="dashDate">Loading...</span></div>
-                <div class="summary-row"><span class="summary-label">⏰ Primary Time</span><span class="summary-value" id="dashTime">Loading...</span></div>
-                <div class="summary-row" id="dashExtraSessionsRow"><span class="summary-label">🏟️ Extra Slots</span><span class="summary-value" id="dashExtra">None</span></div>
-                <div class="summary-row"><span class="summary-label">💵 Fee / Shuttle</span><span class="summary-value" id="dashPrice">Loading...</span></div>
+    <!-- App Container -->
+    <div class="app-container" id="appContainer">
+        <!-- Header -->
+        <header class="header" role="banner">
+            <h1><span class="icon" aria-hidden="true">🏸</span> Smasholic</h1>
+            <div class="header-actions">
+                <button class="pill-btn" id="tutorialBtn" aria-label="Open tutorial">📘 Tutorial</button>
+                <button class="pill-btn" id="adminLoginBtn" aria-label="Admin login">🔒 Admin</button>
+                <button class="pill-btn hidden" id="adminLogoutBtn" aria-label="Admin logout">🔓 Logout</button>
             </div>
+        </header>
 
-            <div class="card hidden" id="adminConfigCard">
-                <div class="card-header"><span class="card-title">⚙️ Admin Session Settings</span></div>
-                <div class="form-grid">
-                    <div class="input-group"><label>Date</label><input type="date" id="dateInput"></div>
-                    <div class="input-group"><label>Day</label><div class="readonly-badge" id="dayInput">AHAD</div></div>
-                    <div class="input-group"><label>Start</label><input type="time" id="startTime" value="21:30"></div>
-                    <div class="input-group"><label>End</label><input type="time" id="endTime" value="23:30"></div>
-                    <div class="input-group"><label>Duration</label><div class="readonly-badge" id="totalHours">2.0 Hrs</div></div>
-                    <div class="input-group"><label>Price (RM)</label><input type="number" id="price" value="17" step="0.5"></div>
-                    <div class="input-group full-width"><label>Venue</label><input type="text" id="venue" value="Forum SBA, Setia Alam"></div>
-                    <div class="input-group full-width"><label>Main Court</label><input type="text" id="court" value="14, 15, 16"></div>
-                    <div class="input-group full-width">
-                        <div class="location-toggle">
-                            <label class="toggle-switch"><input type="checkbox" id="locationToggle"><span class="slider"></span></label>
-                            <span>📍 Location Link</span>
+        <!-- Main Content -->
+        <main class="content" id="mainContent">
+            <!-- Booking Tab -->
+            <div id="bookingTab" style="display:flex; flex-direction:column; gap:14px;">
+                <!-- Dashboard -->
+                <div class="session-summary-badge" id="playerDashboard" aria-live="polite">
+                    <div class="summary-row"><span class="summary-label">📍 Venue & Court</span><span class="summary-value" id="dashVenue">Loading...</span></div>
+                    <div class="summary-row"><span class="summary-label">📅 Date & Day</span><span class="summary-value" id="dashDate">Loading...</span></div>
+                    <div class="summary-row"><span class="summary-label">⏰ Primary Time</span><span class="summary-value" id="dashTime">Loading...</span></div>
+                    <div class="summary-row" id="dashExtraSessionsRow"><span class="summary-label">🏟️ Extra Slots</span><span class="summary-value" id="dashExtra">None</span></div>
+                    <div class="summary-row"><span class="summary-label">💵 Fee / Shuttle</span><span class="summary-value" id="dashPrice">Loading...</span></div>
+                </div>
+
+                <!-- Admin Config Card -->
+                <div class="card hidden" id="adminConfigCard" aria-label="Admin session settings">
+                    <div class="card-header"><span class="card-title">⚙️ Admin Session Settings</span></div>
+                    <div class="form-grid">
+                        <div class="input-group"><label for="dateInput">Date</label><input type="date" id="dateInput"></div>
+                        <div class="input-group"><label for="dayInput">Day</label><div class="readonly-badge" id="dayInput" role="status">AHAD</div></div>
+                        <div class="input-group"><label for="startTime">Start</label><input type="time" id="startTime" value="21:30"></div>
+                        <div class="input-group"><label for="endTime">End</label><input type="time" id="endTime" value="23:30"></div>
+                        <div class="input-group"><label for="totalHours">Duration</label><div class="readonly-badge" id="totalHours" role="status">2.0 Hrs</div></div>
+                        <div class="input-group"><label for="price">Price (RM)</label><input type="number" id="price" value="17" step="0.5"></div>
+                        <div class="input-group full-width"><label for="venue">Venue</label><input type="text" id="venue" value="Forum SBA, Setia Alam"></div>
+                        <div class="input-group full-width"><label for="court">Main Court</label><input type="text" id="court" value="14, 15, 16"></div>
+                        <div class="input-group full-width">
+                            <div class="location-toggle">
+                                <label class="toggle-switch" aria-label="Toggle location link">
+                                    <input type="checkbox" id="locationToggle"><span class="slider"></span>
+                                </label>
+                                <span style="font-size:0.72rem;font-weight:600;color:var(--text-muted);">📍 Location Link</span>
+                            </div>
+                            <input type="url" id="locationLink" value="https://g.co/kgs/UMbmmAz" placeholder="Google Maps link" class="hidden">
                         </div>
-                        <input type="url" id="locationLink" value="https://g.co/kgs/UMbmmAz" placeholder="Google Maps link" class="hidden">
-                    </div>
-                    <div class="input-group"><label>Shuttle</label><input type="text" id="shuttle" value="RSL"></div>
-                    <div class="input-group"><label>Host Name</label><input type="text" id="host" placeholder="Your name"></div>
-                    <div class="input-group full-width"><label>🔗 Link update list</label><input type="url" id="updateListLink" value="https://shorturl.at/ahgyU"></div>
-                    <div class="input-group full-width">
-                        <label>Auto-delete sessions older than (weeks)</label>
-                        <input type="number" id="autoCleanupWeeks" value="4" min="0" step="1">
+                        <div class="input-group"><label for="shuttle">Shuttle</label><input type="text" id="shuttle" value="RSL"></div>
+                        <div class="input-group"><label for="host">Host Name</label><input type="text" id="host" placeholder="Your name"></div>
+                        <div class="input-group full-width"><label for="updateListLink">🔗 Link update list</label><input type="url" id="updateListLink" value="https://shorturl.at/ahgyU"></div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card collapsible collapsed hidden" id="additionalCourtsCard">
-                <div class="card-header collapsible-header" onclick="toggleCollapse('additionalCourtsCard')" role="button" tabindex="0">
-                    <span class="card-title">🏟️ Additional Sessions</span><span class="chevron">▼</span>
+                <!-- Additional Sessions -->
+                <div class="card collapsible collapsed hidden" id="additionalCourtsCard" aria-label="Additional sessions">
+                    <div class="card-header collapsible-header" onclick="toggleCollapse('additionalCourtsCard')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleCollapse('additionalCourtsCard'); }">
+                        <span class="card-title">🏟️ Additional Sessions</span><span class="chevron" aria-hidden="true">▼</span>
+                    </div>
+                    <div class="collapsible-body" style="max-height:2000px;">
+                        <div id="additionalCourtsContainer"></div>
+                        <button class="btn btn-outline hidden" id="addCourtBtn" style="margin-top:12px;">+ Add Session</button>
+                    </div>
                 </div>
-                <div class="collapsible-body"><div id="additionalCourtsContainer"></div><button class="btn btn-outline hidden" id="addCourtBtn">+ Add Session</button></div>
-            </div>
 
-            <div class="card"><button class="btn btn-import" id="importBtn">📥 Import WhatsApp List</button></div>
-
-            <div class="card collapsible" id="playersCard">
-                <div class="card-header collapsible-header" onclick="toggleCollapse('playersCard')" role="button" tabindex="0">
-                    <span class="card-title">👥 Roster Senarai Nama</span><span class="chevron">▼</span>
+                <!-- Import -->
+                <div class="card" id="importActionCard">
+                    <button class="btn btn-import" id="importBtn" style="grid-column:span 2;">📥 Import WhatsApp List</button>
                 </div>
-                <div class="collapsible-body">
-                    <div class="player-list" id="playersContainer"></div>
-                    <button class="btn btn-outline" id="addPlayerBtn">+ Add Player</button>
-                    <div class="duplicate-warning" id="duplicateWarning"><span>⚠️</span> Duplicate name detected!</div>
-                    <div class="stepper-container">
-                        <div class="stepper">
-                            <button class="stepper-btn" id="stepperMinus">–</button>
-                            <span class="stepper-count" id="playerCountDisplay">0</span>
-                            <button class="stepper-btn" id="stepperPlus">+</button>
+
+                <!-- Roster -->
+                <div class="card collapsible" id="playersCard" aria-label="Player roster">
+                    <div class="card-header collapsible-header" onclick="toggleCollapse('playersCard')" role="button" tabindex="0" aria-expanded="true" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleCollapse('playersCard'); }">
+                        <span class="card-title">👥 Roster Senarai Nama</span><span class="chevron" aria-hidden="true">▼</span>
+                    </div>
+                    <div class="collapsible-body" style="max-height:2000px;">
+                        <div class="player-list" id="playersContainer" role="list" aria-label="Player list"></div>
+                        <button class="btn btn-outline" id="addPlayerBtn" style="margin-top:12px;">+ Add Player</button>
+                        <div class="duplicate-warning" id="duplicateWarning" role="alert"><span>⚠️</span> Duplicate name detected!</div>
+                        <div class="stepper-container">
+                            <div class="stepper">
+                                <button class="stepper-btn" id="stepperMinus" aria-label="Remove one player">–</button>
+                                <span class="stepper-count" id="playerCountDisplay" role="button" tabindex="0" aria-label="Set total player count. Current: 0" title="Tap to set total players">0</span>
+                                <button class="stepper-btn" id="stepperPlus" aria-label="Add one player">+</button>
+                            </div>
+                            <span class="stepper-hint">Tap number to instantly set total players</span>
                         </div>
-                        <span class="stepper-hint">Tap number to set total</span>
                     </div>
                 </div>
-            </div>
 
-            <div class="card collapsible collapsed" id="waitingCard">
-                <div class="card-header collapsible-header" onclick="toggleCollapse('waitingCard')" role="button" tabindex="0">
-                    <span class="card-title">📋 Waiting List</span><span class="chevron">▼</span>
+                <!-- Waiting List -->
+                <div class="card collapsible collapsed" id="waitingCard" aria-label="Waiting list">
+                    <div class="card-header collapsible-header" onclick="toggleCollapse('waitingCard')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleCollapse('waitingCard'); }">
+                        <span class="card-title">📋 Waiting List</span><span class="chevron" aria-hidden="true">▼</span>
+                    </div>
+                    <div class="collapsible-body" style="max-height:2000px;">
+                        <div class="player-list" id="waitingContainer" role="list" aria-label="Waiting list"></div>
+                        <button class="btn btn-outline" id="addWaitingBtn" style="margin-top:12px;">+ Add to Waiting List</button>
+                    </div>
                 </div>
-                <div class="collapsible-body"><div class="player-list" id="waitingContainer"></div><button class="btn btn-outline" id="addWaitingBtn">+ Add to Waiting List</button></div>
-            </div>
 
-            <div class="card collapsible collapsed hidden" id="footerCard">
-                <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')" role="button" tabindex="0">
-                    <span class="card-title">📌 Notes</span><span class="chevron">▼</span>
-                </div>
-                <div class="collapsible-body"><textarea id="footerMessage" rows="4">📌 Payment deadline: Friday morning
+                <!-- Notes -->
+                <div class="card collapsible collapsed hidden" id="footerCard" aria-label="Session notes">
+                    <div class="card-header collapsible-header" onclick="toggleCollapse('footerCard')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleCollapse('footerCard'); }">
+                        <span class="card-title">📌 Notes</span><span class="chevron" aria-hidden="true">▼</span>
+                    </div>
+                    <div class="collapsible-body" style="max-height:500px;">
+                        <textarea id="footerMessage" rows="4" aria-label="Session notes">📌 Payment deadline: Friday morning
 📌 Confirm slot via QR payment only
 ❌ No cash on court
-⚠️ Slot only confirmed after payment</textarea></div>
-            </div>
+⚠️ Slot only confirmed after payment</textarea>
+                    </div>
+                </div>
 
-            <div class="card" id="sharingCard">
-                <pre class="preview-box" id="preview"></pre>
-                <button class="btn btn-success" id="copyBtn" style="height:50px;font-size:1rem;">📋 Copy / Share Update</button>
-                <div class="admin-toolbar" id="adminToolbar">
-                    <div class="toolbar-row">
-                        <button class="btn btn-secondary" id="saveBookingBtn">💾 Save</button>
-                        <button class="btn btn-danger" id="resetSessionBtn">🔄 Reset</button>
+                <!-- Preview & Share -->
+                <div class="card" id="sharingCard" aria-label="Preview and share">
+                    <pre class="preview-box" id="preview" role="region" aria-label="Announcement preview" style="margin-bottom:12px;"></pre>
+                    <button class="btn btn-success" id="copyBtn" style="grid-column:span 2; height:50px; font-size:1rem;">📋 Copy / Share Update</button>
+                    <div class="admin-toolbar" id="adminToolbar">
+                        <div class="toolbar-row">
+                            <button class="btn btn-secondary" id="saveBookingBtn">💾 Save</button>
+                            <button class="btn btn-danger" id="resetSessionBtn">🔄 Reset</button>
+                        </div>
+                        <div class="toolbar-row">
+                            <button class="btn btn-danger" id="clearPlayersAdminBtn">🗑️ Clear All Players</button>
+                            <button class="btn btn-secondary" id="adminLogoutBtn2">🔓 Logout</button>
+                        </div>
                     </div>
-                    <div class="toolbar-row">
-                        <button class="btn btn-danger" id="clearPlayersAdminBtn">🗑️ Clear All Players</button>
-                        <button class="btn btn-secondary" id="adminLogoutBtn2">🔓 Logout</button>
-                    </div>
-                    <button class="btn btn-outline" id="cleanupBtn">🧹 Clean old sessions</button>
                 </div>
             </div>
-        </div>
 
-        <div id="savedTab" class="hidden">
-            <div class="card">
-                <div class="card-header"><span class="card-title">📂 Saved Sessions</span></div>
-                <div id="savedBookingsList"></div>
-                <p id="noBookingsMsg">No saved sessions yet.</p>
-                <button class="btn btn-danger hidden" id="clearAllBtn">Clear All Saved</button>
+            <!-- Saved Tab -->
+            <div id="savedTab" class="hidden" aria-label="Saved sessions">
+                <div class="card">
+                    <div class="card-header"><span class="card-title">📂 Saved Sessions</span></div>
+                    <div id="savedBookingsList" role="list"></div>
+                    <p id="noBookingsMsg" style="text-align:center;color:var(--text-muted);padding:20px 0;">No saved sessions yet.</p>
+                    <button class="btn btn-danger hidden" id="clearAllBtn" style="margin-top:16px;">Clear All Saved</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+            <button class="nav-item active" data-tab="booking" aria-current="page"><span class="nav-icon" aria-hidden="true">📅</span><span>Booking</span></button>
+            <button class="nav-item" data-tab="saved"><span class="nav-icon" aria-hidden="true">📂</span><span>Saved</span></button>
+        </nav>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal-overlay" id="adminLoginModal" role="dialog" aria-modal="true" aria-label="Admin login">
+        <div class="modal-content">
+            <h3 style="margin-bottom:12px;font-weight:600;">🔒 Access Key Needed</h3>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px;">Enter administrative credentials to modify session details.</p>
+            <input type="password" id="adminPasswordInput" placeholder="Enter admin password..." aria-label="Admin password">
+            <div class="action-row" style="margin-top:14px;">
+                <button class="btn btn-secondary" id="loginCancelBtn">Cancel</button>
+                <button class="btn" id="loginSubmitBtn">Log In</button>
             </div>
         </div>
-    </main>
-
-    <nav class="bottom-nav">
-        <button class="nav-item active" data-tab="booking">📅 Booking</button>
-        <button class="nav-item" data-tab="saved">📂 Saved</button>
-    </nav>
-</div>
-
-<div id="toast" class="toast"></div>
-
-<!-- Admin Login Modal (with soft info) -->
-<div class="modal-overlay" id="adminLoginModal"><div class="modal-content">
-    <h3>🔒 Admin Access</h3>
-    <div class="admin-info-box">
-        <strong>⚡ What you can do as admin:</strong>
-        • Edit session date, time, venue, price<br>
-        • Manage additional court sessions<br>
-        • Configure location link & update list<br>
-        • Set auto‑cleanup for old saved sessions<br>
-        • Save, load, or delete saved bookings<br>
-        • Reset the entire form or clear all players
     </div>
-    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px;">Enter the admin password to continue.</p>
-    <input type="password" id="adminPasswordInput" placeholder="Enter admin password...">
-    <div class="action-row"><button class="btn btn-secondary" id="loginCancelBtn">Cancel</button><button class="btn" id="loginSubmitBtn">Log In</button></div>
-</div></div>
 
-<div class="modal-overlay" id="importModal"><div class="modal-content">
-    <h3>Import Session</h3>
-    <textarea id="importTextarea" rows="10" placeholder="Paste announcement..."></textarea>
-    <div class="action-row"><button class="btn btn-secondary" id="importCancelBtn">Cancel</button><button class="btn" id="importParseBtn">Parse & Fill</button></div>
-</div></div>
+    <!-- Import Modal -->
+    <div class="modal-overlay" id="importModal" role="dialog" aria-modal="true" aria-label="Import session">
+        <div class="modal-content">
+            <h3 style="margin-bottom:12px;font-weight:600;">Import Session</h3>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px;">Paste the exact copied announcement text below to automatically reverse-fill the form.</p>
+            <textarea id="importTextarea" rows="10" placeholder="Paste announcement..." aria-label="Paste announcement text"></textarea>
+            <div class="action-row" style="margin-top:14px;">
+                <button class="btn btn-secondary" id="importCancelBtn">Cancel</button>
+                <button class="btn" id="importParseBtn">Parse & Fill</button>
+            </div>
+        </div>
+    </div>
 
-<div class="modal-overlay" id="confirmModal"><div class="modal-content">
-    <h3 id="confirmTitle">Confirm</h3><p id="confirmMessage"></p>
-    <div class="action-row"><button class="btn btn-secondary" id="confirmCancelBtn">Cancel</button><button class="btn btn-danger" id="confirmActionBtn">Yes, do it</button></div>
-</div></div>
+    <!-- Confirm Modal -->
+    <div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true" aria-label="Confirm action">
+        <div class="modal-content">
+            <h3 id="confirmTitle" style="margin-bottom:12px;font-weight:600;">Confirm</h3>
+            <p id="confirmMessage" style="font-size:0.9rem;color:var(--text-muted);margin-bottom:20px;"></p>
+            <div class="action-row">
+                <button class="btn btn-secondary" id="confirmCancelBtn">Cancel</button>
+                <button class="btn btn-danger" id="confirmActionBtn">Yes, do it</button>
+            </div>
+        </div>
+    </div>
 
-<div class="modal-overlay" id="tutorialModal"><div class="modal-content">
-    <h3>📘 Cara Guna Sistem</h3><div class="tutorial-text"><ol><li>Copy mesej penuh player list dari WhatsApp.</li><li>Klik Import WhatsApp List.</li><li>Edit nama slot anda pada Roster.</li><li>Tandakan ✅ selepas bayaran.</li><li>Tekan Copy / Share Update.</li><li>Paste balik ke WhatsApp group.</li></ol></div>
-    <button class="btn btn-secondary" id="tutorialCloseBtn">Tutup</button>
-</div></div>
+    <!-- Tutorial Modal -->
+    <div class="modal-overlay" id="tutorialModal" role="dialog" aria-modal="true" aria-label="Tutorial">
+        <div class="modal-content">
+            <h3 style="margin-bottom:12px;font-weight:600;">📘 Cara Guna Sistem</h3>
+            <div class="tutorial-text">
+                <p><strong>📌 Cara guna "Import" list (WhatsApp → Update System)</strong></p>
+                <ol>
+                    <li>Copy mesej penuh player list dari WhatsApp group.</li>
+                    <li>Klik butang <strong>Import WhatsApp List</strong> di atas dan paste teks tadi.</li>
+                    <li>Edit nama slot anda pada senarai Roster jika perlu.</li>
+                    <li>Tandakan tanda ✅ hijau pada butang nama anda selepas bayaran selesai.</li>
+                    <li>Tekan butang <strong>Copy / Share Update</strong> semula.</li>
+                    <li>Paste balik kemaskini terbaru tadi ke dalam WhatsApp group anda.</li>
+                </ol>
+                <p style="margin-top:8px;"><strong>⚠️ Peringatan Penting:</strong></p>
+                <ul>
+                    <li>Dilarang sama sekali memadam nama player lain tanpa izin.</li>
+                    <li>Tanda hijau hanya dibenarkan selepas transaksi selesai dilakukan.</li>
+                </ul>
+            </div>
+            <button class="btn btn-secondary" id="tutorialCloseBtn" style="margin-top:14px;">Tutup</button>
+        </div>
+    </div>
 
-<script>
-(function() {
-    const ADMIN_PASSWORD = 'smash123';
-    const NAMES_KEY = 'smasholic_names';
-    const SAVED_KEY = 'smasholic_saved_bookings';
-    const CLEANUP_WEEKS_KEY = 'smasholic_auto_cleanup_weeks';
-    const malayDays = ["AHAD","ISNIN","SELASA","RABU","KHAMIS","JUMAAT","SABTU"];
+    <script>
+        (function() {
+            // ──────────────────────────────────────
+            // 1. CONSTANTS & DOM REFERENCES
+            // ──────────────────────────────────────
+            const ADMIN_PASSWORD = 'smash123';
+            const NAMES_KEY = 'smasholic_names';
+            const SAVED_KEY = 'smasholic_saved_bookings';
+            const malayDays = ["AHAD", "ISNIN", "SELASA", "RABU", "KHAMIS", "JUMAAT", "SABTU"];
 
-    const state = {
-        isAdmin: false,
-        locationEnabled: false,
-        players: [],
-        waitingPlayers: [],
-        additionalCourts: [],
-        savedBookings: [],
-        confirmCallback: null,
-        previewDirty: true,
-        renderScheduled: false,
-        autoCleanupWeeks: 4,
-        installPromptEvent: null,
-    };
+            // ──────────────────────────────────────
+            // 2. APPLICATION STATE (Centralized)
+            // ──────────────────────────────────────
+            const state = {
+                isAdmin: false,
+                locationEnabled: false,
+                players: [],
+                waitingPlayers: [],
+                additionalCourts: [],
+                savedBookings: [],
+                confirmCallback: null,
+                previewDirty: true,
+                renderScheduled: false,
+            };
 
-    const $ = (id) => document.getElementById(id);
-    const els = {
-        loadingScreen: $('loadingScreen'), date: $('dateInput'), day: $('dayInput'),
-        start: $('startTime'), end: $('endTime'), duration: $('totalHours'),
-        venue: $('venue'), court: $('court'), locationToggle: $('locationToggle'),
-        locationLink: $('locationLink'), price: $('price'), shuttle: $('shuttle'),
-        host: $('host'), footer: $('footerMessage'), updateListLink: $('updateListLink'),
-        preview: $('preview'), playersContainer: $('playersContainer'),
-        waitingContainer: $('waitingContainer'), playerCount: $('playerCountDisplay'),
-        dupWarning: $('duplicateWarning'), addPlayer: $('addPlayerBtn'), addWaiting: $('addWaitingBtn'),
-        stepMinus: $('stepperMinus'), stepPlus: $('stepperPlus'), copy: $('copyBtn'),
-        save: $('saveBookingBtn'), importBtn: $('importBtn'), reset: $('resetSessionBtn'),
-        clearSaved: $('clearAllBtn'), clearPlayersAdminBtn: $('clearPlayersAdminBtn'),
-        adminToolbar: $('adminToolbar'), adminLogoutBtn2: $('adminLogoutBtn2'), toast: $('toast'),
-        importModal: $('importModal'), importTextarea: $('importTextarea'), confirmModal: $('confirmModal'),
-        additionalCourtsContainer: $('additionalCourtsContainer'), addCourtBtn: $('addCourtBtn'),
-        playerDashboard: $('playerDashboard'), adminConfigCard: $('adminConfigCard'),
-        additionalCourtsCard: $('additionalCourtsCard'), footerCard: $('footerCard'),
-        adminLoginBtn: $('adminLoginBtn'), adminLogoutBtn: $('adminLogoutBtn'),
-        adminLoginModal: $('adminLoginModal'), adminPasswordInput: $('adminPasswordInput'),
-        savedBookingsList: $('savedBookingsList'), noBookingsMsg: $('noBookingsMsg'),
-        bookingTab: $('bookingTab'), savedTab: $('savedTab'), tutorialModal: $('tutorialModal'),
-        confirmTitle: $('confirmTitle'), confirmMessage: $('confirmMessage'),
-        autoCleanupWeeks: $('autoCleanupWeeks'), cleanupBtn: $('cleanupBtn'),
-        installBtn: $('installBtn'),
-    };
+            // ──────────────────────────────────────
+            // 3. DOM ELEMENT CACHE (Minimize queries)
+            // ──────────────────────────────────────
+            const $ = (id) => document.getElementById(id);
+            const els = {
+                loadingScreen: $('loadingScreen'),
+                date: $('dateInput'),
+                day: $('dayInput'),
+                start: $('startTime'),
+                end: $('endTime'),
+                duration: $('totalHours'),
+                venue: $('venue'),
+                court: $('court'),
+                locationToggle: $('locationToggle'),
+                locationLink: $('locationLink'),
+                price: $('price'),
+                shuttle: $('shuttle'),
+                host: $('host'),
+                footer: $('footerMessage'),
+                updateListLink: $('updateListLink'),
+                preview: $('preview'),
+                playersContainer: $('playersContainer'),
+                waitingContainer: $('waitingContainer'),
+                playerCount: $('playerCountDisplay'),
+                dupWarning: $('duplicateWarning'),
+                addPlayer: $('addPlayerBtn'),
+                addWaiting: $('addWaitingBtn'),
+                stepMinus: $('stepperMinus'),
+                stepPlus: $('stepperPlus'),
+                copy: $('copyBtn'),
+                save: $('saveBookingBtn'),
+                importBtn: $('importBtn'),
+                reset: $('resetSessionBtn'),
+                clearSaved: $('clearAllBtn'),
+                clearPlayersAdminBtn: $('clearPlayersAdminBtn'),
+                adminToolbar: $('adminToolbar'),
+                adminLogoutBtn2: $('adminLogoutBtn2'),
+                toast: $('toast'),
+                importModal: $('importModal'),
+                importTextarea: $('importTextarea'),
+                confirmModal: $('confirmModal'),
+                additionalCourtsContainer: $('additionalCourtsContainer'),
+                addCourtBtn: $('addCourtBtn'),
+                playerDashboard: $('playerDashboard'),
+                adminConfigCard: $('adminConfigCard'),
+                additionalCourtsCard: $('additionalCourtsCard'),
+                footerCard: $('footerCard'),
+                adminLoginBtn: $('adminLoginBtn'),
+                adminLogoutBtn: $('adminLogoutBtn'),
+                adminLoginModal: $('adminLoginModal'),
+                adminPasswordInput: $('adminPasswordInput'),
+                savedBookingsList: $('savedBookingsList'),
+                noBookingsMsg: $('noBookingsMsg'),
+                bookingTab: $('bookingTab'),
+                savedTab: $('savedTab'),
+                tutorialModal: $('tutorialModal'),
+                confirmTitle: $('confirmTitle'),
+                confirmMessage: $('confirmMessage'),
+                dashVenue: $('dashVenue'),
+                dashDate: $('dashDate'),
+                dashTime: $('dashTime'),
+                dashExtra: $('dashExtra'),
+                dashExtraSessionsRow: $('dashExtraSessionsRow'),
+                dashPrice: $('dashPrice'),
+            };
 
-    const escapeHtml = (str) => (str||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-    const vibrate = (ms=12) => { if(navigator.vibrate) navigator.vibrate(ms); };
+            // ──────────────────────────────────────
+            // 4. UTILITY FUNCTIONS
+            // ──────────────────────────────────────
+            const escapeHtml = (str) => (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-    function showToast(msg, icon='✅') {
-        els.toast.innerHTML = `<span>${icon}</span> ${escapeHtml(msg)}`;
-        els.toast.classList.add('show');
-        clearTimeout(els.toast._timeout);
-        els.toast._timeout = setTimeout(() => els.toast.classList.remove('show'), 2200);
-    }
+            const vibrate = (ms = 12) => { if (navigator.vibrate) navigator.vibrate(ms); };
 
-    // Sound feedback (tick)
-    function playTick() {
-        try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(1200, ctx.currentTime);
-            gain.gain.setValueAtTime(0.3, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.08);
-        } catch(e) {}
-    }
-
-    // Auto cleanup
-    function loadCleanupSetting() {
-        const saved = localStorage.getItem(CLEANUP_WEEKS_KEY);
-        state.autoCleanupWeeks = saved ? parseInt(saved) : 4;
-        if (isNaN(state.autoCleanupWeeks) || state.autoCleanupWeeks < 0) state.autoCleanupWeeks = 4;
-        els.autoCleanupWeeks.value = state.autoCleanupWeeks;
-    }
-    els.autoCleanupWeeks.addEventListener('change', () => {
-        let val = parseInt(els.autoCleanupWeeks.value);
-        if (isNaN(val) || val < 0) val = 0;
-        state.autoCleanupWeeks = val;
-        localStorage.setItem(CLEANUP_WEEKS_KEY, val);
-        applyAutoCleanup();
-    });
-
-    function applyAutoCleanup() {
-        if (state.autoCleanupWeeks <= 0) return;
-        const cutoff = Date.now() - state.autoCleanupWeeks * 7 * 24 * 60 * 60 * 1000;
-        const oldCount = state.savedBookings.length;
-        state.savedBookings = state.savedBookings.filter(b => {
-            const bDate = new Date(b.date + 'T00:00:00').getTime();
-            return bDate >= cutoff;
-        });
-        if (state.savedBookings.length < oldCount) {
-            persistSavedBookings();
-            if (!els.savedTab.classList.contains('hidden')) renderSaved();
-        }
-    }
-
-    els.cleanupBtn.addEventListener('click', () => {
-        if (!state.isAdmin) return;
-        if (state.autoCleanupWeeks <= 0) { showToast('Set weeks first','⚠️'); return; }
-        const cutoff = Date.now() - state.autoCleanupWeeks * 7 * 24 * 60 * 60 * 1000;
-        const toRemove = state.savedBookings.filter(b => new Date(b.date+'T00:00:00').getTime() < cutoff);
-        if (!toRemove.length) { showToast('No old sessions to clean'); return; }
-        showConfirm('Clean old sessions', `Delete ${toRemove.length} session(s) older than ${state.autoCleanupWeeks} weeks?`, () => {
-            state.savedBookings = state.savedBookings.filter(b => new Date(b.date+'T00:00:00').getTime() >= cutoff);
-            persistSavedBookings();
-            renderSaved();
-            showToast('Cleaned!');
-        });
-    });
-
-    // PWA install
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        state.installPromptEvent = e;
-        els.installBtn.classList.remove('hidden');
-    });
-    els.installBtn.addEventListener('click', async () => {
-        if (!state.installPromptEvent) return;
-        state.installPromptEvent.prompt();
-        const { outcome } = await state.installPromptEvent.userChoice;
-        if (outcome === 'accepted') {
-            els.installBtn.classList.add('hidden');
-            state.installPromptEvent = null;
-        }
-    });
-    if ('serviceWorker' in navigator) {
-        const swCode = `
-            const CACHE = 'smasholic-v1';
-            const URLS = [self.location.href];
-            self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(URLS).catch(()=>{}))));
-            self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
-        `;
-        const blob = new Blob([swCode], {type: 'application/javascript'});
-        const swUrl = URL.createObjectURL(blob);
-        navigator.serviceWorker.register(swUrl).catch(() => {});
-    }
-
-    // Utility
-    function timeToMinutes(t) { if(!t) return 0; const [h,m]=t.split(':').map(Number); return h*60+m; }
-    function calcDurationSingle(s,e) { if(!s||!e) return 0; let a=timeToMinutes(s),b=timeToMinutes(e); if(b<=a)b+=1440; return (b-a)/60; }
-    function calcTotalDuration() {
-        const intervals=[];
-        if(els.start.value&&els.end.value){let s=timeToMinutes(els.start.value),e=timeToMinutes(els.end.value); if(e<=s)e+=1440; intervals.push({start:s,end:e});}
-        state.additionalCourts.forEach(c=>{if(c.start&&c.end){let s=timeToMinutes(c.start),e=timeToMinutes(c.end); if(e<=s)e+=1440; intervals.push({start:s,end:e});}});
-        if(!intervals.length) return 0;
-        intervals.sort((a,b)=>a.start-b.start);
-        const merged=[]; let cur=intervals[0];
-        for(let i=1;i<intervals.length;i++){if(intervals[i].start<=cur.end)cur.end=Math.max(cur.end,intervals[i].end); else{merged.push(cur);cur=intervals[i];}}
-        merged.push(cur); let total=0; merged.forEach(m=>total+=(m.end-m.start)); return total/60;
-    }
-    function formatDuration(h){return h===0?'—':(h%1===0?h.toFixed(0):h.toFixed(1))+'h';}
-    function formatCourtName(n){if(!n||!n.trim())return n; const t=n.trim(); return /court/i.test(t)?t:'Court '+t;}
-    function formatTime12(t){if(!t)return'';let[h,m]=t.split(':');h=parseInt(h);const ampm=h>=12?'PM':'AM';let h12=h%12;if(h12===0)h12=12;return `${h12}:${m} ${ampm}`;}
-    function formatDateDMY(d){if(!d)return'';const[y,m,d2]=d.split('-');return `${parseInt(d2)}/${parseInt(m)}/${y}`;}
-
-    function buildPreview() {
-        const dateVal=formatDateDMY(els.date.value), dayVal=els.day.textContent;
-        const start=formatTime12(els.start.value), end=formatTime12(els.end.value);
-        const totalHrs=calcTotalDuration(), totalText=(totalHrs%1===0?totalHrs.toFixed(0):totalHrs.toFixed(1))+' hours';
-        const venueVal=els.venue.value, mainCourt=els.court.value;
-        const priceVal=parseFloat(els.price.value||0).toFixed(2), shuttleVal=els.shuttle.value;
-        const hostVal=els.host.value.trim()||'......', locationVal=els.locationLink.value.trim(), updateListVal=els.updateListLink.value.trim();
-        let text=`🏸 BADMINTON SESSION\n\n📍 ${venueVal}\n🏟️ Court: ${mainCourt}\n\n📅 ${dateVal} (${dayVal})\n\n⏰ Session 1\n${start} – ${end}\n(${mainCourt})\n\n`;
-        let sn=2;
-        state.additionalCourts.forEach(c=>{if(c.court.trim()){text+=`⏰ Session ${sn}\n${formatTime12(c.start)||'?'} – ${formatTime12(c.end)||'?'}\n(${formatCourtName(c.court.trim())})\n\n`;sn++;}});
-        text+=`⏱️ Total: ${totalText}\n💵 RM${priceVal} / player\n🏸 Shuttle: ${shuttleVal}\n👤 Host: ${hostVal}\n\n──────────────────\n\n`;
-        state.players.forEach((p,i)=>text+=`${i+1}. ${p.name.trim()||'(Open)'}${p.paid?' ✅':''}\n`);
-        if(state.waitingPlayers.length){text+=`\nWaiting List\n`;state.waitingPlayers.forEach((p,i)=>text+=`${i+1}. ${p.name.trim()||''}\n`);}
-        text+=`\n──────────────────\n\nNotes:\n${els.footer.value.trim()}\n`;
-        if(state.locationEnabled&&locationVal) text+=`\n📍 Location: ${locationVal}\n`;
-        if(updateListVal) text+=`\nLink update list\n${updateListVal}\n`;
-        return text;
-    }
-    function updatePreview() { state.previewDirty=true; schedulePreviewRender(); }
-    function schedulePreviewRender() {
-        if(state.renderScheduled) return;
-        state.renderScheduled=true;
-        requestAnimationFrame(()=>{ if(state.previewDirty){els.preview.textContent=buildPreview();state.previewDirty=false;} state.renderScheduled=false; updateLiveDashboard(); });
-    }
-    function updateLiveDashboard() {
-        els.dashVenue.textContent=`${els.venue.value} (${formatCourtName(els.court.value)})`;
-        els.dashDate.textContent=`${formatDateDMY(els.date.value)} (${els.day.textContent})`;
-        els.dashTime.textContent=`${formatTime12(els.start.value)} - ${formatTime12(els.end.value)} (${els.duration.textContent})`;
-        els.dashPrice.textContent=`RM ${parseFloat(els.price.value||0).toFixed(2)} • Shuttle: ${els.shuttle.value}`;
-        const validExtras=state.additionalCourts.filter(c=>c.court.trim());
-        els.dashExtraSessionsRow.classList.toggle('hidden',validExtras.length===0);
-        els.dashExtra.textContent=validExtras.length?`${validExtras.length} Session(s) configured`:'None';
-    }
-
-    function updateDuplicateStyling() {
-        const counts=new Map();
-        state.players.forEach(p=>{const n=p.name.trim().toLowerCase(); if(n)counts.set(n,(counts.get(n)||0)+1);});
-        document.querySelectorAll('#playersContainer .player-row').forEach((row,idx)=>{
-            const n=state.players[idx]?.name.trim().toLowerCase();
-            row.classList.toggle('duplicate',n&&counts.get(n)>1);
-        });
-        els.dupWarning.classList.toggle('active',Array.from(counts.values()).some(v=>v>1));
-    }
-
-    function renderPlayers() {
-        const frag=document.createDocumentFragment();
-        state.players.forEach((p,idx)=>{
-            const row=document.createElement('div'); row.className='player-row'; row.dataset.idx=idx;
-            row.innerHTML=`<div class="player-avatar">${idx+1}</div><input type="text" class="pname" value="${escapeHtml(p.name)}" data-idx="${idx}" autocomplete="off"><button class="action-icon paid-toggle ${p.paid?'active':''}" data-idx="${idx}">✅</button><button class="action-icon remove-toggle" data-idx="${idx}">✕</button>`;
-            frag.appendChild(row);
-        });
-        els.playersContainer.innerHTML=''; els.playersContainer.appendChild(frag);
-        els.playerCount.textContent=state.players.length;
-        updateDuplicateStyling();
-    }
-    function renderWaitingPlayers() {
-        const frag=document.createDocumentFragment();
-        state.waitingPlayers.forEach((p,idx)=>{
-            const row=document.createElement('div'); row.className='player-row'; row.dataset.idx=idx;
-            row.innerHTML=`<div class="player-avatar" style="background:var(--input-bg);color:var(--text-muted);">${idx+1}</div><input type="text" class="wname" value="${escapeHtml(p.name)}" data-idx="${idx}" autocomplete="off"><button class="action-icon remove-toggle" data-idx="${idx}">✕</button>`;
-            frag.appendChild(row);
-        });
-        els.waitingContainer.innerHTML=''; els.waitingContainer.appendChild(frag);
-    }
-    function renderAdditionalCourts() {
-        const frag=document.createDocumentFragment();
-        state.additionalCourts.forEach((c,idx)=>{
-            const row=document.createElement('div'); row.className='court-row'; row.dataset.idx=idx;
-            const dur=calcDurationSingle(c.start,c.end);
-            row.innerHTML=`<div class="court-detail"><input type="text" class="court-name-input" value="${escapeHtml(c.court)}" data-idx="${idx}" ${!state.isAdmin?'disabled':''}>${state.isAdmin?`<button class="remove-btn" data-idx="${idx}">✕</button>`:''}</div><div class="time-row"><input type="time" class="time-start" value="${c.start||''}" data-idx="${idx}" ${!state.isAdmin?'disabled':''}><span class="time-sep">|</span><input type="time" class="time-end" value="${c.end||''}" data-idx="${idx}" ${!state.isAdmin?'disabled':''}><span class="duration-badge">${formatDuration(dur)}</span></div>`;
-            frag.appendChild(row);
-        });
-        els.additionalCourtsContainer.innerHTML=''; els.additionalCourtsContainer.appendChild(frag);
-    }
-    function renderSaved() {
-        els.noBookingsMsg.style.display=state.savedBookings.length?'none':'block';
-        els.clearSaved.classList.toggle('hidden',!state.isAdmin||state.savedBookings.length===0);
-        const frag=document.createDocumentFragment();
-        state.savedBookings.forEach((b,idx)=>{
-            const item=document.createElement('div'); item.className='saved-item';
-            item.innerHTML=`<div><strong>${b.day}, ${formatDateDMY(b.date)}</strong><p>${b.venue} • ${b.players.length} Players</p></div><div style="display:flex;gap:6px;"><button class="btn btn-secondary load-btn" data-idx="${idx}">Load</button>${state.isAdmin?`<button class="btn btn-danger del-btn" data-idx="${idx}">✕</button>`:''}</div>`;
-            frag.appendChild(item);
-        });
-        els.savedBookingsList.innerHTML=''; els.savedBookingsList.appendChild(frag);
-    }
-
-    function showAutocomplete(input,idx,isWaiting=false){
-        document.querySelectorAll('.autocomplete-list').forEach(e=>e.remove());
-        const val=input.value.trim().toLowerCase(); if(!val)return;
-        const matches=getNames().filter(n=>n.toLowerCase().includes(val)&&n.toLowerCase()!==val); if(!matches.length)return;
-        const list=document.createElement('div'); list.className='autocomplete-list'; list.setAttribute('role','listbox');
-        matches.forEach(name=>{ const item=document.createElement('div'); item.className='autocomplete-item'; item.textContent=name; item.setAttribute('role','option'); item.tabIndex=0; list.appendChild(item); });
-        list.addEventListener('mousedown',(e)=>{ if(e.target.classList.contains('autocomplete-item')){ e.preventDefault(); const selected=e.target.textContent; input.value=selected; if(isWaiting) state.waitingPlayers[idx].name=selected; else{ state.players[idx].name=selected; updateDuplicateStyling(); } list.remove(); updatePreview(); addName(selected); } });
-        input.closest('.player-row').appendChild(list);
-    }
-
-    function setupDelegation(container,arr,isWaiting=false){
-        container.addEventListener('input',(e)=>{
-            if(e.target.classList.contains('pname')||e.target.classList.contains('wname')){
-                const idx=parseInt(e.target.dataset.idx);
-                if(!isNaN(idx)&&arr[idx]){ arr[idx].name=e.target.value; if(!isWaiting)updateDuplicateStyling(); updatePreview(); showAutocomplete(e.target,idx,isWaiting); }
+            function showToast(msg, icon = '✅') {
+                els.toast.innerHTML = `<span aria-hidden="true">${icon}</span> ${escapeHtml(msg)}`;
+                els.toast.classList.add('show');
+                clearTimeout(els.toast._timeout);
+                els.toast._timeout = setTimeout(() => els.toast.classList.remove('show'), 2200);
             }
-        });
-        container.addEventListener('click',(e)=>{
-            const btn=e.target.closest('.action-icon'); if(!btn)return;
-            const idx=parseInt(btn.dataset.idx); if(isNaN(idx)||!arr[idx])return;
-            if(btn.classList.contains('paid-toggle')){
-                arr[idx].paid=!arr[idx].paid; btn.classList.toggle('active',arr[idx].paid);
-                if(arr[idx].paid){ addName(arr[idx].name); playTick(); }
+
+            function timeToMinutes(t) {
+                if (!t) return 0;
+                const [h, m] = t.split(':').map(Number);
+                return h * 60 + m;
+            }
+
+            function calcDurationSingle(start, end) {
+                if (!start || !end) return 0;
+                let s = timeToMinutes(start),
+                    e = timeToMinutes(end);
+                if (e <= s) e += 1440;
+                return (e - s) / 60;
+            }
+
+            function calcTotalDuration() {
+                const intervals = [];
+                if (els.start.value && els.end.value) {
+                    let s = timeToMinutes(els.start.value),
+                        e = timeToMinutes(els.end.value);
+                    if (e <= s) e += 1440;
+                    intervals.push({ start: s, end: e });
+                }
+                state.additionalCourts.forEach(c => {
+                    if (c.start && c.end) {
+                        let s = timeToMinutes(c.start),
+                            e = timeToMinutes(c.end);
+                        if (e <= s) e += 1440;
+                        intervals.push({ start: s, end: e });
+                    }
+                });
+                if (!intervals.length) return 0;
+                intervals.sort((a, b) => a.start - b.start);
+                const merged = [];
+                let cur = intervals[0];
+                for (let i = 1; i < intervals.length; i++) {
+                    if (intervals[i].start <= cur.end) {
+                        cur.end = Math.max(cur.end, intervals[i].end);
+                    } else {
+                        merged.push(cur);
+                        cur = intervals[i];
+                    }
+                }
+                merged.push(cur);
+                let totalMin = 0;
+                merged.forEach(m => totalMin += (m.end - m.start));
+                return totalMin / 60;
+            }
+
+            function formatDuration(hrs) {
+                return hrs === 0 ? '—' : (hrs % 1 === 0 ? hrs.toFixed(0) : hrs.toFixed(1)) + 'h';
+            }
+
+            function formatCourtName(name) {
+                if (!name || name.trim() === '') return name;
+                const t = name.trim();
+                return /court/i.test(t) ? t : 'Court ' + t;
+            }
+
+            function formatTime12(t) {
+                if (!t) return '';
+                let [h, m] = t.split(':');
+                h = parseInt(h);
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                let h12 = h % 12;
+                if (h12 === 0) h12 = 12;
+                return `${h12}:${m} ${ampm}`;
+            }
+
+            function formatDateDMY(dStr) {
+                if (!dStr) return '';
+                const [y, m, d] = dStr.split('-');
+                return `${parseInt(d)}/${parseInt(m)}/${y}`;
+            }
+
+            // ──────────────────────────────────────
+            // 5. LOCAL STORAGE HELPERS
+            // ──────────────────────────────────────
+            function getNames() {
+                try { return JSON.parse(localStorage.getItem(NAMES_KEY)) || []; } catch { return []; }
+            }
+
+            function addName(name) {
+                name = name.trim();
+                if (!name) return;
+                let names = getNames().filter(n => n.toLowerCase() !== name.toLowerCase());
+                names.unshift(name);
+                if (names.length > 40) names.pop();
+                localStorage.setItem(NAMES_KEY, JSON.stringify(names));
+            }
+
+            function loadSavedBookings() {
+                try {
+                    state.savedBookings = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]');
+                } catch { state.savedBookings = []; }
+            }
+
+            function persistSavedBookings() {
+                localStorage.setItem(SAVED_KEY, JSON.stringify(state.savedBookings));
+            }
+
+            // ──────────────────────────────────────
+            // 6. PREVIEW GENERATION (Memoized)
+            // ──────────────────────────────────────
+            function buildPreview() {
+                const dateVal = formatDateDMY(els.date.value);
+                const dayVal = els.day.textContent;
+                const start = formatTime12(els.start.value);
+                const end = formatTime12(els.end.value);
+                const totalHrs = calcTotalDuration();
+                const totalText = (totalHrs % 1 === 0 ? totalHrs.toFixed(0) : totalHrs.toFixed(1)) + ' hours';
+                const venueVal = els.venue.value;
+                const mainCourt = els.court.value;
+                const priceVal = parseFloat(els.price.value || 0).toFixed(2);
+                const shuttleVal = els.shuttle.value;
+                const hostVal = els.host.value.trim() || '......';
+                const locationVal = els.locationLink.value.trim();
+                const updateListVal = els.updateListLink.value.trim();
+
+                let text = `🏸 BADMINTON SESSION\n\n`;
+                text += `📍 ${venueVal}\n`;
+                text += `🏟️ Court: ${mainCourt}\n\n`;
+                text += `📅 ${dateVal} (${dayVal})\n\n`;
+                text += `⏰ Session 1\n${start} – ${end}\n(${mainCourt})\n\n`;
+
+                let sessionNum = 2;
+                state.additionalCourts.forEach(c => {
+                    if (c.court.trim()) {
+                        text +=
+                            `⏰ Session ${sessionNum}\n${formatTime12(c.start) || '?'} – ${formatTime12(c.end) || '?'}\n(${formatCourtName(c.court.trim())})\n\n`;
+                        sessionNum++;
+                    }
+                });
+
+                text += `⏱️ Total: ${totalText}\n`;
+                text += `💵 RM${priceVal} / player\n`;
+                text += `🏸 Shuttle: ${shuttleVal}\n`;
+                text += `👤 Host: ${hostVal}\n\n`;
+                text += `──────────────────\n\n`;
+
+                state.players.forEach((p, i) => {
+                    text += `${i + 1}. ${p.name.trim() || '(Open)'}${p.paid ? ' ✅' : ''}\n`;
+                });
+                if (state.waitingPlayers.length) {
+                    text += `\nWaiting List\n`;
+                    state.waitingPlayers.forEach((p, i) => text += `${i + 1}. ${p.name.trim() || ''}\n`);
+                }
+                text += `\n──────────────────\n\n`;
+                text += `Notes:\n${els.footer.value.trim()}\n`;
+                if (state.locationEnabled && locationVal) text += `\n📍 Location: ${locationVal}\n`;
+                if (updateListVal) text += `\nLink update list\n${updateListVal}\n`;
+                return text;
+            }
+
+            function updatePreview() {
+                state.previewDirty = true;
+                schedulePreviewRender();
+            }
+
+            function schedulePreviewRender() {
+                if (state.renderScheduled) return;
+                state.renderScheduled = true;
+                requestAnimationFrame(() => {
+                    if (state.previewDirty) {
+                        els.preview.textContent = buildPreview();
+                        state.previewDirty = false;
+                    }
+                    state.renderScheduled = false;
+                    updateLiveDashboard();
+                });
+            }
+
+            function updateLiveDashboard() {
+                els.dashVenue.textContent = `${els.venue.value} (${formatCourtName(els.court.value)})`;
+                els.dashDate.textContent =
+                    `${formatDateDMY(els.date.value)} (${els.day.textContent})`;
+                els.dashTime.textContent =
+                    `${formatTime12(els.start.value)} - ${formatTime12(els.end.value)} (${els.duration.textContent})`;
+                els.dashPrice.textContent =
+                    `RM ${parseFloat(els.price.value || 0).toFixed(2)} • Shuttle: ${els.shuttle.value}`;
+                const validExtras = state.additionalCourts.filter(c => c.court.trim());
+                els.dashExtraSessionsRow.classList.toggle('hidden', validExtras.length === 0);
+                els.dashExtra.textContent = validExtras.length ? `${validExtras.length} Session(s) configured` :
+                    'None';
+            }
+
+            // ──────────────────────────────────────
+            // 7. DUPLICATE DETECTION
+            // ──────────────────────────────────────
+            function updateDuplicateStyling() {
+                const counts = new Map();
+                state.players.forEach(p => {
+                    const n = p.name.trim().toLowerCase();
+                    if (n) counts.set(n, (counts.get(n) || 0) + 1);
+                });
+                const rows = els.playersContainer.querySelectorAll('.player-row');
+                rows.forEach((row, idx) => {
+                    const n = state.players[idx]?.name.trim().toLowerCase();
+                    row.classList.toggle('duplicate', n && counts.get(n) > 1);
+                });
+                els.dupWarning.classList.toggle('active', Array.from(counts.values()).some(v => v >
+                    1));
+            }
+
+            // ──────────────────────────────────────
+            // 8. RENDERING FUNCTIONS (Fragment-based)
+            // ──────────────────────────────────────
+            function renderPlayers() {
+                const frag = document.createDocumentFragment();
+                state.players.forEach((p, idx) => {
+                    const row = document.createElement('div');
+                    row.className = 'player-row';
+                    row.setAttribute('role', 'listitem');
+                    row.dataset.idx = idx;
+                    row.innerHTML = `
+                        <div class="player-avatar" aria-hidden="true">${idx + 1}</div>
+                        <input type="text" class="pname" value="${escapeHtml(p.name)}" placeholder="Enter name..." data-idx="${idx}" autocomplete="off" aria-label="Player ${idx + 1} name">
+                        <button class="action-icon paid-toggle ${p.paid ? 'active' : ''}" data-idx="${idx}" aria-label="${p.paid ? 'Mark unpaid' : 'Mark paid'} for player ${idx + 1}">✅</button>
+                        <button class="action-icon remove-toggle" data-idx="${idx}" aria-label="Remove player ${idx + 1}">✕</button>`;
+                    frag.appendChild(row);
+                });
+                els.playersContainer.innerHTML = '';
+                els.playersContainer.appendChild(frag);
+                els.playerCount.textContent = state.players.length;
+                els.playerCount.setAttribute('aria-label',
+                    `Set total player count. Current: ${state.players.length}`);
+                updateDuplicateStyling();
+            }
+
+            function renderWaitingPlayers() {
+                const frag = document.createDocumentFragment();
+                state.waitingPlayers.forEach((p, idx) => {
+                    const row = document.createElement('div');
+                    row.className = 'player-row';
+                    row.setAttribute('role', 'listitem');
+                    row.dataset.idx = idx;
+                    row.innerHTML = `
+                        <div class="player-avatar" style="background:var(--input-bg);color:var(--text-muted);" aria-hidden="true">${idx + 1}</div>
+                        <input type="text" class="wname" value="${escapeHtml(p.name)}" placeholder="Waiting player..." data-idx="${idx}" autocomplete="off" aria-label="Waiting player ${idx + 1} name">
+                        <button class="action-icon remove-toggle" data-idx="${idx}" aria-label="Remove waiting player ${idx + 1}">✕</button>`;
+                    frag.appendChild(row);
+                });
+                els.waitingContainer.innerHTML = '';
+                els.waitingContainer.appendChild(frag);
+            }
+
+            function renderAdditionalCourts() {
+                const frag = document.createDocumentFragment();
+                state.additionalCourts.forEach((c, idx) => {
+                    const row = document.createElement('div');
+                    row.className = 'court-row';
+                    row.dataset.idx = idx;
+                    const dur = calcDurationSingle(c.start, c.end);
+                    row.innerHTML = `
+                        <div class="court-detail">
+                            <input type="text" class="court-name-input" value="${escapeHtml(c.court)}" placeholder="e.g. Court 16 only" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''} aria-label="Additional court ${idx + 1} name">
+                            ${state.isAdmin ? `<button class="remove-btn" data-idx="${idx}" aria-label="Remove additional session ${idx + 1}">✕</button>` : ''}
+                        </div>
+                        <div class="time-row">
+                            <input type="time" class="time-start" value="${c.start || ''}" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''} aria-label="Session ${idx + 1} start time">
+                            <span class="time-sep" aria-hidden="true">|</span>
+                            <input type="time" class="time-end" value="${c.end || ''}" data-idx="${idx}" ${!state.isAdmin ? 'disabled' : ''} aria-label="Session ${idx + 1} end time">
+                            <span class="duration-badge">${formatDuration(dur)}</span>
+                        </div>`;
+                    frag.appendChild(row);
+                });
+                els.additionalCourtsContainer.innerHTML = '';
+                els.additionalCourtsContainer.appendChild(frag);
+            }
+
+            function renderSaved() {
+                const frag = document.createDocumentFragment();
+                els.noBookingsMsg.style.display = state.savedBookings.length ? 'none' : 'block';
+                els.clearSaved.classList.toggle('hidden', !state.isAdmin || state.savedBookings.length === 0);
+                state.savedBookings.forEach((b, idx) => {
+                    const item = document.createElement('div');
+                    item.className = 'saved-item';
+                    item.setAttribute('role', 'listitem');
+                    item.innerHTML = `
+                        <div>
+                            <strong style="color:var(--primary-dark); font-size:0.95rem;">${b.day}, ${formatDateDMY(b.date)}</strong>
+                            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">${b.venue} • ${b.players.length} Players</p>
+                        </div>
+                        <div style="display:flex;gap:6px;">
+                            <button class="btn btn-secondary load-btn" data-idx="${idx}" style="padding:6px 12px; font-size:0.78rem; width:auto;">Load</button>
+                            ${state.isAdmin ? `<button class="btn btn-danger del-btn" data-idx="${idx}" style="padding:6px 12px; font-size:0.78rem; width:auto;" aria-label="Delete saved session">✕</button>` : ''}
+                        </div>`;
+                    frag.appendChild(item);
+                });
+                els.savedBookingsList.innerHTML = '';
+                els.savedBookingsList.appendChild(frag);
+            }
+
+            // ──────────────────────────────────────
+            // 9. AUTOCOMPLETE
+            // ──────────────────────────────────────
+            function showAutocomplete(input, idx, isWaiting = false) {
+                document.querySelectorAll('.autocomplete-list').forEach(e => e.remove());
+                const val = input.value.trim().toLowerCase();
+                if (!val) return;
+                const matches = getNames().filter(n => n.toLowerCase().includes(val) && n.toLowerCase() !==
+                    val);
+                if (!matches.length) return;
+                const list = document.createElement('div');
+                list.className = 'autocomplete-list';
+                list.setAttribute('role', 'listbox');
+                matches.forEach(name => {
+                    const item = document.createElement('div');
+                    item.className = 'autocomplete-item';
+                    item.textContent = name;
+                    item.setAttribute('role', 'option');
+                    item.tabIndex = 0;
+                    list.appendChild(item);
+                });
+                list.addEventListener('mousedown', (e) => {
+                    if (e.target.classList.contains('autocomplete-item')) {
+                        e.preventDefault();
+                        const selectedName = e.target.textContent;
+                        input.value = selectedName;
+                        if (isWaiting) {
+                            state.waitingPlayers[idx].name = selectedName;
+                        } else {
+                            state.players[idx].name = selectedName;
+                            updateDuplicateStyling();
+                        }
+                        list.remove();
+                        updatePreview();
+                        addName(selectedName);
+                        vibrate();
+                    }
+                });
+                list.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && e.target.classList.contains('autocomplete-item')) {
+                        e.preventDefault();
+                        e.target.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+                    }
+                });
+                input.closest('.player-row').appendChild(list);
+            }
+
+            // ──────────────────────────────────────
+            // 10. EVENT DELEGATION SETUP
+            // ──────────────────────────────────────
+            function setupPlayerContainerDelegation(container, arrayRef, isWaiting = false) {
+                container.addEventListener('input', (e) => {
+                    const target = e.target;
+                    if (target.classList.contains('pname') || target.classList.contains('wname')) {
+                        const idx = parseInt(target.dataset.idx);
+                        if (!isNaN(idx) && arrayRef[idx]) {
+                            arrayRef[idx].name = target.value;
+                            if (!isWaiting) updateDuplicateStyling();
+                            updatePreview();
+                            showAutocomplete(target, idx, isWaiting);
+                        }
+                    }
+                });
+                container.addEventListener('click', (e) => {
+                    const targetBtn = e.target.closest('.action-icon');
+                    if (!targetBtn) return;
+                    const idx = parseInt(targetBtn.dataset.idx);
+                    if (isNaN(idx) || !arrayRef[idx]) return;
+                    if (targetBtn.classList.contains('paid-toggle')) {
+                        arrayRef[idx].paid = !arrayRef[idx].paid;
+                        targetBtn.classList.toggle('active', arrayRef[idx].paid);
+                        if (arrayRef[idx].paid && arrayRef[idx].name) addName(arrayRef[idx].name);
+                        updatePreview();
+                        vibrate();
+                    } else if (targetBtn.classList.contains('remove-toggle')) {
+                        arrayRef.splice(idx, 1);
+                        isWaiting ? renderWaitingPlayers() : renderPlayers();
+                        updatePreview();
+                        vibrate();
+                    }
+                });
+                // Focus styling
+                container.addEventListener('focusin', (e) => {
+                    const row = e.target.closest('.player-row');
+                    if (row) row.classList.add('focused');
+                });
+                container.addEventListener('focusout', (e) => {
+                    const row = e.target.closest('.player-row');
+                    if (row) row.classList.remove('focused');
+                });
+            }
+
+            setupPlayerContainerDelegation(els.playersContainer, state.players, false);
+            setupPlayerContainerDelegation(els.waitingContainer, state.waitingPlayers, true);
+
+            // Additional courts delegation
+            els.additionalCourtsContainer.addEventListener('input', (e) => {
+                const idx = parseInt(e.target.dataset.idx);
+                if (isNaN(idx)) return;
+                if (e.target.classList.contains('court-name-input')) {
+                    state.additionalCourts[idx].court = e.target.value;
+                } else if (e.target.classList.contains('time-start')) {
+                    state.additionalCourts[idx].start = e.target.value;
+                    updateRowDurationBadge(e.target, idx);
+                } else if (e.target.classList.contains('time-end')) {
+                    state.additionalCourts[idx].end = e.target.value;
+                    updateRowDurationBadge(e.target, idx);
+                }
+                updateDateData();
+            });
+            els.additionalCourtsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-btn')) {
+                    const idx = parseInt(e.target.dataset.idx);
+                    if (!isNaN(idx)) {
+                        state.additionalCourts.splice(idx, 1);
+                        renderAdditionalCourts();
+                        updateDateData();
+                        vibrate();
+                    }
+                }
+            });
+
+            function updateRowDurationBadge(target, idx) {
+                const row = target.closest('.court-row');
+                const dur = calcDurationSingle(state.additionalCourts[idx].start, state.additionalCourts[
+                    idx].end);
+                const badge = row.querySelector('.duration-badge');
+                if (badge) badge.textContent = formatDuration(dur);
+            }
+
+            // ──────────────────────────────────────
+            // 11. COLLAPSIBLE (Global)
+            // ──────────────────────────────────────
+            window.toggleCollapse = function(id) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const wasCollapsed = el.classList.contains('collapsed');
+                el.classList.toggle('collapsed');
+                const header = el.querySelector('.collapsible-header');
+                if (header) {
+                    header.setAttribute('aria-expanded', wasCollapsed ? 'true' : 'false');
+                }
+            };
+
+            // ──────────────────────────────────────
+            // 12. CONFIRM MODAL
+            // ──────────────────────────────────────
+            function showConfirm(title, msg, onConfirm) {
+                els.confirmTitle.textContent = title;
+                els.confirmMessage.textContent = msg;
+                state.confirmCallback = onConfirm;
+                els.confirmModal.classList.add('active');
+                $('confirmActionBtn').focus();
+            }
+            $('confirmCancelBtn').addEventListener('click', () => {
+                els.confirmModal.classList.remove('active');
+                vibrate();
+            });
+            $('confirmActionBtn').addEventListener('click', () => {
+                els.confirmModal.classList.remove('active');
+                vibrate();
+                if (state.confirmCallback) state.confirmCallback();
+                state.confirmCallback = null;
+            });
+
+            // ──────────────────────────────────────
+            // 13. DATE & TIME UPDATE
+            // ──────────────────────────────────────
+            function updateDateData() {
+                if (!els.date.value) return;
+                const d = new Date(els.date.value + 'T00:00:00');
+                if (!isNaN(d.getTime())) {
+                    els.day.textContent = malayDays[d.getDay()];
+                }
+                const totalHrs = calcTotalDuration();
+                els.duration.textContent = (totalHrs % 1 === 0 ? totalHrs.toFixed(0) : totalHrs.toFixed(1)) +
+                    ' Hrs';
                 updatePreview();
-            }else if(btn.classList.contains('remove-toggle')){ arr.splice(idx,1); isWaiting?renderWaitingPlayers():renderPlayers(); updatePreview(); }
-        });
-        container.addEventListener('focusin',(e)=>{ const row=e.target.closest('.player-row'); if(row)row.classList.add('focused'); });
-        container.addEventListener('focusout',(e)=>{ const row=e.target.closest('.player-row'); if(row)row.classList.remove('focused'); });
-    }
-    setupDelegation(els.playersContainer,state.players,false);
-    setupDelegation(els.waitingContainer,state.waitingPlayers,true);
-
-    els.additionalCourtsContainer.addEventListener('input',(e)=>{
-        const idx=parseInt(e.target.dataset.idx); if(isNaN(idx))return;
-        if(e.target.classList.contains('court-name-input')) state.additionalCourts[idx].court=e.target.value;
-        else if(e.target.classList.contains('time-start')){ state.additionalCourts[idx].start=e.target.value; updateRowDurationBadge(e.target,idx); }
-        else if(e.target.classList.contains('time-end')){ state.additionalCourts[idx].end=e.target.value; updateRowDurationBadge(e.target,idx); }
-        updateDateData();
-    });
-    els.additionalCourtsContainer.addEventListener('click',(e)=>{ if(e.target.classList.contains('remove-btn')){ const idx=parseInt(e.target.dataset.idx); state.additionalCourts.splice(idx,1); renderAdditionalCourts(); updateDateData(); } });
-    function updateRowDurationBadge(target,idx){ const row=target.closest('.court-row'); const dur=calcDurationSingle(state.additionalCourts[idx].start,state.additionalCourts[idx].end); const badge=row.querySelector('.duration-badge'); if(badge)badge.textContent=formatDuration(dur); }
-
-    window.toggleCollapse=(id)=>{ const el=document.getElementById(id); if(!el)return; const was=el.classList.contains('collapsed'); el.classList.toggle('collapsed'); const h=el.querySelector('.collapsible-header'); if(h)h.setAttribute('aria-expanded',was?'true':'false'); };
-
-    function showConfirm(title,msg,cb){ els.confirmTitle.textContent=title; els.confirmMessage.textContent=msg; state.confirmCallback=cb; els.confirmModal.classList.add('active'); }
-    document.getElementById('confirmCancelBtn').addEventListener('click',()=>{ els.confirmModal.classList.remove('active'); });
-    document.getElementById('confirmActionBtn').addEventListener('click',()=>{ els.confirmModal.classList.remove('active'); if(state.confirmCallback)state.confirmCallback(); state.confirmCallback=null; });
-
-    function updateDateData(){
-        if(!els.date.value)return;
-        const d=new Date(els.date.value+'T00:00:00'); if(!isNaN(d.getTime())) els.day.textContent=malayDays[d.getDay()];
-        const totalHrs=calcTotalDuration(); els.duration.textContent=(totalHrs%1===0?totalHrs.toFixed(0):totalHrs.toFixed(1))+' Hrs';
-        updatePreview();
-    }
-    [els.date,els.start,els.end,els.venue,els.court,els.price,els.shuttle,els.host,els.footer,els.updateListLink,els.locationLink].forEach(el=>el.addEventListener('input',updateDateData));
-
-    function applyRoleUIState(){
-        [els.adminConfigCard,els.additionalCourtsCard,els.footerCard,els.addCourtBtn].forEach(el=>el.classList.toggle('hidden',!state.isAdmin));
-        els.adminToolbar.style.display=state.isAdmin?'flex':'none';
-        els.clearSaved.classList.toggle('hidden',!state.isAdmin||state.savedBookings.length===0);
-        els.footer.disabled=!state.isAdmin;
-        els.adminLoginBtn.classList.toggle('hidden',state.isAdmin);
-        els.adminLogoutBtn.classList.toggle('hidden',!state.isAdmin);
-        renderAdditionalCourts(); updateLiveDashboard();
-    }
-
-    els.adminLoginBtn.addEventListener('click',()=>{ els.adminPasswordInput.value=''; els.adminLoginModal.classList.add('active'); });
-    document.getElementById('loginCancelBtn').addEventListener('click',()=>els.adminLoginModal.classList.remove('active'));
-    document.getElementById('loginSubmitBtn').addEventListener('click',()=>{
-        if(els.adminPasswordInput.value===ADMIN_PASSWORD){ state.isAdmin=true; els.adminLoginModal.classList.remove('active'); applyRoleUIState(); showToast('Admin mode enabled','🔓'); }
-        else showToast('Invalid access key','❌');
-    });
-    els.adminLogoutBtn.addEventListener('click',()=>{ state.isAdmin=false; applyRoleUIState(); showToast('Signed out','🔒'); });
-    els.adminLogoutBtn2.addEventListener('click',()=>{ state.isAdmin=false; applyRoleUIState(); showToast('Signed out','🔒'); });
-
-    document.querySelectorAll('.nav-item').forEach(nav=>nav.addEventListener('click',()=>{
-        document.querySelectorAll('.nav-item').forEach(n=>{ n.classList.remove('active'); n.removeAttribute('aria-current'); });
-        nav.classList.add('active'); nav.setAttribute('aria-current','page');
-        const isBooking=nav.dataset.tab==='booking';
-        els.bookingTab.classList.toggle('hidden',!isBooking); els.savedTab.classList.toggle('hidden',isBooking);
-        if(!isBooking)renderSaved();
-    }));
-
-    els.locationToggle.addEventListener('change',()=>{ state.locationEnabled=els.locationToggle.checked; els.locationLink.classList.toggle('hidden',!state.locationEnabled); updatePreview(); });
-
-    els.addPlayer.addEventListener('click',()=>{ state.players.push({name:"",paid:false}); renderPlayers(); updatePreview(); });
-    els.addWaiting.addEventListener('click',()=>{ state.waitingPlayers.push({name:""}); renderWaitingPlayers(); updatePreview(); });
-    els.stepPlus.addEventListener('click',()=>{ state.players.push({name:"",paid:false}); renderPlayers(); updatePreview(); });
-    els.stepMinus.addEventListener('click',()=>{ if(state.players.length){state.players.pop(); renderPlayers(); updatePreview();} });
-    els.playerCount.addEventListener('click',()=>{
-        const count=parseInt(prompt("Enter total players:",state.players.length));
-        if(!isNaN(count)&&count>=0&&count<=100){ while(state.players.length<count)state.players.push({name:"",paid:false}); while(state.players.length>count)state.players.pop(); renderPlayers(); updatePreview(); }
-    });
-    els.addCourtBtn.addEventListener('click',()=>{ if(!state.isAdmin)return; state.additionalCourts.push({court:'',start:'',end:''}); renderAdditionalCourts(); updateDateData(); });
-
-    els.save.addEventListener('click',()=>{ if(!state.isAdmin)return;
-        state.savedBookings.unshift({id:Date.now(),date:els.date.value,day:els.day.textContent,start:els.start.value,end:els.end.value,venue:els.venue.value,court:els.court.value,additionalCourts:JSON.parse(JSON.stringify(state.additionalCourts)),location:els.locationLink.value,locationEnabled:state.locationEnabled,price:els.price.value,shuttle:els.shuttle.value,host:els.host.value,footer:els.footer.value,updateListLink:els.updateListLink.value,players:JSON.parse(JSON.stringify(state.players)),waiting:JSON.parse(JSON.stringify(state.waitingPlayers))});
-        persistSavedBookings(); showToast("Session Saved!","💾");
-    });
-    els.reset.addEventListener('click',()=>{ if(!state.isAdmin)return;
-        showConfirm('Reset Form','Clear all fields?',()=>{
-            els.date.value=new Date().toISOString().split('T')[0]; els.start.value="21:30"; els.end.value="23:30";
-            els.venue.value="Forum SBA, Setia Alam"; els.court.value="14, 15, 16";
-            els.locationLink.value="https://g.co/kgs/UMbmmAz"; state.locationEnabled=false; els.locationToggle.checked=false; els.locationLink.classList.add('hidden');
-            els.price.value="17"; els.shuttle.value="RSL"; els.host.value="";
-            state.players.length=0; state.waitingPlayers.length=0; state.additionalCourts.length=0;
-            renderPlayers(); renderWaitingPlayers(); renderAdditionalCourts(); updateDateData(); showToast('Reset!');
-        });
-    });
-    els.clearPlayersAdminBtn.addEventListener('click',()=>{ if(!state.isAdmin||!state.players.length)return; showConfirm('Clear All Players','Remove all?',()=>{ state.players.length=0; renderPlayers(); updatePreview(); }); });
-
-    els.copy.addEventListener('click',async ()=>{
-        vibrate(); const announcement=buildPreview();
-        if(navigator.share&&navigator.canShare&&navigator.canShare({text:announcement})){ try{ await navigator.share({text:announcement}); showToast("Shared!"); return; }catch{} }
-        if(navigator.clipboard&&navigator.clipboard.writeText){ try{ await navigator.clipboard.writeText(announcement); showToast("Copied!"); return; }catch{} }
-        const ta=document.createElement('textarea'); ta.value=announcement; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.focus(); ta.select();
-        try{ document.execCommand('copy'); showToast("Copied!"); }catch{ showToast("Copy manually","⚠️"); } document.body.removeChild(ta);
-    });
-
-    function parseTime12to24(s){ const m=s.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i); if(!m)return null; let h=parseInt(m[1]),min=m[2],p=m[3].toUpperCase(); if(p==='PM'&&h!==12)h+=12; if(p==='AM'&&h===12)h=0; return `${h.toString().padStart(2,'0')}:${min}`; }
-    function parseDMYtoYMD(s){ const p=s.split('/'); if(p.length!==3)return null; return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`; }
-
-    els.importBtn.addEventListener('click',()=>{ els.importTextarea.value=''; els.importModal.classList.add('active'); });
-    document.getElementById('importCancelBtn').addEventListener('click',()=>els.importModal.classList.remove('active'));
-    document.getElementById('importParseBtn').addEventListener('click',()=>{
-        const raw=els.importTextarea.value.trim(); if(!raw){showToast('Empty','⚠️');return;}
-        try{
-            const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l!=='');
-            let d='',s='',e='',v='',c='',loc='',pr='',sh='',ho='',ul=''; const np=[],nw=[],nc=[]; let mode='head',fl=[],foundLoc=false;
-            let sn=0,ts='',te='',tc='';
-            for(let i=0;i<lines.length;i++){
-                const l=lines[i];
-                if(l.startsWith('🏸 BADMINTON SESSION'))continue;
-                if(l.startsWith('📍')&&!l.startsWith('📍 Link:')&&!l.startsWith('📍 Location:'))v=l.replace('📍','').trim();
-                else if(l.startsWith('🏟️ Court:'))c=l.replace('🏟️ Court:','').trim();
-                else if(l.startsWith('📅')){const m=l.match(/📅\s+([\d\/]+)/); if(m){const ymd=parseDMYtoYMD(m[1].trim()); if(ymd)d=ymd;}}
-                else if(l.startsWith('⏰ Session')){sn=parseInt(l.match(/Session\s+(\d+)/)[1]);ts='';te='';tc='';mode='session';}
-                else if(mode==='session'){
-                    if(l.includes('–')){const p=l.split('–');ts=p[0].trim();te=p[1].trim();}
-                    else if(l.startsWith('(')){tc=l.replace(/[()]/g,'').trim(); const s24=parseTime12to24(ts),e24=parseTime12to24(te); if(sn===1){if(s24)s=s24;if(e24)e=e24;}else nc.push({court:tc.replace(/^Court\s+/i,'').trim(),start:s24||'',end:e24||''}); mode='head';}
-                }else if(l.startsWith('💵')){const m=l.match(/RM\s*([\d.]+)/); if(m)pr=m[1];}
-                else if(l.startsWith('🏸 Shuttle:'))sh=l.replace('🏸 Shuttle:','').trim();
-                else if(l.startsWith('👤 Host:'))ho=l.replace('👤 Host:','').trim();
-                else if(l.startsWith('📍 Link:')||l.startsWith('📍 Location:')){foundLoc=true;loc=l.replace(/📍 (Link|Location):/,'').trim();}
-                else if(l==='Link update list'){if(i+1<lines.length){ul=lines[i+1].trim();i++;}}
-                else if(l.startsWith('──────────────────')){if(mode==='head')mode='players';else if(mode==='players')mode='footer';}
-                else if(mode==='players'){
-                    if(/^\d+\./.test(l)){const m=l.match(/^(\d+)\.\s*(.+)$/); if(m){let n=m[2].trim(); let paid=false; if(n.endsWith('✅')||n.endsWith('✅️')){paid=true;n=n.replace(/✅️?$/,'').trim();} if(n==='(Open)'||n==='')n=''; np.push({name:n.trim(),paid});}}
-                    else if(l==='Waiting List')mode='waiting';
-                }else if(mode==='waiting'){
-                    if(/^\d+\./.test(l)){const m=l.match(/^(\d+)\.\s*(.+)$/); if(m){let n=m[2].trim(); if(n==='')n=''; nw.push({name:n.trim()});}}
-                    else if(l.startsWith('──────────────────'))mode='footer';
-                }else if(mode==='footer'){if(l!=='Notes:'&&l!=='')fl.push(l);}
             }
-            if(d)els.date.value=d; if(s)els.start.value=s; if(e)els.end.value=e; if(v)els.venue.value=v; if(c)els.court.value=c;
-            if(foundLoc||loc){els.locationToggle.checked=true;state.locationEnabled=true;els.locationLink.classList.remove('hidden');els.locationLink.value=loc||'https://g.co/kgs/UMbmmAz';}
-            else{els.locationToggle.checked=false;state.locationEnabled=false;els.locationLink.classList.add('hidden');}
-            if(pr)els.price.value=pr; if(sh)els.shuttle.value=sh; if(ho)els.host.value=ho; if(ul)els.updateListLink.value=ul;
-            state.players.length=0;state.players.push(...np); state.waitingPlayers.length=0;state.waitingPlayers.push(...nw);
-            state.additionalCourts.length=0;state.additionalCourts.push(...nc);
-            renderPlayers();renderWaitingPlayers();renderAdditionalCourts();
-            if(fl.length)els.footer.value=fl.join('\n');
-            updateDateData();updatePreview(); els.importModal.classList.remove('active'); showToast('Imported!');
-        }catch{showToast('Import error','❌');}
-    });
 
-    els.savedBookingsList.addEventListener('click',(e)=>{
-        const idx=parseInt(e.target.dataset.idx); if(isNaN(idx))return;
-        if(e.target.classList.contains('load-btn')){
-            const d=state.savedBookings[idx];
-            els.date.value=d.date;els.start.value=d.start;els.end.value=d.end;els.venue.value=d.venue;els.court.value=d.court;
-            state.additionalCourts.length=0;state.additionalCourts.push(...(d.additionalCourts?JSON.parse(JSON.stringify(d.additionalCourts)):[]));renderAdditionalCourts();
-            els.locationLink.value=d.location||'';state.locationEnabled=d.locationEnabled||false;els.locationToggle.checked=state.locationEnabled;els.locationLink.classList.toggle('hidden',!state.locationEnabled);
-            els.price.value=d.price;els.shuttle.value=d.shuttle;els.host.value=d.host;els.footer.value=d.footer;if(d.updateListLink)els.updateListLink.value=d.updateListLink;
-            state.players.length=0;state.players.push(...JSON.parse(JSON.stringify(d.players)));state.waitingPlayers.length=0;state.waitingPlayers.push(...JSON.parse(JSON.stringify(d.waiting)));
-            renderPlayers();renderWaitingPlayers();updateDateData();updatePreview(); document.querySelector('.nav-item[data-tab="booking"]').click(); showToast("Loaded!");
-        }else if(e.target.classList.contains('del-btn')&&state.isAdmin){
-            showConfirm('Delete','Remove this session?',()=>{state.savedBookings.splice(idx,1);persistSavedBookings();renderSaved();});
-        }
-    });
-    els.clearSaved.addEventListener('click',()=>{ if(!state.isAdmin||!state.savedBookings.length)return; showConfirm('Clear All','Delete all?',()=>{state.savedBookings=[];persistSavedBookings();renderSaved();}); });
+            [
+                els.date, els.start, els.end, els.venue, els.court,
+                els.price, els.shuttle, els.host, els.footer, els.updateListLink, els.locationLink
+            ].forEach(el => {
+                el.addEventListener('input', updateDateData);
+            });
+            els.date.addEventListener('change', updateDateData);
 
-    document.getElementById('tutorialBtn').addEventListener('click',()=>els.tutorialModal.classList.add('active'));
-    document.getElementById('tutorialCloseBtn').addEventListener('click',()=>els.tutorialModal.classList.remove('active'));
+            // ──────────────────────────────────────
+            // 14. ADMIN AUTH
+            // ──────────────────────────────────────
+            function applyRoleUIState() {
+                const adminCards = [els.adminConfigCard, els.additionalCourtsCard, els.footerCard, els.addCourtBtn];
+                adminCards.forEach(el => el.classList.toggle('hidden', !state.isAdmin));
+                els.adminToolbar.style.display = state.isAdmin ? 'flex' : 'none';
+                els.clearSaved.classList.toggle('hidden', !state.isAdmin || state.savedBookings.length === 0);
+                els.footer.disabled = !state.isAdmin;
+                els.adminLoginBtn.classList.toggle('hidden', state.isAdmin);
+                els.adminLogoutBtn.classList.toggle('hidden', !state.isAdmin);
+                renderAdditionalCourts();
+                updateLiveDashboard();
+                if (els.savedTab.style.display !== 'none' && !els.savedTab.classList.contains('hidden')) {
+                    renderSaved();
+                }
+            }
 
-    document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',(e)=>{if(e.target===o)o.classList.remove('active');}));
-    document.addEventListener('keydown',(e)=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));});
+            els.adminLoginBtn.addEventListener('click', () => {
+                vibrate();
+                els.adminPasswordInput.value = '';
+                els.adminLoginModal.classList.add('active');
+                els.adminPasswordInput.focus();
+            });
+            $('loginCancelBtn').addEventListener('click', () => {
+                vibrate();
+                els.adminLoginModal.classList.remove('active');
+            });
+            $('loginSubmitBtn').addEventListener('click', () => {
+                vibrate();
+                if (els.adminPasswordInput.value === ADMIN_PASSWORD) {
+                    state.isAdmin = true;
+                    els.adminLoginModal.classList.remove('active');
+                    applyRoleUIState();
+                    showToast('Admin mode enabled', '🔓');
+                } else {
+                    showToast('Invalid access key', '❌');
+                }
+            });
+            els.adminPasswordInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') $('loginSubmitBtn').click();
+            });
+            els.adminLogoutBtn.addEventListener('click', () => {
+                state.isAdmin = false;
+                applyRoleUIState();
+                showToast('Signed out of admin session', '🔒');
+            });
+            els.adminLogoutBtn2.addEventListener('click', () => {
+                state.isAdmin = false;
+                applyRoleUIState();
+                showToast('Signed out of admin session', '🔒');
+            });
 
-    function getNames(){ try{return JSON.parse(localStorage.getItem(NAMES_KEY))||[];}catch{return[];} }
-    function addName(name){ name=name.trim(); if(!name)return; let names=getNames().filter(n=>n.toLowerCase()!==name.toLowerCase()); names.unshift(name); if(names.length>40)names.pop(); localStorage.setItem(NAMES_KEY,JSON.stringify(names)); }
-    function persistSavedBookings(){ localStorage.setItem(SAVED_KEY,JSON.stringify(state.savedBookings)); }
+            // ──────────────────────────────────────
+            // 15. TAB NAVIGATION
+            // ──────────────────────────────────────
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(n => {
+                        n.classList.remove('active');
+                        n.removeAttribute('aria-current');
+                    });
+                    nav.classList.add('active');
+                    nav.setAttribute('aria-current', 'page');
+                    const isBooking = nav.dataset.tab === 'booking';
+                    els.bookingTab.classList.toggle('hidden', !isBooking);
+                    els.savedTab.classList.toggle('hidden', isBooking);
+                    if (!isBooking) renderSaved();
+                    vibrate();
+                });
+            });
 
-    function init(){
-        setTimeout(()=>{ els.loadingScreen.classList.add('hidden'); setTimeout(()=>{ if(els.loadingScreen.parentNode)els.loadingScreen.remove(); },500); },1000);
-        els.date.value=new Date().toISOString().split('T')[0];
-        try{ state.savedBookings=JSON.parse(localStorage.getItem(SAVED_KEY)||'[]'); }catch{state.savedBookings=[];}
-        loadCleanupSetting();
-        applyAutoCleanup();
-        applyRoleUIState();
-        renderPlayers(); renderWaitingPlayers(); updateDateData();
-    }
-    init();
-})();
-</script>
+            // ──────────────────────────────────────
+            // 16. LOCATION TOGGLE
+            // ──────────────────────────────────────
+            els.locationToggle.addEventListener('change', () => {
+                state.locationEnabled = els.locationToggle.checked;
+                els.locationLink.classList.toggle('hidden', !state.locationEnabled);
+                updatePreview();
+                vibrate();
+            });
+
+            // ──────────────────────────────────────
+            // 17. PLAYER BUTTONS
+            // ──────────────────────────────────────
+            els.addPlayer.addEventListener('click', () => {
+                state.players.push({ name: "", paid: false });
+                renderPlayers();
+                updatePreview();
+                vibrate();
+            });
+            els.addWaiting.addEventListener('click', () => {
+                state.waitingPlayers.push({ name: "" });
+                renderWaitingPlayers();
+                updatePreview();
+                vibrate();
+            });
+            els.stepPlus.addEventListener('click', () => {
+                state.players.push({ name: "", paid: false });
+                renderPlayers();
+                updatePreview();
+                vibrate();
+            });
+            els.stepMinus.addEventListener('click', () => {
+                if (state.players.length) {
+                    state.players.pop();
+                    renderPlayers();
+                    updatePreview();
+                    vibrate();
+                }
+            });
+            els.playerCount.addEventListener('click', () => {
+                const count = parseInt(prompt("Enter total number of players (e.g. 16):", state.players.length));
+                if (!isNaN(count) && count >= 0 && count <= 100) {
+                    while (state.players.length < count) state.players.push({ name: "", paid: false });
+                    while (state.players.length > count) state.players.pop();
+                    renderPlayers();
+                    updatePreview();
+                }
+            });
+            els.playerCount.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    els.playerCount.click();
+                }
+            });
+            els.addCourtBtn.addEventListener('click', () => {
+                if (!state.isAdmin) return;
+                state.additionalCourts.push({ court: '', start: '', end: '' });
+                renderAdditionalCourts();
+                updateDateData();
+                vibrate();
+            });
+
+            // ──────────────────────────────────────
+            // 18. SAVE / RESET / CLEAR (Admin)
+            // ──────────────────────────────────────
+            els.save.addEventListener('click', () => {
+                if (!state.isAdmin) return;
+                vibrate();
+                state.savedBookings.unshift({
+                    id: Date.now(),
+                    date: els.date.value,
+                    day: els.day.textContent,
+                    start: els.start.value,
+                    end: els.end.value,
+                    venue: els.venue.value,
+                    court: els.court.value,
+                    additionalCourts: JSON.parse(JSON.stringify(state.additionalCourts)),
+                    location: els.locationLink.value,
+                    locationEnabled: state.locationEnabled,
+                    price: els.price.value,
+                    shuttle: els.shuttle.value,
+                    host: els.host.value,
+                    footer: els.footer.value,
+                    updateListLink: els.updateListLink.value,
+                    players: JSON.parse(JSON.stringify(state.players)),
+                    waiting: JSON.parse(JSON.stringify(state.waitingPlayers)),
+                });
+                persistSavedBookings();
+                showToast("Session Saved!", "💾");
+            });
+
+            els.reset.addEventListener('click', () => {
+                if (!state.isAdmin) return;
+                showConfirm('Reset Form', 'Clear all fields and players?', () => {
+                    els.date.value = new Date().toISOString().split('T')[0];
+                    els.start.value = "21:30";
+                    els.end.value = "23:30";
+                    els.venue.value = "Forum SBA, Setia Alam";
+                    els.court.value = "14, 15, 16";
+                    els.locationLink.value = "https://g.co/kgs/UMbmmAz";
+                    state.locationEnabled = false;
+                    els.locationToggle.checked = false;
+                    els.locationLink.classList.add('hidden');
+                    els.price.value = "17";
+                    els.shuttle.value = "RSL";
+                    els.host.value = "";
+                    state.players.length = 0;
+                    state.waitingPlayers.length = 0;
+                    state.additionalCourts.length = 0;
+                    renderPlayers();
+                    renderWaitingPlayers();
+                    renderAdditionalCourts();
+                    updateDateData();
+                    showToast('Reset complete!');
+                });
+            });
+
+            els.clearPlayersAdminBtn.addEventListener('click', () => {
+                if (!state.isAdmin || state.players.length === 0) return;
+                showConfirm('Clear All Players', 'Remove all players from the roster?', () => {
+                    state.players.length = 0;
+                    renderPlayers();
+                    updatePreview();
+                    showToast('All players cleared');
+                });
+            });
+
+            // ──────────────────────────────────────
+            // 19. COPY / SHARE (Modern Clipboard API)
+            // ──────────────────────────────────────
+            els.copy.addEventListener('click', async () => {
+                vibrate();
+                const announcement = buildPreview();
+                // Try Web Share API first
+                if (navigator.share && navigator.canShare && navigator.canShare({ text: announcement })) {
+                    try {
+                        await navigator.share({ text: announcement });
+                        showToast("Shared!");
+                        return;
+                    } catch (err) {
+                        // User cancelled or share failed — fall through to clipboard
+                    }
+                }
+                // Modern Clipboard API
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    try {
+                        await navigator.clipboard.writeText(announcement);
+                        showToast("Copied to clipboard!");
+                        return;
+                    } catch (e) {
+                        // Fall through to legacy fallback
+                    }
+                }
+                // Legacy fallback (no execCommand)
+                const textarea = document.createElement('textarea');
+                textarea.value = announcement;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                textarea.style.top = '0';
+                textarea.style.left = '0';
+                textarea.setAttribute('aria-hidden', 'true');
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                try {
+                    const success = document.execCommand && document.execCommand('copy');
+                    if (success) {
+                        showToast("Copied to clipboard!");
+                    } else {
+                        showToast("Copy failed — try selecting and copying manually", "⚠️");
+                    }
+                } catch (e) {
+                    showToast("Copy failed — try selecting and copying manually", "⚠️");
+                }
+                document.body.removeChild(textarea);
+            });
+
+            // ──────────────────────────────────────
+            // 20. IMPORT PARSER
+            // ──────────────────────────────────────
+            function parseTime12to24(str) {
+                const match = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+                if (!match) return null;
+                let h = parseInt(match[1]),
+                    m = match[2],
+                    period = match[3].toUpperCase();
+                if (period === 'PM' && h !== 12) h += 12;
+                if (period === 'AM' && h === 12) h = 0;
+                return `${h.toString().padStart(2, '0')}:${m}`;
+            }
+
+            function parseDMYtoYMD(str) {
+                const parts = str.split('/');
+                if (parts.length !== 3) return null;
+                return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+            }
+
+            els.importBtn.addEventListener('click', () => {
+                vibrate();
+                els.importTextarea.value = '';
+                els.importModal.classList.add('active');
+                els.importTextarea.focus();
+            });
+            $('importCancelBtn').addEventListener('click', () => {
+                vibrate();
+                els.importModal.classList.remove('active');
+            });
+            $('importParseBtn').addEventListener('click', () => {
+                vibrate();
+                const raw = els.importTextarea.value.trim();
+                if (!raw) { showToast('Textarea empty', '⚠️');
+                    return; }
+                try {
+                    const lines = raw.split('\n').map(l => l.trim()).filter(l => l !== '');
+                    let parsedDate = '',
+                        parsedStart = '',
+                        parsedEnd = '',
+                        parsedVenue = '',
+                        parsedCourt = '',
+                        parsedLocation = '',
+                        parsedPrice = '',
+                        parsedShuttle = '',
+                        parsedHost = '',
+                        parsedUpdateList = '';
+                    const newPlayers = [],
+                        newWaiting = [],
+                        newAdditionalCourts = [];
+                    let mode = 'head',
+                        footerLines = [],
+                        foundLocation = false;
+                    let sessionNum = 0,
+                        tempStart = '',
+                        tempEnd = '',
+                        tempCourt = '';
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i];
+                        if (line.startsWith('🏸 BADMINTON SESSION')) continue;
+                        if (line.startsWith('📍') && !line.startsWith('📍 Link:') && !line.startsWith(
+                                '📍 Location:')) parsedVenue = line.replace('📍', '').trim();
+                        else if (line.startsWith('🏟️ Court:')) parsedCourt = line.replace('🏟️ Court:', '').trim();
+                        else if (line.startsWith('📅')) {
+                            const m = line.match(/📅\s+([\d\/]+)/);
+                            if (m) { const ymd = parseDMYtoYMD(m[1].trim()); if (ymd) parsedDate = ymd; }
+                        } else if (line.startsWith('⏰ Session')) {
+                            sessionNum = parseInt(line.match(/Session\s+(\d+)/)[1]);
+                            tempStart = '';
+                            tempEnd = '';
+                            tempCourt = '';
+                            mode = 'session';
+                        } else if (mode === 'session') {
+                            if (line.includes('–')) {
+                                const parts = line.split('–');
+                                tempStart = parts[0].trim();
+                                tempEnd = parts[1].trim();
+                            } else if (line.startsWith('(')) {
+                                tempCourt = line.replace(/[()]/g, '').trim();
+                                const start24 = parseTime12to24(tempStart),
+                                    end24 = parseTime12to24(tempEnd);
+                                if (sessionNum === 1) { if (start24) parsedStart = start24; if (end24)
+                                        parsedEnd = end24; } else newAdditionalCourts.push({ court: tempCourt
+                                        .replace(/^Court\s+/i, '').trim(),
+                                    start: start24 || '',
+                                    end: end24 || '' });
+                                mode = 'head';
+                            }
+                        } else if (line.startsWith('💵')) { const m = line.match(/RM\s*([\d.]+)/); if (m)
+                                parsedPrice = m[1]; } else if (line.startsWith('🏸 Shuttle:')) parsedShuttle = line
+                            .replace('🏸 Shuttle:', '').trim();
+                        else if (line.startsWith('👤 Host:')) parsedHost = line.replace('👤 Host:', '').trim();
+                        else if (line.startsWith('📍 Link:') || line.startsWith('📍 Location:')) { foundLocation =
+                                true;
+                            parsedLocation = line.replace(/📍 (Link|Location):/, '').trim(); } else if (line ===
+                            'Link update list') { if (i + 1 < lines.length) { parsedUpdateList = lines[i + 1]
+                                    .trim();
+                                i++; } } else if (line.startsWith('──────────────────')) { if (mode === 'head')
+                                mode = 'players';
+                            else if (mode === 'players') mode = 'footer'; } else if (mode === 'players') {
+                            if (/^\d+\./.test(line)) {
+                                const m = line.match(/^(\d+)\.\s*(.+)$/);
+                                if (m) {
+                                    let name = m[2].trim();
+                                    let paid = false;
+                                    if (name.endsWith('✅') || name.endsWith('✅️')) { paid = true;
+                                        name = name.replace(/✅️?$/, '').trim(); }
+                                    if (name === '(Open)' || name === '') name = '';
+                                    newPlayers.push({ name: name.trim(), paid });
+                                }
+                            } else if (line === 'Waiting List') mode = 'waiting';
+                        } else if (mode === 'waiting') {
+                            if (/^\d+\./.test(line)) { const m = line.match(/^(\d+)\.\s*(.+)$/); if (m) { let name =
+                                        m[2].trim(); if (name === '') name = '';
+                                    newWaiting.push({ name: name.trim() }); } } else if (line.startsWith(
+                                    '──────────────────')) mode = 'footer';
+                        } else if (mode === 'footer') { if (line !== 'Notes:' && line !== '') footerLines.push(
+                            line); }
+                    }
+
+                    if (parsedDate) els.date.value = parsedDate;
+                    if (parsedStart) els.start.value = parsedStart;
+                    if (parsedEnd) els.end.value = parsedEnd;
+                    if (parsedVenue) els.venue.value = parsedVenue;
+                    if (parsedCourt) els.court.value = parsedCourt;
+                    if (foundLocation || parsedLocation) {
+                        els.locationToggle.checked = true;
+                        state.locationEnabled = true;
+                        els.locationLink.classList.remove('hidden');
+                        els.locationLink.value = parsedLocation || 'https://g.co/kgs/UMbmmAz';
+                    } else {
+                        els.locationToggle.checked = false;
+                        state.locationEnabled = false;
+                        els.locationLink.classList.add('hidden');
+                    }
+                    if (parsedPrice) els.price.value = parsedPrice;
+                    if (parsedShuttle) els.shuttle.value = parsedShuttle;
+                    if (parsedHost) els.host.value = parsedHost;
+                    if (parsedUpdateList) els.updateListLink.value = parsedUpdateList;
+
+                    state.players.length = 0;
+                    state.players.push(...newPlayers);
+                    state.waitingPlayers.length = 0;
+                    state.waitingPlayers.push(...newWaiting);
+                    state.additionalCourts.length = 0;
+                    state.additionalCourts.push(...newAdditionalCourts);
+
+                    renderPlayers();
+                    renderWaitingPlayers();
+                    renderAdditionalCourts();
+                    if (footerLines.length) els.footer.value = footerLines.join('\n');
+                    updateDateData();
+                    updatePreview();
+                    els.importModal.classList.remove('active');
+                    showToast('Imported successfully!');
+                } catch (e) {
+                    showToast('Import parsing error', '❌');
+                    console.error('Import error:', e);
+                }
+            });
+
+            // ──────────────────────────────────────
+            // 21. SAVED BOOKINGS INTERACTIONS
+            // ──────────────────────────────────────
+            els.savedBookingsList.addEventListener('click', (e) => {
+                const idx = parseInt(e.target.dataset.idx);
+                if (isNaN(idx)) return;
+                if (e.target.classList.contains('load-btn')) {
+                    vibrate();
+                    const d = state.savedBookings[idx];
+                    els.date.value = d.date;
+                    els.start.value = d.start;
+                    els.end.value = d.end;
+                    els.venue.value = d.venue;
+                    els.court.value = d.court;
+                    state.additionalCourts.length = 0;
+                    state.additionalCourts.push(...(d.additionalCourts ? JSON.parse(JSON.stringify(d
+                        .additionalCourts)) : []));
+                    renderAdditionalCourts();
+                    els.locationLink.value = d.location || '';
+                    state.locationEnabled = d.locationEnabled || false;
+                    els.locationToggle.checked = state.locationEnabled;
+                    els.locationLink.classList.toggle('hidden', !state.locationEnabled);
+                    els.price.value = d.price;
+                    els.shuttle.value = d.shuttle;
+                    els.host.value = d.host;
+                    els.footer.value = d.footer;
+                    if (d.updateListLink) els.updateListLink.value = d.updateListLink;
+                    state.players.length = 0;
+                    state.players.push(...JSON.parse(JSON.stringify(d.players)));
+                    state.waitingPlayers.length = 0;
+                    state.waitingPlayers.push(...JSON.parse(JSON.stringify(d.waiting)));
+                    renderPlayers();
+                    renderWaitingPlayers();
+                    updateDateData();
+                    updatePreview();
+                    document.querySelector('.nav-item[data-tab="booking"]').click();
+                    showToast("Loaded!");
+                } else if (e.target.classList.contains('del-btn') && state.isAdmin) {
+                    vibrate();
+                    showConfirm('Delete Session', 'Remove this saved booking permanently?', () => {
+                        state.savedBookings.splice(idx, 1);
+                        persistSavedBookings();
+                        renderSaved();
+                    });
+                }
+            });
+            els.clearSaved.addEventListener('click', () => {
+                if (!state.isAdmin || state.savedBookings.length === 0) return;
+                showConfirm('Clear All', 'Delete all saved sessions?', () => {
+                    state.savedBookings = [];
+                    persistSavedBookings();
+                    renderSaved();
+                });
+            });
+
+            // ──────────────────────────────────────
+            // 22. TUTORIAL MODAL
+            // ──────────────────────────────────────
+            $('tutorialBtn').addEventListener('click', () => {
+                els.tutorialModal.classList.add('active');
+                vibrate();
+            });
+            $('tutorialCloseBtn').addEventListener('click', () => {
+                els.tutorialModal.classList.remove('active');
+                vibrate();
+            });
+
+            // ──────────────────────────────────────
+            // 23. MODAL OVERLAY CLICK TO CLOSE
+            // ──────────────────────────────────────
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        overlay.classList.remove('active');
+                        vibrate();
+                    }
+                });
+            });
+
+            // ──────────────────────────────────────
+            // 24. KEYBOARD SUPPORT FOR ESC ON MODALS
+            // ──────────────────────────────────────
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal-overlay.active').forEach(m => {
+                        m.classList.remove('active');
+                    });
+                }
+            });
+
+            // ──────────────────────────────────────
+            // 25. INITIALIZATION
+            // ──────────────────────────────────────
+            function init() {
+                // Loading screen
+                setTimeout(() => {
+                    els.loadingScreen.classList.add('hidden');
+                    // Remove from DOM after transition for performance
+                    setTimeout(() => {
+                        if (els.loadingScreen.parentNode) {
+                            els.loadingScreen.remove();
+                        }
+                    }, 500);
+                }, 1000);
+
+                // Set default date
+                els.date.value = new Date().toISOString().split('T')[0];
+
+                // Load saved data
+                loadSavedBookings();
+
+                // Initial render
+                applyRoleUIState();
+                renderPlayers();
+                renderWaitingPlayers();
+                updateDateData();
+
+                // Mark initial state clean
+                state.previewDirty = false;
+            }
+
+            init();
+
+            console.log('🏸 Smasholic — Glassmorphism Edition Ready');
+        })();
+    </script>
 </body>
 </html>
